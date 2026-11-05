@@ -1,0 +1,37 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1793857718.1133919,
+    "data": {
+      "event": "GENESIS",
+      "system": "SecureGov DocVault"
+    },
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 0,
+    "hash": "572f2269a583b2d5eae41e6c06b47602bfc947451f99cc901a3847e70420d6c4"
+  },
+  {
+    "index": 1,
+    "timestamp": 1793857718.8257823,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "alice",
+      "role": "admin",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "572f2269a583b2d5eae41e6c06b47602bfc947451f99cc901a3847e70420d6c4",
+    "nonce": 0,
+    "hash": "f39b769a390c675baa0a18dd1f05f94a203a684db7ded30a17a80196dcc83a10"
+  },
+  {
+    "index": 2,
+    "timestamp": 1793857719.2903998,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "alice"
+    },
+    "previous_hash": "f39b769a390c675baa0a18dd1f05f94a203a684db7ded30a17a80196dcc83a10",
+    "nonce": 0,
+    "hash": "de30f71732dc45179363b188c6967b762c83ebe984072be9b1540c5a39d99a72"
+  }
+]

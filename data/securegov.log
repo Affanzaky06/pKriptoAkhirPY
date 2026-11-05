@@ -1,0 +1,702 @@
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_genesis_block_created0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_add_blocks0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 1 added → hash=10226fc7ef572166…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 2 added → hash=16872e3411926607…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 1 added → hash=1bec64e59bb7d2e7…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 2 added → hash=82677e6f2f9bb98b…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_tamper_detection0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 1 added → hash=4df39d7e66a111bf…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 2 added → hash=6e731955dd2d14c1…
+[2026-11-05 12:16:58] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_persistence_and_reload0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 1 added → hash=85b0f09aa1d208ed…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_find_blocks0\chain.json'.
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 1 added → hash=db85bb67bb4b77b3…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 2 added → hash=a3d22ea7c47238f6…
+[2026-11-05 12:16:58] INFO     securegov.blockchain.chain — Block 3 added → hash=3ddd2be2bbb6d029…
+[2026-11-05 12:16:58] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:16:58] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:16:58] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:16:58] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 12:16:58] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 12:16:58] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:16:58] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xff in position 64: invalid start byte
+[2026-11-05 12:16:58] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 12:16:58] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 12:16:59] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:16:59] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:16:59] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:16:59] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-0\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:16:59] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 12:16:59] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 12:16:59] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:16:59] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:16:59] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_genesis_block_created0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_add_blocks0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 1 added → hash=d31fef9ac5853793…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 2 added → hash=53914616ccea5667…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 1 added → hash=f46135cee731b11a…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 2 added → hash=9c1ac1ffd4627688…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_tamper_detection0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 1 added → hash=6eff06c92daf6d93…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 2 added → hash=2f1be092ebcddcfd…
+[2026-11-05 12:17:20] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_persistence_and_reload0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 1 added → hash=cbf818e3ea83d058…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_find_blocks0\chain.json'.
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 1 added → hash=afba8f92f3b60368…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 2 added → hash=dace872536222856…
+[2026-11-05 12:17:20] INFO     securegov.blockchain.chain — Block 3 added → hash=d36c0492b94ffacb…
+[2026-11-05 12:17:21] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:17:21] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:17:21] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:17:21] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 12:17:21] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 12:17:21] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:17:21] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xf1 in position 65: invalid continuation byte
+[2026-11-05 12:17:21] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 12:17:21] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 12:17:21] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:17:21] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:17:21] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:17:21] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-1\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:17:22] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 12:24:36] INFO     main — 
+
+  ╔══════════════════════════════════════╗
+[2026-11-05 12:24:36] INFO     main —   ║  SecureGov / Enterprise DocVault     ║
+[2026-11-05 12:24:36] INFO     main —   ║  Cryptography Demonstration Suite    ║
+[2026-11-05 12:24:36] INFO     main —   ╚══════════════════════════════════════╝
+
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     main —   DATABASE INITIALISATION
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:24:36] INFO     securegov.database.models — User 'alice' created (id=1, role=admin).
+[2026-11-05 12:24:36] INFO     main — Created user: id=1
+[2026-11-05 12:24:36] INFO     main — Retrieved user: Alice Anderson <alice@securegov.local>
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     main —   CREDENTIAL CRYPTOGRAPHY (Argon2 / bcrypt + AES session tokens)
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     main — Hash: $argon2id$v=19$m=65536,t=3,p=4$ff+zcHrOZ…
+[2026-11-05 12:24:36] INFO     main — Verify correct pw : True
+[2026-11-05 12:24:36] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:24:36] INFO     main — Verify wrong pw   : False
+[2026-11-05 12:24:36] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:24:36] INFO     main — Token (first 60): WCvb1R-4ZO6H0DQGKMX6xuCCsAozMA3Mopu4gMURwEgw7Tk3u6vLR7BA_E5-…
+[2026-11-05 12:24:36] INFO     main — Decoded payload: user_id=alice
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     main —   DUAL AUTHENTICATION (USB Dongle + Biometrics)
+[2026-11-05 12:24:36] INFO     main — =================================================================
+[2026-11-05 12:24:36] INFO     main — --- 1. USB Dongle Hardware Scan ---
+[2026-11-05 12:24:36] INFO     main — Drive: C:\ | VSN: 90ED188D | Key File: False | Valid Dongle: False
+[2026-11-05 12:24:36] INFO     main — Drive: D:\ | VSN: 0C410DFD | Key File: False | Valid Dongle: False
+[2026-11-05 12:24:36] WARNING  securegov.auth.usb_dongle — ✗ USB Dongle not found or authentication failed.
+[2026-11-05 12:24:36] INFO     main — ℹ No physical USB Dongle plugged in. Testing virtual dongle workflow …
+[2026-11-05 12:24:36] INFO     securegov.auth.usb_dongle — Dongle key-file written to C:\Users\ACER\AppData\Local\Temp\tmptk03pruc\.securegov_dongle.key
+[2026-11-05 12:24:36] INFO     main — Simulated Dongle setup: C:\Users\ACER\AppData\Local\Temp\tmptk03pruc\.securegov_dongle.key
+[2026-11-05 12:24:36] INFO     securegov.auth.usb_dongle — ✓ Dongle secret file verified on C:\Users\ACER\AppData\Local\Temp\tmptk03pruc
+[2026-11-05 12:24:36] INFO     main — ✓ Virtual USB Dongle key verified successfully.
+[2026-11-05 12:24:36] INFO     main — 
+--- 2. Biometric Authentication ---
+[2026-11-05 12:24:36] INFO     securegov.auth.biometric — [Fingerprint] Enrolling user 'alice' …
+[2026-11-05 12:24:36] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Fingerprint] ✓ Enrollment successful for 'alice'.
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:24:37] INFO     main — Fingerprint verification: ✓ MATCH
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Face] Enrolling face for 'alice' …
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:24:37] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Face] ✓ Face template successfully enrolled for 'alice'.
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Face] Capturing face verification sample for 'alice' …
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Face] ✓ Face match verified for 'alice'.
+[2026-11-05 12:24:38] INFO     main — Face recognition verification: ✓ MATCH
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:24:38] INFO     securegov.auth.biometric — Dual-factor auth for 'alice' — dongle=True biometric=True → ✓ PASS
+[2026-11-05 12:24:38] INFO     main — Overall Dual-Factor Authentication: ✓ GRANTED
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     main —   SUPER ENCRYPTION (Vigenère → AES-256-GCM)
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     securegov.crypto.super_encryption — SuperEncrypt: 52-char plaintext → 220-char token.
+[2026-11-05 12:24:38] INFO     securegov.crypto.super_encryption — SuperDecrypt: 220-char token → 52-char plaintext.
+[2026-11-05 12:24:38] INFO     main — Original  : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:24:38] INFO     main — Token     : eyJ2IjogMSwgImFsZyI6ICJ2aWdlbmVyZSthZXMyNTZnY20iLCAibiI6ICJ4…
+[2026-11-05 12:24:38] INFO     main — Recovered : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:24:38] INFO     main — ✓ Round-trip verified.
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     main —   FILE ENCRYPTION (RSA-Hybrid + Fernet)
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     securegov.utils.key_manager — Generating RSA-2048 key-pair …
+[2026-11-05 12:24:38] INFO     securegov.utils.key_manager — Key-pair written to data/rsa_private.pem / data/rsa_public.pem
+[2026-11-05 12:24:38] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.pdf' (2700 bytes) → 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.sgvault' (2996 bytes).
+[2026-11-05 12:24:38] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.sgvault' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f_rsa_decrypted.pdf' (2700 bytes).
+[2026-11-05 12:24:38] INFO     main — ✓ RSA-Hybrid file encryption round-trip verified.
+[2026-11-05 12:24:38] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.pdf' → 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.fen'.
+[2026-11-05 12:24:38] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f.fen' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpry77q85f_fen_decrypted.pdf'.
+[2026-11-05 12:24:38] INFO     main — ✓ Fernet file encryption round-trip verified.
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     main —   DATABASE COLUMN ENCRYPTION (AES-256-GCM)
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     main — Plaintext : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:24:38] INFO     main — Encrypted : pMd9AjLnxdivB613gc/jvl++RWm0O7edt7yFjH7VtzWtB70XLIHssFePW71O…
+[2026-11-05 12:24:38] INFO     main — Decrypted : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:24:38] INFO     main — ✓ DB column AES-GCM round-trip verified.
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:38] INFO     main —   IMAGE STEGANOGRAPHY (LSB — Pillow)
+[2026-11-05 12:24:38] INFO     main — =================================================================
+[2026-11-05 12:24:39] INFO     securegov.steganography.image_steg — Image steg: embedded 49 chars into 'C:\Users\ACER\AppData\Local\Temp\tmpq2pff1pe.png' → 'C:\Users\ACER\AppData\Local\Temp\tmpq2pff1pe_stego.png'.
+[2026-11-05 12:24:39] INFO     securegov.steganography.image_steg — Image steg: extracted 49 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpq2pff1pe_stego.png'.
+[2026-11-05 12:24:39] INFO     main — Original  : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:24:39] INFO     main — Extracted : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:24:39] INFO     main — ✓ Image LSB steganography round-trip verified.
+[2026-11-05 12:24:39] INFO     main — =================================================================
+[2026-11-05 12:24:39] INFO     main —   AUDIO STEGANOGRAPHY (LSB — wave)
+[2026-11-05 12:24:39] INFO     main — =================================================================
+[2026-11-05 12:24:53] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-2\test_embed_and_extract0\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-2\test_embed_and_extract0\stego.avi'.
+[2026-11-05 12:24:53] INFO     securegov.steganography.video_steg — Video steg: extracted 0 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-2\test_embed_and_extract0\stego.avi'.
+[2026-11-05 12:26:04] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:26:04] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:26:04] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:26:04] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:26:05] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 12:26:05] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-3\test_embed_and_extract2\stego.avi'.
+[2026-11-05 12:26:37] INFO     main — 
+
+  ╔══════════════════════════════════════╗
+[2026-11-05 12:26:37] INFO     main —   ║  SecureGov / Enterprise DocVault     ║
+[2026-11-05 12:26:37] INFO     main —   ║  Cryptography Demonstration Suite    ║
+[2026-11-05 12:26:37] INFO     main —   ╚══════════════════════════════════════╝
+
+[2026-11-05 12:26:37] INFO     main — =================================================================
+[2026-11-05 12:26:37] INFO     main —   DATABASE INITIALISATION
+[2026-11-05 12:26:37] INFO     main — =================================================================
+[2026-11-05 12:26:37] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:26:55] INFO     main — 
+
+  ╔══════════════════════════════════════╗
+[2026-11-05 12:26:55] INFO     main —   ║  SecureGov / Enterprise DocVault     ║
+[2026-11-05 12:26:55] INFO     main —   ║  Cryptography Demonstration Suite    ║
+[2026-11-05 12:26:55] INFO     main —   ╚══════════════════════════════════════╝
+
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     main —   DATABASE INITIALISATION
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:26:55] INFO     main — User 'alice' already exists (id=1).
+[2026-11-05 12:26:55] INFO     main — Retrieved user: Alice Anderson <alice@securegov.local>
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     main —   CREDENTIAL CRYPTOGRAPHY (Argon2 / bcrypt + AES session tokens)
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     main — Hash: $argon2id$v=19$m=65536,t=3,p=4$YjwahgYDk…
+[2026-11-05 12:26:55] INFO     main — Verify correct pw : True
+[2026-11-05 12:26:55] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:26:55] INFO     main — Verify wrong pw   : False
+[2026-11-05 12:26:55] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:26:55] INFO     main — Token (first 60): 2Bl2MEIL2nP1NAchbRGqp_nW230ZlrqUFt9NpbNQ78CuwtCZXns6wYOxa7OZ…
+[2026-11-05 12:26:55] INFO     main — Decoded payload: user_id=alice
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     main —   DUAL AUTHENTICATION (USB Dongle + Biometrics)
+[2026-11-05 12:26:55] INFO     main — =================================================================
+[2026-11-05 12:26:55] INFO     main — --- 1. USB Dongle Hardware Scan ---
+[2026-11-05 12:26:55] INFO     main — Drive: C:\ | VSN: 90ED188D | Key File: False | Valid Dongle: False
+[2026-11-05 12:26:55] INFO     main — Drive: D:\ | VSN: 0C410DFD | Key File: False | Valid Dongle: False
+[2026-11-05 12:26:55] WARNING  securegov.auth.usb_dongle — ✗ USB Dongle not found or authentication failed.
+[2026-11-05 12:26:55] INFO     main — ℹ No physical USB Dongle plugged in. Testing virtual dongle workflow …
+[2026-11-05 12:26:55] INFO     securegov.auth.usb_dongle — Dongle key-file written to C:\Users\ACER\AppData\Local\Temp\tmpgw781mdg\.securegov_dongle.key
+[2026-11-05 12:26:55] INFO     main — Simulated Dongle setup: C:\Users\ACER\AppData\Local\Temp\tmpgw781mdg\.securegov_dongle.key
+[2026-11-05 12:26:55] INFO     securegov.auth.usb_dongle — ✓ Dongle secret file verified on C:\Users\ACER\AppData\Local\Temp\tmpgw781mdg
+[2026-11-05 12:26:55] INFO     main — ✓ Virtual USB Dongle key verified successfully.
+[2026-11-05 12:26:56] INFO     main — 
+--- 2. Biometric Authentication ---
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] Enrolling user 'alice' …
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] ✓ Enrollment successful for 'alice'.
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:26:56] INFO     main — Fingerprint verification: ✓ MATCH
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Face] Enrolling face for 'alice' …
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:26:56] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Face] ✓ Face template successfully enrolled for 'alice'.
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Face] Capturing face verification sample for 'alice' …
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Face] ✓ Face match verified for 'alice'.
+[2026-11-05 12:26:57] INFO     main — Face recognition verification: ✓ MATCH
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:26:57] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:26:58] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:26:58] INFO     securegov.auth.biometric — Dual-factor auth for 'alice' — dongle=True biometric=True → ✓ PASS
+[2026-11-05 12:26:58] INFO     main — Overall Dual-Factor Authentication: ✓ GRANTED
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   SUPER ENCRYPTION (Vigenère → AES-256-GCM)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.crypto.super_encryption — SuperEncrypt: 52-char plaintext → 220-char token.
+[2026-11-05 12:26:58] INFO     securegov.crypto.super_encryption — SuperDecrypt: 220-char token → 52-char plaintext.
+[2026-11-05 12:26:58] INFO     main — Original  : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:26:58] INFO     main — Token     : eyJ2IjogMSwgImFsZyI6ICJ2aWdlbmVyZSthZXMyNTZnY20iLCAibiI6ICJr…
+[2026-11-05 12:26:58] INFO     main — Recovered : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:26:58] INFO     main — ✓ Round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   FILE ENCRYPTION (RSA-Hybrid + Fernet)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.utils.key_manager — Generating RSA-2048 key-pair …
+[2026-11-05 12:26:58] INFO     securegov.utils.key_manager — Key-pair written to data/rsa_private.pem / data/rsa_public.pem
+[2026-11-05 12:26:58] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.pdf' (2700 bytes) → 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.sgvault' (2996 bytes).
+[2026-11-05 12:26:58] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.sgvault' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59_rsa_decrypted.pdf' (2700 bytes).
+[2026-11-05 12:26:58] INFO     main — ✓ RSA-Hybrid file encryption round-trip verified.
+[2026-11-05 12:26:58] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.pdf' → 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.fen'.
+[2026-11-05 12:26:58] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59.fen' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpg2ka2m59_fen_decrypted.pdf'.
+[2026-11-05 12:26:58] INFO     main — ✓ Fernet file encryption round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   DATABASE COLUMN ENCRYPTION (AES-256-GCM)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main — Plaintext : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:26:58] INFO     main — Encrypted : /dE5S01Q376m+/Igm9wEp/uBCtkAL+wukaDsSn16xprrz0s6cKLbOEEbVuRu…
+[2026-11-05 12:26:58] INFO     main — Decrypted : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:26:58] INFO     main — ✓ DB column AES-GCM round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   IMAGE STEGANOGRAPHY (LSB — Pillow)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.steganography.image_steg — Image steg: embedded 49 chars into 'C:\Users\ACER\AppData\Local\Temp\tmpp1tht3i1.png' → 'C:\Users\ACER\AppData\Local\Temp\tmpp1tht3i1_stego.png'.
+[2026-11-05 12:26:58] INFO     securegov.steganography.image_steg — Image steg: extracted 49 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpp1tht3i1_stego.png'.
+[2026-11-05 12:26:58] INFO     main — Original  : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:26:58] INFO     main — Extracted : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:26:58] INFO     main — ✓ Image LSB steganography round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   AUDIO STEGANOGRAPHY (LSB — wave)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.steganography.audio_steg — Audio steg: embedded 46 chars into 'C:\Users\ACER\AppData\Local\Temp\tmp7mcbg2_z.wav' → 'C:\Users\ACER\AppData\Local\Temp\tmp7mcbg2_z_stego.wav'.
+[2026-11-05 12:26:58] INFO     securegov.steganography.audio_steg — Audio steg: extracted 46 chars from 'C:\Users\ACER\AppData\Local\Temp\tmp7mcbg2_z_stego.wav'.
+[2026-11-05 12:26:58] INFO     main — Original  : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:26:58] INFO     main — Extracted : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:26:58] INFO     main — ✓ Audio LSB steganography round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   VIDEO STEGANOGRAPHY (Frame-based LSB — OpenCV)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.steganography.video_steg — Video steg: embedded 29 chars across 20 frames of 'C:\Users\ACER\AppData\Local\Temp\tmp4hfep8ha.avi' → 'C:\Users\ACER\AppData\Local\Temp\tmp4hfep8ha_stego.avi' (codec=FFV1).
+[2026-11-05 12:26:58] INFO     securegov.steganography.video_steg — Video steg: extracted 29 chars from 'C:\Users\ACER\AppData\Local\Temp\tmp4hfep8ha_stego.avi'.
+[2026-11-05 12:26:58] INFO     main — Original  : TopSecret VideoPayload #2026!
+[2026-11-05 12:26:58] INFO     main — Extracted : TopSecret VideoPayload #2026!
+[2026-11-05 12:26:58] INFO     main — ✓ Video frame LSB steganography round-trip verified.
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     main —   BLOCKCHAIN AUDIT TRAIL (SHA-256)
+[2026-11-05 12:26:58] INFO     main — =================================================================
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\tmpz7xbhrid\audit.json'.
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — Block 1 added → hash=b707d8aabcea35b7…
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — Block 2 added → hash=88d24835c3b423c3…
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — Block 3 added → hash=2aa7db90d3e7f792…
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — Block 4 added → hash=2bc7b736e5211937…
+[2026-11-05 12:26:58] INFO     securegov.blockchain.chain — Block 5 added → hash=d95dfa73c86c7bbe…
+[2026-11-05 12:26:58] INFO     main — Chain valid: True
+[2026-11-05 12:26:58] INFO     main — Simulating block tampering …
+[2026-11-05 12:26:58] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:26:58] INFO     main — Chain valid after tamper: False
+[2026-11-05 12:26:58] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:26:58] INFO     main — ✓ Tamper detected correctly.
+[2026-11-05 12:26:58] INFO     main — 
+  ✓ All demonstrations completed successfully.
+
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_genesis_block_created0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_add_blocks0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 1 added → hash=074f51322181a959…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 2 added → hash=e76ad38e9772e607…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 1 added → hash=f4e0344a2c8c0c0c…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 2 added → hash=ce25ca3f17ebbc33…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_tamper_detection0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 1 added → hash=8de6e9b0413cd281…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 2 added → hash=a1bc0d0995501eae…
+[2026-11-05 12:27:11] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_persistence_and_reload0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 1 added → hash=ef06695d8f7854b6…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_find_blocks0\chain.json'.
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 1 added → hash=bff36536f853f291…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 2 added → hash=a35387ec9225bae4…
+[2026-11-05 12:27:11] INFO     securegov.blockchain.chain — Block 3 added → hash=e33887641cebc454…
+[2026-11-05 12:27:11] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:27:11] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:27:11] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:27:11] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 12:27:11] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 12:27:11] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:27:11] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xc4 in position 65: invalid continuation byte
+[2026-11-05 12:27:11] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 12:27:11] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 12:27:11] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:27:11] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:27:12] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:27:12] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:27:12] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 12:27:12] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-4\test_embed_and_extract2\stego.avi'.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:27:12] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 12:28:08] WARNING  securegov.auth.usb_dongle — ✗ USB Dongle not found or authentication failed.
+[2026-11-05 12:28:22] INFO     main — 
+
+  ╔══════════════════════════════════════╗
+[2026-11-05 12:28:22] INFO     main —   ║  SecureGov / Enterprise DocVault     ║
+[2026-11-05 12:28:22] INFO     main —   ║  Cryptography Demonstration Suite    ║
+[2026-11-05 12:28:22] INFO     main —   ╚══════════════════════════════════════╝
+
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     main —   DATABASE INITIALISATION
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:28:22] INFO     main — User 'alice' already exists (id=1).
+[2026-11-05 12:28:22] INFO     main — Retrieved user: Alice Anderson <alice@securegov.local>
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     main —   CREDENTIAL CRYPTOGRAPHY (Argon2 / bcrypt + AES session tokens)
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     main — Hash: $argon2id$v=19$m=65536,t=3,p=4$TBdvbpxFi…
+[2026-11-05 12:28:22] INFO     main — Verify correct pw : True
+[2026-11-05 12:28:22] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:28:22] INFO     main — Verify wrong pw   : False
+[2026-11-05 12:28:22] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:28:22] INFO     main — Token (first 60): N8_VnzmtHxbCOMXH5cFAN3JQsvLF8gxrWUs_E8x4LaVLXr20JOTAhO9Hp8-P…
+[2026-11-05 12:28:22] INFO     main — Decoded payload: user_id=alice
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     main —   DUAL AUTHENTICATION (USB Dongle + Biometrics)
+[2026-11-05 12:28:22] INFO     main — =================================================================
+[2026-11-05 12:28:22] INFO     main — --- 1. USB Dongle Hardware Scan ---
+[2026-11-05 12:28:22] INFO     main — Drive: C:\ | VSN: 90ED188D | Key File: False | Valid Dongle: False
+[2026-11-05 12:28:22] INFO     main — Drive: D:\ | VSN: 0C410DFD | Key File: False | Valid Dongle: False
+[2026-11-05 12:28:22] WARNING  securegov.auth.usb_dongle — ✗ USB Dongle not found or authentication failed.
+[2026-11-05 12:28:22] INFO     main — ℹ No physical USB Dongle plugged in. Testing virtual dongle workflow …
+[2026-11-05 12:28:22] INFO     securegov.auth.usb_dongle — Dongle key-file written to C:\Users\ACER\AppData\Local\Temp\tmpiszh4ld6\.securegov_dongle.key
+[2026-11-05 12:28:22] INFO     main — Simulated Dongle setup: C:\Users\ACER\AppData\Local\Temp\tmpiszh4ld6\.securegov_dongle.key
+[2026-11-05 12:28:22] INFO     securegov.auth.usb_dongle — ✓ Dongle secret file verified on C:\Users\ACER\AppData\Local\Temp\tmpiszh4ld6
+[2026-11-05 12:28:22] INFO     main — ✓ Virtual USB Dongle key verified successfully.
+[2026-11-05 12:28:22] INFO     main — 
+--- 2. Biometric Authentication ---
+[2026-11-05 12:28:22] INFO     securegov.auth.biometric — [Fingerprint] Enrolling user 'alice' …
+[2026-11-05 12:28:22] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Fingerprint] ✓ Enrollment successful for 'alice'.
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:28:23] INFO     main — Fingerprint verification: ✓ MATCH
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Face] Enrolling face for 'alice' …
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Face] ✓ Face template successfully enrolled for 'alice'.
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Face] Capturing face verification sample for 'alice' …
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Camera] Hardware webcam not detected on index 0.
+[2026-11-05 12:28:23] INFO     securegov.auth.biometric — [Face] Kamera fisik tidak terhubung. Menggunakan simulated biometric token.
+[2026-11-05 12:28:24] INFO     securegov.auth.biometric — [Face] ✓ Face match verified for 'alice'.
+[2026-11-05 12:28:24] INFO     main — Face recognition verification: ✓ MATCH
+[2026-11-05 12:28:24] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:28:24] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:28:24] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:28:24] INFO     securegov.auth.biometric — Dual-factor auth for 'alice' — dongle=True biometric=True → ✓ PASS
+[2026-11-05 12:28:24] INFO     main — Overall Dual-Factor Authentication: ✓ GRANTED
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   SUPER ENCRYPTION (Vigenère → AES-256-GCM)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     securegov.crypto.super_encryption — SuperEncrypt: 52-char plaintext → 220-char token.
+[2026-11-05 12:28:24] INFO     securegov.crypto.super_encryption — SuperDecrypt: 220-char token → 52-char plaintext.
+[2026-11-05 12:28:24] INFO     main — Original  : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:28:24] INFO     main — Token     : eyJ2IjogMSwgImFsZyI6ICJ2aWdlbmVyZSthZXMyNTZnY20iLCAibiI6ICJl…
+[2026-11-05 12:28:24] INFO     main — Recovered : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:28:24] INFO     main — ✓ Round-trip verified.
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   FILE ENCRYPTION (RSA-Hybrid + Fernet)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     securegov.utils.key_manager — Generating RSA-2048 key-pair …
+[2026-11-05 12:28:24] INFO     securegov.utils.key_manager — Key-pair written to data/rsa_private.pem / data/rsa_public.pem
+[2026-11-05 12:28:24] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.pdf' (2700 bytes) → 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.sgvault' (2996 bytes).
+[2026-11-05 12:28:24] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.sgvault' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c_rsa_decrypted.pdf' (2700 bytes).
+[2026-11-05 12:28:24] INFO     main — ✓ RSA-Hybrid file encryption round-trip verified.
+[2026-11-05 12:28:24] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.pdf' → 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.fen'.
+[2026-11-05 12:28:24] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c.fen' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmpxxbd_q_c_fen_decrypted.pdf'.
+[2026-11-05 12:28:24] INFO     main — ✓ Fernet file encryption round-trip verified.
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   DATABASE COLUMN ENCRYPTION (AES-256-GCM)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main — Plaintext : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:28:24] INFO     main — Encrypted : f5dxIJSRe3MAAMSiDaBBzOJDQBeOIRbE6eJe486S61eC1OkrqZSyg5b8yVP6…
+[2026-11-05 12:28:24] INFO     main — Decrypted : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:28:24] INFO     main — ✓ DB column AES-GCM round-trip verified.
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   IMAGE STEGANOGRAPHY (LSB — Pillow)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     securegov.steganography.image_steg — Image steg: embedded 49 chars into 'C:\Users\ACER\AppData\Local\Temp\tmpg4d879xh.png' → 'C:\Users\ACER\AppData\Local\Temp\tmpg4d879xh_stego.png'.
+[2026-11-05 12:28:24] INFO     securegov.steganography.image_steg — Image steg: extracted 49 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpg4d879xh_stego.png'.
+[2026-11-05 12:28:24] INFO     main — Original  : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:28:24] INFO     main — Extracted : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:28:24] INFO     main — ✓ Image LSB steganography round-trip verified.
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   AUDIO STEGANOGRAPHY (LSB — wave)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     securegov.steganography.audio_steg — Audio steg: embedded 46 chars into 'C:\Users\ACER\AppData\Local\Temp\tmpt10fjay3.wav' → 'C:\Users\ACER\AppData\Local\Temp\tmpt10fjay3_stego.wav'.
+[2026-11-05 12:28:24] INFO     securegov.steganography.audio_steg — Audio steg: extracted 46 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpt10fjay3_stego.wav'.
+[2026-11-05 12:28:24] INFO     main — Original  : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:28:24] INFO     main — Extracted : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:28:24] INFO     main — ✓ Audio LSB steganography round-trip verified.
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     main —   VIDEO STEGANOGRAPHY (Frame-based LSB — OpenCV)
+[2026-11-05 12:28:24] INFO     main — =================================================================
+[2026-11-05 12:28:24] INFO     securegov.steganography.video_steg — Video steg: embedded 29 chars across 20 frames of 'C:\Users\ACER\AppData\Local\Temp\tmp15dymtfg.avi' → 'C:\Users\ACER\AppData\Local\Temp\tmp15dymtfg_stego.avi' (codec=FFV1).
+[2026-11-05 12:28:25] INFO     securegov.steganography.video_steg — Video steg: extracted 29 chars from 'C:\Users\ACER\AppData\Local\Temp\tmp15dymtfg_stego.avi'.
+[2026-11-05 12:28:25] INFO     main — Original  : TopSecret VideoPayload #2026!
+[2026-11-05 12:28:25] INFO     main — Extracted : TopSecret VideoPayload #2026!
+[2026-11-05 12:28:25] INFO     main — ✓ Video frame LSB steganography round-trip verified.
+[2026-11-05 12:28:25] INFO     main — =================================================================
+[2026-11-05 12:28:25] INFO     main —   BLOCKCHAIN AUDIT TRAIL (SHA-256)
+[2026-11-05 12:28:25] INFO     main — =================================================================
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\tmp2i8fqcfn\audit.json'.
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — Block 1 added → hash=c0d0212912f96e0a…
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — Block 2 added → hash=7ee07f7731a4ea77…
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — Block 3 added → hash=4af51bd22b437029…
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — Block 4 added → hash=6682c581c77dbc9b…
+[2026-11-05 12:28:25] INFO     securegov.blockchain.chain — Block 5 added → hash=e19402921f4ff6c1…
+[2026-11-05 12:28:25] INFO     main — Chain valid: True
+[2026-11-05 12:28:25] INFO     main — Simulating block tampering …
+[2026-11-05 12:28:25] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:28:25] INFO     main — Chain valid after tamper: False
+[2026-11-05 12:28:25] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:28:25] INFO     main — ✓ Tamper detected correctly.
+[2026-11-05 12:28:25] INFO     main — 
+  ✓ All demonstrations completed successfully.
+
+[2026-11-05 12:31:17] INFO     main — 
+
+  ╔══════════════════════════════════════╗
+[2026-11-05 12:31:17] INFO     main —   ║  SecureGov / Enterprise DocVault     ║
+[2026-11-05 12:31:17] INFO     main —   ║  Cryptography Demonstration Suite    ║
+[2026-11-05 12:31:17] INFO     main —   ╚══════════════════════════════════════╝
+
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     main —   DATABASE INITIALISATION
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:31:17] INFO     main — User 'alice' already exists (id=1).
+[2026-11-05 12:31:17] INFO     main — Retrieved user: Alice Anderson <alice@securegov.local>
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     main —   CREDENTIAL CRYPTOGRAPHY (Argon2 / bcrypt + AES session tokens)
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     main — Hash: $argon2id$v=19$m=65536,t=3,p=4$HXv9CJlE2…
+[2026-11-05 12:31:17] INFO     main — Verify correct pw : True
+[2026-11-05 12:31:17] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:31:17] INFO     main — Verify wrong pw   : False
+[2026-11-05 12:31:17] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:31:17] INFO     main — Token (first 60): 5ZJysuPu6gc1KBep-lCrds8paYD8BoWZIc20N0Xh_qPav8TfMffhzls8bH_N…
+[2026-11-05 12:31:17] INFO     main — Decoded payload: user_id=alice
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     main —   DUAL AUTHENTICATION (USB Dongle + Biometrics)
+[2026-11-05 12:31:17] INFO     main — =================================================================
+[2026-11-05 12:31:17] INFO     main — --- 1. USB Dongle Hardware Scan ---
+[2026-11-05 12:31:17] INFO     main — Drive: C:\ | VSN: 90ED188D | Key File: False | Valid Dongle: False
+[2026-11-05 12:31:17] INFO     main — Drive: D:\ | VSN: 0C410DFD | Key File: False | Valid Dongle: False
+[2026-11-05 12:31:17] WARNING  securegov.auth.usb_dongle — ✗ USB Dongle not found or authentication failed.
+[2026-11-05 12:31:17] INFO     main — ℹ No physical USB Dongle plugged in. Testing virtual dongle workflow …
+[2026-11-05 12:31:17] INFO     securegov.auth.usb_dongle — Dongle key-file written to C:\Users\ACER\AppData\Local\Temp\tmp4q1w9fsw\.securegov_dongle.key
+[2026-11-05 12:31:17] INFO     main — Simulated Dongle setup: C:\Users\ACER\AppData\Local\Temp\tmp4q1w9fsw\.securegov_dongle.key
+[2026-11-05 12:31:17] INFO     securegov.auth.usb_dongle — ✓ Dongle secret file verified on C:\Users\ACER\AppData\Local\Temp\tmp4q1w9fsw
+[2026-11-05 12:31:17] INFO     main — ✓ Virtual USB Dongle key verified successfully.
+[2026-11-05 12:31:17] INFO     main — 
+--- 2. Biometric Authentication ---
+[2026-11-05 12:31:17] INFO     securegov.auth.biometric — [Fingerprint] Enrolling user 'alice' …
+[2026-11-05 12:31:17] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Fingerprint] ✓ Enrollment successful for 'alice'.
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:31:18] INFO     main — Fingerprint verification: ✓ MATCH
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Face] Enrolling face for 'alice' …
+[2026-11-05 12:31:18] INFO     securegov.auth.biometric — [Camera] Accessing hardware webcam on index 0 …
+[2026-11-05 12:31:19] INFO     securegov.auth.biometric — [Camera] Live snapshot saved to 'data\biometric_templates\face_2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90_snapshot.jpg'
+[2026-11-05 12:31:19] INFO     securegov.auth.biometric — [Face] Captured live biometric embedding from webcam.
+[2026-11-05 12:31:19] INFO     securegov.auth.biometric — [Face] ✓ Face template successfully enrolled for 'alice'.
+[2026-11-05 12:31:19] INFO     securegov.auth.biometric — [Face] Capturing face verification sample for 'alice' …
+[2026-11-05 12:31:19] INFO     securegov.auth.biometric — [Camera] Accessing hardware webcam on index 0 …
+[2026-11-05 12:31:20] INFO     securegov.auth.biometric — [Camera] Live snapshot saved to 'data\biometric_templates\face_2bd806c97f0e00af1a1fc3328fa763a9269723c8db8fac4f93af71db186d6e90_snapshot.jpg'
+[2026-11-05 12:31:20] INFO     securegov.auth.biometric — [Face] Captured live biometric embedding from webcam.
+[2026-11-05 12:31:20] INFO     securegov.auth.biometric — [Face] ✓ Face match verified for 'alice'.
+[2026-11-05 12:31:20] INFO     main — Face recognition verification: ✓ MATCH
+[2026-11-05 12:31:20] INFO     securegov.auth.biometric — [Fingerprint] Scanning finger for 'alice' …
+[2026-11-05 12:31:20] INFO     securegov.auth.biometric — [Fingerprint] Simulating sensor capture …
+[2026-11-05 12:31:21] INFO     securegov.auth.biometric — [Fingerprint] ✓ Match confirmed for 'alice'.
+[2026-11-05 12:31:21] INFO     securegov.auth.biometric — Dual-factor auth for 'alice' — dongle=True biometric=True → ✓ PASS
+[2026-11-05 12:31:21] INFO     main — Overall Dual-Factor Authentication: ✓ GRANTED
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   SUPER ENCRYPTION (Vigenère → AES-256-GCM)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.crypto.super_encryption — SuperEncrypt: 52-char plaintext → 220-char token.
+[2026-11-05 12:31:21] INFO     securegov.crypto.super_encryption — SuperDecrypt: 220-char token → 52-char plaintext.
+[2026-11-05 12:31:21] INFO     main — Original  : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:31:21] INFO     main — Token     : eyJ2IjogMSwgImFsZyI6ICJ2aWdlbmVyZSthZXMyNTZnY20iLCAibiI6ICJk…
+[2026-11-05 12:31:21] INFO     main — Recovered : CLASSIFIED: Operation BlackSwan departs at 0300 hrs.
+[2026-11-05 12:31:21] INFO     main — ✓ Round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   FILE ENCRYPTION (RSA-Hybrid + Fernet)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.utils.key_manager — Generating RSA-2048 key-pair …
+[2026-11-05 12:31:21] INFO     securegov.utils.key_manager — Key-pair written to data/rsa_private.pem / data/rsa_public.pem
+[2026-11-05 12:31:21] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.pdf' (2700 bytes) → 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.sgvault' (2996 bytes).
+[2026-11-05 12:31:21] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.sgvault' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73_rsa_decrypted.pdf' (2700 bytes).
+[2026-11-05 12:31:21] INFO     main — ✓ RSA-Hybrid file encryption round-trip verified.
+[2026-11-05 12:31:21] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.pdf' → 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.fen'.
+[2026-11-05 12:31:21] INFO     securegov.crypto.file_encryption — Fernet: 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73.fen' decrypted → 'C:\Users\ACER\AppData\Local\Temp\tmp44k1_w73_fen_decrypted.pdf'.
+[2026-11-05 12:31:21] INFO     main — ✓ Fernet file encryption round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   DATABASE COLUMN ENCRYPTION (AES-256-GCM)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main — Plaintext : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:31:21] INFO     main — Encrypted : q/ntrPMgNMflNS3WB6ij+oRuIyrDXoGBwDmCUZ13Fwkt8vAbOoO51+j39wgv…
+[2026-11-05 12:31:21] INFO     main — Decrypted : Minister of Finance: John Reeves, DOB 1972-04-15
+[2026-11-05 12:31:21] INFO     main — ✓ DB column AES-GCM round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   IMAGE STEGANOGRAPHY (LSB — Pillow)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.steganography.image_steg — Image steg: embedded 49 chars into 'C:\Users\ACER\AppData\Local\Temp\tmpucilu0vs.png' → 'C:\Users\ACER\AppData\Local\Temp\tmpucilu0vs_stego.png'.
+[2026-11-05 12:31:21] INFO     securegov.steganography.image_steg — Image steg: extracted 49 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpucilu0vs_stego.png'.
+[2026-11-05 12:31:21] INFO     main — Original  : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:31:21] INFO     main — Extracted : EYES ONLY: Rendezvous at the embassy at midnight.
+[2026-11-05 12:31:21] INFO     main — ✓ Image LSB steganography round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   AUDIO STEGANOGRAPHY (LSB — wave)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.steganography.audio_steg — Audio steg: embedded 46 chars into 'C:\Users\ACER\AppData\Local\Temp\tmp0v4z0ol7.wav' → 'C:\Users\ACER\AppData\Local\Temp\tmp0v4z0ol7_stego.wav'.
+[2026-11-05 12:31:21] INFO     securegov.steganography.audio_steg — Audio steg: extracted 46 chars from 'C:\Users\ACER\AppData\Local\Temp\tmp0v4z0ol7_stego.wav'.
+[2026-11-05 12:31:21] INFO     main — Original  : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:31:21] INFO     main — Extracted : Audio steg test: Operation NightOwl confirmed.
+[2026-11-05 12:31:21] INFO     main — ✓ Audio LSB steganography round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   VIDEO STEGANOGRAPHY (Frame-based LSB — OpenCV)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.steganography.video_steg — Video steg: embedded 29 chars across 20 frames of 'C:\Users\ACER\AppData\Local\Temp\tmpuu7mumbm.avi' → 'C:\Users\ACER\AppData\Local\Temp\tmpuu7mumbm_stego.avi' (codec=FFV1).
+[2026-11-05 12:31:21] INFO     securegov.steganography.video_steg — Video steg: extracted 29 chars from 'C:\Users\ACER\AppData\Local\Temp\tmpuu7mumbm_stego.avi'.
+[2026-11-05 12:31:21] INFO     main — Original  : TopSecret VideoPayload #2026!
+[2026-11-05 12:31:21] INFO     main — Extracted : TopSecret VideoPayload #2026!
+[2026-11-05 12:31:21] INFO     main — ✓ Video frame LSB steganography round-trip verified.
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     main —   BLOCKCHAIN AUDIT TRAIL (SHA-256)
+[2026-11-05 12:31:21] INFO     main — =================================================================
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\tmpi0940i1d\audit.json'.
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — Block 1 added → hash=f223a06c51f73761…
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — Block 2 added → hash=7d8f7dbb2de5b499…
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — Block 3 added → hash=5f468b868024ab84…
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — Block 4 added → hash=ba52fd6a5cf938b4…
+[2026-11-05 12:31:21] INFO     securegov.blockchain.chain — Block 5 added → hash=232223024cb5676f…
+[2026-11-05 12:31:21] INFO     main — Chain valid: True
+[2026-11-05 12:31:21] INFO     main — Simulating block tampering …
+[2026-11-05 12:31:21] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:31:21] INFO     main — Chain valid after tamper: False
+[2026-11-05 12:31:21] ERROR    securegov.blockchain.chain — Chain broken at block 2: stored hash ≠ computed hash.
+[2026-11-05 12:31:21] INFO     main — ✓ Tamper detected correctly.
+[2026-11-05 12:31:21] INFO     main — 
+  ✓ All demonstrations completed successfully.
+
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_genesis_block_created0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_add_blocks0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 1 added → hash=f96b3ae0459aba8e…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 2 added → hash=3eab6f2119e2ec02…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 1 added → hash=c6be48f3d49401c9…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 2 added → hash=a73c1051d0a0806f…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_tamper_detection0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 1 added → hash=00c7a2c7620ebbe2…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 2 added → hash=4f54af9d80acb48a…
+[2026-11-05 12:45:01] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_persistence_and_reload0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 1 added → hash=514f1c8e5ebaf1b0…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_find_blocks0\chain.json'.
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 1 added → hash=1866574f3a3d479e…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 2 added → hash=933e010a69e22cf9…
+[2026-11-05 12:45:01] INFO     securegov.blockchain.chain — Block 3 added → hash=e29ff42217985b2a…
+[2026-11-05 12:45:02] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:45:02] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:45:02] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:45:02] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 12:45:02] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 12:45:02] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:45:02] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xb7 in position 64: invalid start byte
+[2026-11-05 12:45:02] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 12:45:02] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 12:45:02] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:45:02] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:45:02] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:45:02] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:45:03] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 12:45:03] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-5\test_embed_and_extract2\stego.avi'.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:45:03] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 12:48:38] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:48:38] INFO     securegov.blockchain.chain — New blockchain created at 'data\audit_chain.json'.
+[2026-11-05 12:48:38] INFO     securegov.blockchain.chain — Block 1 added → hash=f39b769a390c675b…
+[2026-11-05 12:48:39] INFO     securegov.blockchain.chain — Block 2 added → hash=de30f71732dc4517…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_genesis_block_created0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_add_blocks0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 1 added → hash=739d2b0516aaee78…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 2 added → hash=2b9bd119fb923eed…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 1 added → hash=4c2bf8d154859ae7…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 2 added → hash=ff40dc8fa63e87aa…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_tamper_detection0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 1 added → hash=370382f88b7e3300…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 2 added → hash=1e633b2524082fd5…
+[2026-11-05 12:48:45] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_persistence_and_reload0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 1 added → hash=8524fa447f4ade57…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_find_blocks0\chain.json'.
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 1 added → hash=76c57e985e5a1f6e…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 2 added → hash=cfe90a0e77efcf30…
+[2026-11-05 12:48:45] INFO     securegov.blockchain.chain — Block 3 added → hash=e1ea7c6a78630031…
+[2026-11-05 12:48:45] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:48:46] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 12:48:46] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:48:46] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 12:48:46] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 12:48:46] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 12:48:46] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xc1 in position 65: invalid start byte
+[2026-11-05 12:48:46] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 12:48:46] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 12:48:46] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:48:46] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract0\stego.png'.
+[2026-11-05 12:48:46] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:48:46] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract1\stego.wav'.
+[2026-11-05 12:48:47] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 12:48:47] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-6\test_embed_and_extract2\stego.avi'.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 12:48:47] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 12:50:39] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:50:39] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 12:57:08] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 12:57:08] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
