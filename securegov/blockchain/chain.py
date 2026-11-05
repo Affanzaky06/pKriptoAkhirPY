@@ -49,6 +49,7 @@ Usage
     bc.print_chain()
 """
 
+import copy
 import hashlib
 import json
 import os
@@ -175,17 +176,21 @@ class Blockchain:
         self._storage    = storage_path
         self._difficulty = difficulty
         self.chain: list[Block] = []
+        self.is_tampered = False
+        self._pristine_backup: list[dict] = []
 
         if os.path.isfile(storage_path):
             self._load()
             if not self.is_valid():
-                raise RuntimeError(
-                    "BLOCKCHAIN INTEGRITY VIOLATION: the loaded chain is tampered!"
+                self.is_tampered = True
+                logger.error(
+                    "BLOCKCHAIN INTEGRITY WARNING: The loaded audit chain has integrity violations or tampering!"
                 )
-            logger.info(
-                "Blockchain loaded from '%s' (%d blocks, valid).",
-                storage_path, len(self.chain)
-            )
+            else:
+                logger.info(
+                    "Blockchain loaded from '%s' (%d blocks, valid).",
+                    storage_path, len(self.chain)
+                )
         else:
             self._create_genesis()
             logger.info("New blockchain created at '%s'.", storage_path)
@@ -202,6 +207,7 @@ class Blockchain:
         if self._difficulty:
             genesis.mine(self._difficulty)
         self.chain.append(genesis)
+        self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
         self._save()
 
     # --- public API --------------------------------------------------------
@@ -232,6 +238,7 @@ class Blockchain:
         if self._difficulty:
             new_block.mine(self._difficulty)
         self.chain.append(new_block)
+        self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
         self._save()
         logger.info(
             "Block %d added → hash=%s…",
@@ -294,6 +301,110 @@ class Blockchain:
         print(f"  Chain valid: {self.is_valid()}")
         print(f"{'='*70}\n")
 
+    def repair_chain(self) -> None:
+        """
+        Recalculate previous_hash and current hash for all blocks starting from block 1.
+        Restores chain consistency after intentional tampering or test demonstrations.
+        """
+        for i in range(1, len(self.chain)):
+            self.chain[i].previous_hash = self.chain[i - 1].hash
+            self.chain[i].hash = self.chain[i].compute_hash()
+        self._save()
+        self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
+        self.is_tampered = False
+        logger.info("Blockchain repaired and re-hashed successfully (%d blocks).", len(self.chain))
+
+    def reset_to_genesis(self) -> None:
+        """Clear all blocks and start with a fresh genesis block."""
+        self.chain = []
+        self._create_genesis()
+        self.is_tampered = False
+        logger.info("Blockchain reset to initial genesis block.")
+
+    def validate_chain_detailed(self) -> tuple[bool, dict[int, str]]:
+        """
+        Validate the full chain and return detailed verification results.
+
+        Returns
+        -------
+        tuple[bool, dict[int, str]]
+            (is_valid, errors_dict)
+            errors_dict maps block_index -> "HASH_MISMATCH" | "PREV_HASH_MISMATCH"
+        """
+        errors: dict[int, str] = {}
+        if not self.chain:
+            return True, errors
+
+        # Genesis block validation
+        if self.chain[0].hash != self.chain[0].compute_hash():
+            errors[0] = "HASH_MISMATCH"
+
+        for i in range(1, len(self.chain)):
+            current = self.chain[i]
+            previous = self.chain[i - 1]
+
+            if current.hash != current.compute_hash():
+                errors[i] = "HASH_MISMATCH"
+            elif current.previous_hash != previous.hash:
+                errors[i] = "PREV_HASH_MISMATCH"
+
+        return len(errors) == 0, errors
+
+    def tamper_block(self, index: int, custom_data: Optional[dict[str, Any]] = None) -> bool:
+        """
+        Mutate a specific block's data in memory to demonstrate cryptographic tamper detection.
+        Guarantees that every call introduces a new mutation (dynamic timestamp and nonce).
+        Does NOT save to disk, allowing repeatable undo/redo.
+
+        Parameters
+        ----------
+        index : int
+            The block index to tamper.
+        custom_data : dict, optional
+            Custom dictionary data to merge. If None, auto-generates attack payload.
+
+        Returns
+        -------
+        bool : True if block was found and mutated, False otherwise.
+        """
+        if index < 0 or index >= len(self.chain):
+            logger.warning("tamper_block: invalid index %d", index)
+            return False
+
+        if not self._pristine_backup:
+            self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
+
+        target = self.chain[index]
+        t_now = time.time()
+        mutation_id = f"ATTACK_{int(t_now * 1000) % 100000}"
+
+        if custom_data:
+            target.data.update(custom_data)
+        else:
+            target.data["TAMPERED_BY"] = mutation_id
+            target.data["_tamper_time"] = t_now
+            if "user" in target.data:
+                target.data["user"] = f"HACKER_{target.data['user']}"
+
+        self.is_tampered = True
+        logger.warning(
+            "Tamper mutation '%s' injected into Block #%d in memory (stored=%s, computed=%s)",
+            mutation_id, index, target.hash[:12], target.compute_hash()[:12]
+        )
+        return True
+
+    def restore_pristine(self) -> bool:
+        """
+        Revert in-memory chain back to untampered clean state from backup or disk.
+        """
+        if self._pristine_backup:
+            self.chain = [Block.from_dict(d) for d in self._pristine_backup]
+        elif os.path.isfile(self._storage):
+            self._load()
+        self.is_tampered = not self.is_valid()
+        logger.info("Chain restored to pristine state (%d blocks).", len(self.chain))
+        return True
+
     # --- persistence -------------------------------------------------------
 
     def _save(self) -> None:
@@ -310,4 +421,5 @@ class Blockchain:
         with open(self._storage, "r", encoding="utf-8") as f:
             raw = json.load(f)
         self.chain = [Block.from_dict(d) for d in raw]
+        self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
 

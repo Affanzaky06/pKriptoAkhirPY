@@ -79,3 +79,32 @@ class TestBlockchain:
         logins = bc.find_blocks("event", "LOGIN")
         assert len(logins) == 2
 
+    def test_repeated_tamper_and_restore(self, tmp_path):
+        bc = self._new_chain(str(tmp_path))
+        bc.add_block({"event": "DOC_UPLOAD", "doc": "memo.pdf"})
+        bc.add_block({"event": "DOC_SIGN", "doc": "memo.pdf"})
+        assert bc.is_valid()
+
+        # Tamper block 1 once
+        assert bc.tamper_block(1)
+        is_val, errs = bc.validate_chain_detailed()
+        assert not is_val
+        assert 1 in errs
+
+        # Tamper block 1 again (should mutate with new payload and still be detected)
+        assert bc.tamper_block(1)
+        assert not bc.is_valid()
+
+        # Tamper block 2 as well
+        assert bc.tamper_block(2)
+        is_val, errs = bc.validate_chain_detailed()
+        assert not is_val
+        assert 1 in errs and 2 in errs
+
+        # Restore pristine state
+        assert bc.restore_pristine()
+        assert bc.is_valid()
+        is_val, errs = bc.validate_chain_detailed()
+        assert is_val
+        assert len(errs) == 0
+

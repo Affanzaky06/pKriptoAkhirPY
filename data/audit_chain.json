@@ -15,13 +15,15 @@
     "timestamp": 1793857718.8257823,
     "data": {
       "event": "USER_SESSION_UNLOCKED",
-      "user": "alice",
+      "user": "HACKER_HACKER_HACKER_HACKER_HACKER_HACKER_HACKER_HACKER_HACKER_HACKER_alice",
       "role": "admin",
-      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC",
+      "TAMPERED_BY": "ATTACK_24292",
+      "_tamper_time": 1793891424.2929761
     },
     "previous_hash": "572f2269a583b2d5eae41e6c06b47602bfc947451f99cc901a3847e70420d6c4",
     "nonce": 0,
-    "hash": "f39b769a390c675baa0a18dd1f05f94a203a684db7ded30a17a80196dcc83a10"
+    "hash": "8112695299ec18b9849d8cb2f520c6f7b0f74d5fa5891c71f4e661713378f0c5"
   },
   {
     "index": 2,
@@ -30,8 +32,263 @@
       "event": "USER_SESSION_LOCKED",
       "user": "alice"
     },
-    "previous_hash": "f39b769a390c675baa0a18dd1f05f94a203a684db7ded30a17a80196dcc83a10",
+    "previous_hash": "8112695299ec18b9849d8cb2f520c6f7b0f74d5fa5891c71f4e661713378f0c5",
     "nonce": 0,
-    "hash": "de30f71732dc45179363b188c6967b762c83ebe984072be9b1540c5a39d99a72"
+    "hash": "915d56caf493a06f89f27a756b235e14d172458408ef9a6c5a387fb1c8ccd58a"
+  },
+  {
+    "index": 3,
+    "timestamp": 1793887252.6128905,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "915d56caf493a06f89f27a756b235e14d172458408ef9a6c5a387fb1c8ccd58a",
+    "nonce": 0,
+    "hash": "0569778c33b9debdf5404d389d0fd6d344d2696e0d3f307eaa3dcdd4a1759cd3"
+  },
+  {
+    "index": 4,
+    "timestamp": 1793887271.5830932,
+    "data": {
+      "event": "SUPER_ENCRYPTION_PERFORMED",
+      "user": "Affan",
+      "algo": "vigenere",
+      "msg_len": 56
+    },
+    "previous_hash": "0569778c33b9debdf5404d389d0fd6d344d2696e0d3f307eaa3dcdd4a1759cd3",
+    "nonce": 0,
+    "hash": "3b695ca53638fe89212f050fafd6ae9dfc03866a78a4f509543f0f870708c38b"
+  },
+  {
+    "index": 5,
+    "timestamp": 1793887274.5673409,
+    "data": {
+      "event": "SUPER_DECRYPTION_PERFORMED",
+      "user": "Affan",
+      "algo": "vigenere",
+      "status": "AUTHENTICATED_OK"
+    },
+    "previous_hash": "3b695ca53638fe89212f050fafd6ae9dfc03866a78a4f509543f0f870708c38b",
+    "nonce": 0,
+    "hash": "aebd379c8e45eb14aa03be218df0ec57682bb634f8ead55fe80227cb374d0e6d"
+  },
+  {
+    "index": 6,
+    "timestamp": 1793887313.1091123,
+    "data": {
+      "event": "DOCUMENT_ENCRYPTED",
+      "doc_id": 1,
+      "filename": "1232401302117723721transkrip.pdf",
+      "algo": "RSA-2048-OAEP+AES256GCM",
+      "sha256": "91bcee4dd0f1ac2a9f6a3943a26aa14637e0a944d2919f4ed5742c0845918822",
+      "owner": "Affan"
+    },
+    "previous_hash": "aebd379c8e45eb14aa03be218df0ec57682bb634f8ead55fe80227cb374d0e6d",
+    "nonce": 0,
+    "hash": "e513e3d2831ddd49238fa58f230e912baaa2eb4ffc9157f4135e7acdbc59d5a6"
+  },
+  {
+    "index": 7,
+    "timestamp": 1793887376.8728964,
+    "data": {
+      "event": "DOCUMENT_DECRYPTED",
+      "filename": "1232401302117723721transkrip.pdf",
+      "algo": "RSA-Hybrid",
+      "restored_sha256": "91bcee4dd0f1ac2a9f6a3943a26aa14637e0a944d2919f4ed5742c0845918822",
+      "actor": "Affan"
+    },
+    "previous_hash": "e513e3d2831ddd49238fa58f230e912baaa2eb4ffc9157f4135e7acdbc59d5a6",
+    "nonce": 0,
+    "hash": "5f334af37ab5fe5654189dcf4d7d357b3512f19ef7246204efa6aa88d62a0d6d"
+  },
+  {
+    "index": 8,
+    "timestamp": 1793887463.085959,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "Affan"
+    },
+    "previous_hash": "5f334af37ab5fe5654189dcf4d7d357b3512f19ef7246204efa6aa88d62a0d6d",
+    "nonce": 0,
+    "hash": "e16aa5b711970fad5608fd8811786644cf3ba4ed9e487c248c3d90c3d9bb45fa"
+  },
+  {
+    "index": 9,
+    "timestamp": 1793888589.4152005,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "e16aa5b711970fad5608fd8811786644cf3ba4ed9e487c248c3d90c3d9bb45fa",
+    "nonce": 0,
+    "hash": "29ab3821899a230702462af2134ab7434e8c60bf4f6b08d865b9e6f6dd81b448"
+  },
+  {
+    "index": 10,
+    "timestamp": 1793888632.0006454,
+    "data": {
+      "event": "SUPER_ENCRYPTION_PERFORMED",
+      "user": "Affan",
+      "algo": "playfair",
+      "msg_len": 56
+    },
+    "previous_hash": "29ab3821899a230702462af2134ab7434e8c60bf4f6b08d865b9e6f6dd81b448",
+    "nonce": 0,
+    "hash": "6f40a104e0c63f37dc0415fb74646b64ae63e3b5ec574d0dcbc3f06a6951d590"
+  },
+  {
+    "index": 11,
+    "timestamp": 1793888633.2834566,
+    "data": {
+      "event": "SUPER_DECRYPTION_PERFORMED",
+      "user": "Affan",
+      "algo": "playfair",
+      "status": "AUTHENTICATED_OK"
+    },
+    "previous_hash": "6f40a104e0c63f37dc0415fb74646b64ae63e3b5ec574d0dcbc3f06a6951d590",
+    "nonce": 0,
+    "hash": "f28d180d28ef4f96ecd41d7c8f0d96cb36551f83037f6cb0fdc53b1ee7a03fd7"
+  },
+  {
+    "index": 12,
+    "timestamp": 1793888689.169854,
+    "data": {
+      "event": "AUDIO_STEGO_EMBED",
+      "cover": "oxp.wav",
+      "user": "Affan"
+    },
+    "previous_hash": "f28d180d28ef4f96ecd41d7c8f0d96cb36551f83037f6cb0fdc53b1ee7a03fd7",
+    "nonce": 0,
+    "hash": "03fdd511dffef318ff388c0c716baaae8bee9f280a1f76b6dedfffce360059f4"
+  },
+  {
+    "index": 13,
+    "timestamp": 1793890222.1986704,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "03fdd511dffef318ff388c0c716baaae8bee9f280a1f76b6dedfffce360059f4",
+    "nonce": 0,
+    "hash": "c88aa4faeadc6c6c25137c45a4dcf7a5a3f3494cb3d5ed4a429a7c7a0faf6d72"
+  },
+  {
+    "index": 14,
+    "timestamp": 1793890262.3983173,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "Affan"
+    },
+    "previous_hash": "c88aa4faeadc6c6c25137c45a4dcf7a5a3f3494cb3d5ed4a429a7c7a0faf6d72",
+    "nonce": 0,
+    "hash": "29ae3d168bcd859c58f874f6201b116caadd90e4720566aeddf4f84692df4b19"
+  },
+  {
+    "index": 15,
+    "timestamp": 1793890277.877294,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "29ae3d168bcd859c58f874f6201b116caadd90e4720566aeddf4f84692df4b19",
+    "nonce": 0,
+    "hash": "5e0531c78a8a2787f84c054b8bb00e96eff55f2ce86db3dfac10b5a648b0eed0"
+  },
+  {
+    "index": 16,
+    "timestamp": 1793890774.0621517,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "5e0531c78a8a2787f84c054b8bb00e96eff55f2ce86db3dfac10b5a648b0eed0",
+    "nonce": 0,
+    "hash": "7947de02e9410e8a539a821b36bd694456b3bb52751ee6dd59ac858e76a55025"
+  },
+  {
+    "index": 17,
+    "timestamp": 1793890786.691352,
+    "data": {
+      "event": "AUDIO_STEGO_EXTRACT",
+      "audio_file": "oxp_stego.wav",
+      "user": "Affan"
+    },
+    "previous_hash": "7947de02e9410e8a539a821b36bd694456b3bb52751ee6dd59ac858e76a55025",
+    "nonce": 0,
+    "hash": "c4dd6ee37b5a5d95ac531e9401be10fb2f602b4cfb41d5551c6b986ab9d3ad12"
+  },
+  {
+    "index": 18,
+    "timestamp": 1793890812.0927572,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "Affan"
+    },
+    "previous_hash": "c4dd6ee37b5a5d95ac531e9401be10fb2f602b4cfb41d5551c6b986ab9d3ad12",
+    "nonce": 0,
+    "hash": "b52ed75084decc8e6d1e7848cc83a9eaa3601046985e6f36874eb236364ab9a5"
+  },
+  {
+    "index": 19,
+    "timestamp": 1793890827.9158645,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "b52ed75084decc8e6d1e7848cc83a9eaa3601046985e6f36874eb236364ab9a5",
+    "nonce": 0,
+    "hash": "547077795782be4cf0436ef7394f4e560a19ae586a82e4da76ed7f950be1a993"
+  },
+  {
+    "index": 20,
+    "timestamp": 1793890845.943608,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "Affan"
+    },
+    "previous_hash": "547077795782be4cf0436ef7394f4e560a19ae586a82e4da76ed7f950be1a993",
+    "nonce": 0,
+    "hash": "723c4b0bcb2606e631ccc65af07984e9defac40c72c605e58149776f94e44023"
+  },
+  {
+    "index": 21,
+    "timestamp": 1793890858.0514596,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "723c4b0bcb2606e631ccc65af07984e9defac40c72c605e58149776f94e44023",
+    "nonce": 0,
+    "hash": "8ee113e67d35f3a521a427bd76cacfe4eedaff5f6f25c3c493cf54221c994b56"
+  },
+  {
+    "index": 22,
+    "timestamp": 1793891350.9568565,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "HACKER_HACKER_Affan",
+      "role": "user",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC",
+      "TAMPERED_BY": "ATTACK_17901",
+      "_tamper_time": 1793891417.901268
+    },
+    "previous_hash": "8ee113e67d35f3a521a427bd76cacfe4eedaff5f6f25c3c493cf54221c994b56",
+    "nonce": 0,
+    "hash": "986e9f7dd04e47011194d92b1f3a47025aeddc74e9a9a8db0db7d0ef0fe82253"
   }
 ]

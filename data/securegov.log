@@ -700,3 +700,421 @@
 [2026-11-05 12:50:39] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
 [2026-11-05 12:57:08] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
 [2026-11-05 12:57:08] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 13:53:15] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 13:53:15] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 15:06:25] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 15:06:25] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 15:16:55] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 15:16:55] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 20:59:25] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 20:59:25] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (3 blocks, valid).
+[2026-11-05 21:00:23] INFO     securegov.auth.usb_dongle — USB Dongle registered on E:\ (VSN: 98E68F98, User: Affan)
+[2026-11-05 21:00:32] INFO     securegov.auth.biometric — Real Face Enrollment SUCCESS for user 'Affan' (5 samples saved to data\biometric_templates\fa772f6171e53b5f_lbph.xml)
+[2026-11-05 21:00:35] INFO     securegov.database.models — User 'Affan' created (id=2, role=user).
+[2026-11-05 21:00:35] INFO     securegov.database.models — Updated registered_vsn for user 2 -> 98E68F98
+[2026-11-05 21:00:35] INFO     securegov.database.models — Updated face_registered for user 2 -> 1
+[2026-11-05 21:00:39] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=40.08, score=63.9%)
+[2026-11-05 21:00:42] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=38.11, score=65.7%)
+[2026-11-05 21:00:45] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=51.02, score=54.1%)
+[2026-11-05 21:00:47] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=42.25, score=62.0%)
+[2026-11-05 21:00:50] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 21:00:52] INFO     securegov.blockchain.chain — Block 3 added → hash=eaccae59c51333a1…
+[2026-11-05 21:01:11] INFO     securegov.crypto.super_encryption — SuperEncrypt: 56-char plaintext → 224-char token.
+[2026-11-05 21:01:11] INFO     securegov.blockchain.chain — Block 4 added → hash=431aca989d821592…
+[2026-11-05 21:01:14] INFO     securegov.crypto.super_encryption — SuperDecrypt: 224-char token → 56-char plaintext.
+[2026-11-05 21:01:14] INFO     securegov.blockchain.chain — Block 5 added → hash=69dd83a4a92e1a21…
+[2026-11-05 21:01:53] INFO     securegov.crypto.file_encryption — RSAHybrid: 'C:/Users/ACER/Downloads/1232401302117723721transkrip.pdf' (66879 bytes) → 'data\encrypted\1232401302117723721transkrip.pdf.sgvault' (67175 bytes).
+[2026-11-05 21:01:53] INFO     securegov.database.models — Document '1232401302117723721transkrip.pdf' stored (id=1, sha256=91bcee4dd0f1…).
+[2026-11-05 21:01:53] INFO     securegov.blockchain.chain — Block 6 added → hash=5467a55217011d6b…
+[2026-11-05 21:02:56] INFO     securegov.crypto.file_encryption — RSAHybrid: 'data\encrypted\1232401302117723721transkrip.pdf.sgvault' decrypted → 'data\uploads\restored_1232401302117723721transkrip.pdf' (66879 bytes).
+[2026-11-05 21:02:56] INFO     securegov.blockchain.chain — Block 7 added → hash=0bda0e99b30588f5…
+[2026-11-05 21:03:26] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:03:26] WARNING  securegov.gui.blockchain_view — Tamper simulation executed on Block #1
+[2026-11-05 21:03:38] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:04:14] ERROR    securegov.gui.auth_view — Camera open error: image "pyimage965" doesn't exist
+[2026-11-05 21:04:17] ERROR    securegov.gui.auth_view — Camera open error: image "pyimage965" doesn't exist
+[2026-11-05 21:04:23] INFO     securegov.blockchain.chain — Block 8 added → hash=410d387ca330ad62…
+[2026-11-05 21:06:13] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:13] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:18] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:18] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:22] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:22] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:26] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:26] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:31] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:31] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:34] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:34] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:06:48] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:06:48] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:07:40] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:07:40] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:07:50] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:07:50] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:22:45] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:22:45] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (9 blocks, valid).
+[2026-11-05 21:23:03] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=69.49, score=40.9%)
+[2026-11-05 21:23:07] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 21:23:09] INFO     securegov.blockchain.chain — Block 9 added → hash=7ce40182d7251513…
+[2026-11-05 21:23:52] INFO     securegov.crypto.super_encryption — SuperEncrypt: 56-char plaintext → 204-char token.
+[2026-11-05 21:23:52] INFO     securegov.blockchain.chain — Block 10 added → hash=44f9104c48a01b17…
+[2026-11-05 21:23:53] INFO     securegov.crypto.super_encryption — SuperDecrypt: 204-char token → 44-char plaintext.
+[2026-11-05 21:23:53] INFO     securegov.blockchain.chain — Block 11 added → hash=06db396d5f482189…
+[2026-11-05 21:24:49] INFO     securegov.steganography.audio_steg — Audio steg: embedded 25 chars into 'C:/Users/ACER/Music/oxp.wav' → 'C:/Users/ACER/Music/oxp_stego.wav'.
+[2026-11-05 21:24:49] INFO     securegov.blockchain.chain — Block 12 added → hash=2a61e7f1c29bece5…
+[2026-11-05 21:40:07] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:40:07] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (13 blocks, valid).
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_genesis_block_created0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_add_blocks0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 1 added → hash=2a5dd5a2a17b9879…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 2 added → hash=66b7417f5671e792…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 1 added → hash=ed957fc2d8ddb341…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 2 added → hash=ca0b53b8ff774873…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_tamper_detection0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 1 added → hash=4ce8719cae840abb…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 2 added → hash=fc410d3497b6a3dc…
+[2026-11-05 21:40:18] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_persistence_and_reload0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 1 added → hash=f5ffcc7eaf4b231c…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_find_blocks0\chain.json'.
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 1 added → hash=5e64dcafd1fe4709…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 2 added → hash=68052344da0d8fc1…
+[2026-11-05 21:40:18] INFO     securegov.blockchain.chain — Block 3 added → hash=b8b296e9eb0911d6…
+[2026-11-05 21:40:18] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 21:40:18] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 21:40:18] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 21:40:18] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 21:40:18] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 21:40:18] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 21:40:18] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xd4 in position 64: invalid continuation byte
+[2026-11-05 21:40:18] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 21:40:18] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 21:40:18] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract0\stego.png'.
+[2026-11-05 21:40:18] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract0\stego.png'.
+[2026-11-05 21:40:19] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract1\stego.wav'.
+[2026-11-05 21:40:19] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract1\stego.wav'.
+[2026-11-05 21:40:19] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 21:40:19] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-7\test_embed_and_extract2\stego.avi'.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 21:40:19] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 21:50:02] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:50:02] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (13 blocks, valid).
+[2026-11-05 21:50:08] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 21:50:08] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 21:50:11] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=58.65, score=50.1%)
+[2026-11-05 21:50:11] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 21:50:19] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=51.16, score=56.5%)
+[2026-11-05 21:50:22] INFO     securegov.blockchain.chain — Block 13 added → hash=a3466dc67d34877d…
+[2026-11-05 21:50:31] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:50:32] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:37] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:50:37] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:41] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (14 blocks).
+[2026-11-05 21:50:45] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:46] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (14 blocks).
+[2026-11-05 21:50:48] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:49] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (14 blocks).
+[2026-11-05 21:50:50] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:50] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:51] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:51] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:53] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:53] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:50:56] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:00] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:02] INFO     securegov.blockchain.chain — Block 14 added → hash=c3ac265247917547…
+[2026-11-05 21:51:06] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:51:06] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (15 blocks, valid).
+[2026-11-05 21:51:15] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=58.73, score=50.1%)
+[2026-11-05 21:51:16] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 21:51:17] INFO     securegov.blockchain.chain — Block 15 added → hash=48b760182a2c095d…
+[2026-11-05 21:51:19] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:54] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:56] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (16 blocks).
+[2026-11-05 21:51:57] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:57] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:57] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:58] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:58] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:59] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:59] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:59] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:51:59] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:52:00] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:52:00] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:52:01] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 21:52:03] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:52:03] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (16 blocks, valid).
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_genesis_block_created0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_add_blocks0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 1 added → hash=dbca301af7908da6…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 2 added → hash=da6a33bb3d179cc0…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 1 added → hash=12cc94aa2e320a26…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 2 added → hash=62fdc45c386dfd49…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_tamper_detection0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 1 added → hash=53e93d24ff0651eb…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 2 added → hash=c26ac251246a42b4…
+[2026-11-05 21:55:05] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_persistence_and_reload0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 1 added → hash=e8a5af1d951039d7…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-8\test_find_blocks0\chain.json'.
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 1 added → hash=55c06e1109c0be0a…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 2 added → hash=baa1ecd34a039830…
+[2026-11-05 21:55:05] INFO     securegov.blockchain.chain — Block 3 added → hash=467151d7dbbfd6b4…
+[2026-11-05 21:55:23] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:55:23] ERROR    securegov.blockchain.chain — BLOCKCHAIN INTEGRITY WARNING: The loaded audit chain has integrity violations or tampering!
+[2026-11-05 21:55:23] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (16 blocks).
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_genesis_block_created0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_add_blocks0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 1 added → hash=e31b250b3d7babd2…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 2 added → hash=fef85c1104c2fd60…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 1 added → hash=43feaf2e22b2de95…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 2 added → hash=a1b886f3aeceb851…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_tamper_detection0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 1 added → hash=1cd266abccc00e31…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 2 added → hash=f95bf14a641e0fa5…
+[2026-11-05 21:57:50] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_persistence_and_reload0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 1 added → hash=a1c13cf269a33ff8…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-9\test_find_blocks0\chain.json'.
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 1 added → hash=a96df5c33d913b02…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 2 added → hash=aae3f9668c867c61…
+[2026-11-05 21:57:50] INFO     securegov.blockchain.chain — Block 3 added → hash=433d2d52107d1341…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_genesis_block_created0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_add_blocks0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=860e2d3890091d9f…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 2 added → hash=b8ef197125a7da92…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=c6b8993a1eff8ea0…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 2 added → hash=2f3af4342e987cd1…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_tamper_detection0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=33babc949ccfff13…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 2 added → hash=6e3b4ee528b21214…
+[2026-11-05 21:58:10] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_persistence_and_reload0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=45a78485946aa7a0…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_find_blocks0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=c412ee4b0b068543…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 2 added → hash=4a5b34c26e492fb2…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 3 added → hash=26005b5d965fe052…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-10\test_repeated_tamper_and_resto0\chain.json'.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 1 added → hash=357909e6d88a0079…
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Block 2 added → hash=e82d699e780b6eb4…
+[2026-11-05 21:58:10] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_90408' injected into Block #1 in memory (stored=357909e6d88a, computed=84762e437a86)
+[2026-11-05 21:58:10] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_90408' injected into Block #1 in memory (stored=357909e6d88a, computed=84762e437a86)
+[2026-11-05 21:58:10] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:58:10] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_90410' injected into Block #2 in memory (stored=e82d699e780b, computed=1cc7a44942ed)
+[2026-11-05 21:58:10] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:58:10] INFO     securegov.blockchain.chain — Chain restored to pristine state (3 blocks).
+[2026-11-05 21:58:10] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 21:58:59] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 21:58:59] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (16 blocks, valid).
+[2026-11-05 21:59:26] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 21:59:32] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=81.93, score=30.4%)
+[2026-11-05 21:59:34] INFO     securegov.blockchain.chain — Block 16 added → hash=7c7a2b8c8ae07546…
+[2026-11-05 21:59:46] INFO     securegov.steganography.audio_steg — Audio steg: extracted 25 chars from 'C:/Users/ACER/Music/oxp_stego.wav'.
+[2026-11-05 21:59:46] INFO     securegov.blockchain.chain — Block 17 added → hash=e1a4b54f7388b7e5…
+[2026-11-05 22:00:08] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:00:08] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 22:00:12] INFO     securegov.blockchain.chain — Block 18 added → hash=77e752b269132cfd…
+[2026-11-05 22:00:15] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 22:00:15] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:00:15] ERROR    securegov.blockchain.chain — BLOCKCHAIN INTEGRITY WARNING: The loaded audit chain has integrity violations or tampering!
+[2026-11-05 22:00:24] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 22:00:27] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=78.49, score=33.3%)
+[2026-11-05 22:00:27] INFO     securegov.blockchain.chain — Block 19 added → hash=b2c3c7d8a59d5c6f…
+[2026-11-05 22:00:29] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:00:31] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (20 blocks).
+[2026-11-05 22:00:38] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 22:00:45] INFO     securegov.blockchain.chain — Block 20 added → hash=1b1341a723776221…
+[2026-11-05 22:00:48] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 22:00:48] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (21 blocks, valid).
+[2026-11-05 22:00:55] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 22:00:57] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=84.91, score=27.8%)
+[2026-11-05 22:00:58] INFO     securegov.blockchain.chain — Block 21 added → hash=70aa343732074dc2…
+[2026-11-05 22:01:01] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 22:01:05] WARNING  securegov.gui.blockchain_view — Tamper simulation executed in-memory on Block #1
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_genesis_block_created0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_add_blocks0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=9a0df4c0c010d7a8…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 2 added → hash=2cdff01648d69354…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=51f85d944b5c93a6…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 2 added → hash=51c8b54197891dd6…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_tamper_detection0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=e27ec0fb04cf99b8…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 2 added → hash=8cf5f6e8c61baef4…
+[2026-11-05 22:02:12] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_persistence_and_reload0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=ec3dcd43cf7db944…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_find_blocks0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=4523031d82a6a87e…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 2 added → hash=02c6eaa4e1d09f29…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 3 added → hash=e80c22bddc2f27f2…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-11\test_repeated_tamper_and_resto0\chain.json'.
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 1 added → hash=777769cd5c088471…
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Block 2 added → hash=94969df8f41a459d…
+[2026-11-05 22:02:12] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_32757' injected into Block #1 in memory (stored=777769cd5c08, computed=0f33f4490c7f)
+[2026-11-05 22:02:12] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_32757' injected into Block #1 in memory (stored=777769cd5c08, computed=0f33f4490c7f)
+[2026-11-05 22:02:12] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:02:12] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_32758' injected into Block #2 in memory (stored=94969df8f41a, computed=845bc2f38d92)
+[2026-11-05 22:02:12] INFO     securegov.blockchain.chain — Chain restored to pristine state (3 blocks).
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_genesis_block_created0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_add_blocks0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=6a0b6804bfcb4bbd…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 2 added → hash=d6e411d1036f6202…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=d1331c1ad27c1136…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 2 added → hash=27088b402847e50e…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_tamper_detection0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=ec15eced8dead63c…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 2 added → hash=aefb1a9283c64fc5…
+[2026-11-05 22:04:32] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_persistence_and_reload0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=283ae993df42552b…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_find_blocks0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=53e091c20be9ff3f…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 2 added → hash=6f098d42956f5f5d…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 3 added → hash=ca0679d8f918ae68…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_repeated_tamper_and_resto0\chain.json'.
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 1 added → hash=b693c84ac8a39252…
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Block 2 added → hash=fb74e20d66bde33c…
+[2026-11-05 22:04:32] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_72429' injected into Block #1 in memory (stored=b693c84ac8a3, computed=da994d712fc2)
+[2026-11-05 22:04:32] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_72429' injected into Block #1 in memory (stored=b693c84ac8a3, computed=da994d712fc2)
+[2026-11-05 22:04:32] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:04:32] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_72430' injected into Block #2 in memory (stored=fb74e20d66bd, computed=0a167dd651be)
+[2026-11-05 22:04:32] INFO     securegov.blockchain.chain — Chain restored to pristine state (3 blocks).
+[2026-11-05 22:04:32] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 22:04:32] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 22:04:32] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 22:04:32] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 22:04:33] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 22:04:33] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 22:04:33] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xac in position 64: invalid start byte
+[2026-11-05 22:04:33] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 22:04:33] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 22:04:33] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract0\stego.png'.
+[2026-11-05 22:04:33] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract0\stego.png'.
+[2026-11-05 22:04:33] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract1\stego.wav'.
+[2026-11-05 22:04:33] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract1\stego.wav'.
+[2026-11-05 22:04:34] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 22:04:34] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-12\test_embed_and_extract2\stego.avi'.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 22:04:34] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.
+[2026-11-05 22:04:42] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (22 blocks, valid).
+[2026-11-05 22:04:43] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_83138' injected into Block #1 in memory (stored=3077881af48d, computed=fb9da1b57cb8)
+[2026-11-05 22:04:43] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:04:43] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:04:43] INFO     securegov.blockchain.chain — Chain restored to pristine state (22 blocks).
+[2026-11-05 22:04:43] INFO     securegov.gui.blockchain_view — Blockchain pristine state restored.
+[2026-11-05 22:08:53] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-05 22:08:53] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (22 blocks, valid).
+[2026-11-05 22:09:06] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-05 22:09:09] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=61.35, score=47.8%)
+[2026-11-05 22:09:10] INFO     securegov.blockchain.chain — Block 22 added → hash=b5b92de906496360…
+[2026-11-05 22:09:14] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_54544' injected into Block #22 in memory (stored=b5b92de90649, computed=09d03f498a93)
+[2026-11-05 22:09:14] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #22
+[2026-11-05 22:09:35] INFO     securegov.blockchain.chain — Chain restored to pristine state (23 blocks).
+[2026-11-05 22:09:35] INFO     securegov.gui.blockchain_view — Blockchain pristine state restored.
+[2026-11-05 22:09:41] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (23 blocks).
+[2026-11-05 22:09:42] INFO     securegov.gui.blockchain_view — Blockchain repaired and re-hashed.
+[2026-11-05 22:09:48] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (23 blocks).
+[2026-11-05 22:09:49] INFO     securegov.gui.blockchain_view — Blockchain repaired and re-hashed.
+[2026-11-05 22:09:50] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (23 blocks).
+[2026-11-05 22:09:50] INFO     securegov.gui.blockchain_view — Blockchain repaired and re-hashed.
+[2026-11-05 22:09:51] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (23 blocks).
+[2026-11-05 22:09:51] INFO     securegov.gui.blockchain_view — Blockchain repaired and re-hashed.
+[2026-11-05 22:09:55] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_95901' injected into Block #1 in memory (stored=3077881af48d, computed=6d7f912e3610)
+[2026-11-05 22:09:56] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:09:58] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_98885' injected into Block #22 in memory (stored=b5b92de90649, computed=a5012ff19e07)
+[2026-11-05 22:09:59] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #22
+[2026-11-05 22:10:01] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_1692' injected into Block #1 in memory (stored=3077881af48d, computed=093dd43c417c)
+[2026-11-05 22:10:02] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:03] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_3367' injected into Block #1 in memory (stored=3077881af48d, computed=bba74d16a840)
+[2026-11-05 22:10:03] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:04] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_4691' injected into Block #1 in memory (stored=3077881af48d, computed=517a0999c747)
+[2026-11-05 22:10:04] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:05] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_5987' injected into Block #1 in memory (stored=3077881af48d, computed=84bb0261082c)
+[2026-11-05 22:10:06] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:07] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_7266' injected into Block #1 in memory (stored=3077881af48d, computed=7de10da57f0d)
+[2026-11-05 22:10:07] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:17] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_17901' injected into Block #22 in memory (stored=b5b92de90649, computed=49d30c132ad2)
+[2026-11-05 22:10:18] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #22
+[2026-11-05 22:10:20] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_20059' injected into Block #1 in memory (stored=3077881af48d, computed=0523e8d6460b)
+[2026-11-05 22:10:20] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:21] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_21483' injected into Block #1 in memory (stored=3077881af48d, computed=1db8b04e9213)
+[2026-11-05 22:10:21] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:23] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_23582' injected into Block #1 in memory (stored=3077881af48d, computed=827d1444f49a)
+[2026-11-05 22:10:23] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:24] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_24292' injected into Block #1 in memory (stored=3077881af48d, computed=8112695299ec)
+[2026-11-05 22:10:24] WARNING  securegov.gui.blockchain_view — Tamper simulation successfully executed on Block #1
+[2026-11-05 22:10:26] INFO     securegov.blockchain.chain — Blockchain repaired and re-hashed successfully (23 blocks).
+[2026-11-05 22:10:26] INFO     securegov.gui.blockchain_view — Blockchain repaired and re-hashed.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_genesis_block_created0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_add_blocks0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=6c24da992f1abd61…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 2 added → hash=a5b85c20adea6fe8…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_chain_valid_after_additio0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=e4786aca7bb986e9…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 2 added → hash=528138ea4e5ad292…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_tamper_detection0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=73dcea0b1f94facc…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 2 added → hash=20bc3ad87adddf93…
+[2026-11-05 22:16:37] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_persistence_and_reload0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=1bfbbf7f28440630…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Blockchain loaded from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_persistence_and_reload0\chain.json' (2 blocks, valid).
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_find_blocks0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=9e65cfe53d59ba43…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 2 added → hash=67186174a375cb98…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 3 added → hash=20ef09cf7a64db2f…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — New blockchain created at 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_repeated_tamper_and_resto0\chain.json'.
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 1 added → hash=649e1e761c331034…
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Block 2 added → hash=cab23489acd553bb…
+[2026-11-05 22:16:37] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_97245' injected into Block #1 in memory (stored=649e1e761c33, computed=4753613402fd)
+[2026-11-05 22:16:37] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_97245' injected into Block #1 in memory (stored=649e1e761c33, computed=c458b0036a3b)
+[2026-11-05 22:16:37] ERROR    securegov.blockchain.chain — Chain broken at block 1: stored hash ≠ computed hash.
+[2026-11-05 22:16:37] WARNING  securegov.blockchain.chain — Tamper mutation 'ATTACK_97246' injected into Block #2 in memory (stored=cab23489acd5, computed=b921688e90b3)
+[2026-11-05 22:16:37] INFO     securegov.blockchain.chain — Chain restored to pristine state (3 blocks).
+[2026-11-05 22:16:37] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 22:16:37] WARNING  securegov.auth.credential_manager — Password verification error: The password does not match the supplied hash
+[2026-11-05 22:16:37] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 22:16:37] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=0s).
+[2026-11-05 22:16:37] WARNING  securegov.auth.credential_manager — Session token for 'alice' has expired.
+[2026-11-05 22:16:37] INFO     securegov.auth.credential_manager — Session token issued for user 'alice' (TTL=3600s).
+[2026-11-05 22:16:37] WARNING  securegov.auth.credential_manager — Token validation failed: 'utf-8' codec can't decode byte 0xb3 in position 64: invalid start byte
+[2026-11-05 22:16:37] WARNING  securegov.auth.credential_manager — Token validation failed: Invalid IV size (12) for CBC.
+[2026-11-05 22:16:37] ERROR    securegov.database.db_crypto — DBColumn decryption failed: 
+[2026-11-05 22:16:38] INFO     securegov.steganography.image_steg — Image steg: embedded 30 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract0\cover.png' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract0\stego.png'.
+[2026-11-05 22:16:38] INFO     securegov.steganography.image_steg — Image steg: extracted 30 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract0\stego.png'.
+[2026-11-05 22:16:38] INFO     securegov.steganography.audio_steg — Audio steg: embedded 32 chars into 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract1\cover.wav' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract1\stego.wav'.
+[2026-11-05 22:16:38] INFO     securegov.steganography.audio_steg — Audio steg: extracted 32 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract1\stego.wav'.
+[2026-11-05 22:16:39] INFO     securegov.steganography.video_steg — Video steg: embedded 19 chars across 30 frames of 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract2\cover.avi' → 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract2\stego.avi' (codec=FFV1).
+[2026-11-05 22:16:39] INFO     securegov.steganography.video_steg — Video steg: extracted 19 chars from 'C:\Users\ACER\AppData\Local\Temp\pytest-of-ACER\pytest-13\test_embed_and_extract2\stego.avi'.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperEncrypt: 26-char plaintext → 172-char token.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperDecrypt: 172-char token → 26-char plaintext.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperEncrypt: 20-char plaintext → 160-char token.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperDecrypt: 160-char token → 20-char plaintext.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperEncrypt: 5-char plaintext → 132-char token.
+[2026-11-05 22:16:39] INFO     securegov.crypto.super_encryption — SuperEncrypt: 6-char plaintext → 140-char token.

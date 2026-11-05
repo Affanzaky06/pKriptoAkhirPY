@@ -51,9 +51,10 @@ class AuthView(ctk.CTkFrame):
     hardware verification, and registration for new users, USB dongles, and faces.
     """
 
-    def __init__(self, master, on_login_success: Callable[[dict], None], **kwargs):
+    def __init__(self, master, on_login_success: Callable[[dict], None], default_username: str = "", **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
         self.on_login_success = on_login_success
+        self.default_username = default_username
         self.user_repo = UserRepository()
         self.face_engine = RealFaceBiometric()
 
@@ -68,6 +69,18 @@ class AuthView(ctk.CTkFrame):
         self.authenticated_user: Optional[dict] = None
 
         self._build_ui()
+
+    def _get_registered_usernames(self) -> list[str]:
+        try:
+            import sqlite3
+            from securegov.utils.config import DB_PATH
+            conn = sqlite3.connect(DB_PATH)
+            rows = conn.execute("SELECT username FROM users WHERE is_active = 1 ORDER BY id DESC").fetchall()
+            conn.close()
+            names = [r[0] for r in rows] if rows else ["alice"]
+            return names
+        except Exception:
+            return ["alice"]
 
     def _build_ui(self):
         # Header banner
@@ -118,17 +131,39 @@ class AuthView(ctk.CTkFrame):
         left_col = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
         left_col.pack(side="left", fill="both", expand=True, padx=(0, 8), pady=0)
 
-        # Step 1: Credentials
-        lbl_s1 = ctk.CTkLabel(left_col, text="STEP 1: USER CREDENTIALS", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
-        lbl_s1.pack(anchor="w", padx=16, pady=(16, 6))
+        # Step 1: Credentials with Account Selector
+        users_list = self._get_registered_usernames()
+        initial_user = (
+            self.default_username if (self.default_username and self.default_username in users_list)
+            else (users_list[0] if users_list else "alice")
+        )
+
+        lbl_s1 = ctk.CTkLabel(left_col, text="STEP 1: PILIH AKUN & KREDENSIAL", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s1.pack(anchor="w", padx=16, pady=(16, 4))
+
+        row_user_select = ctk.CTkFrame(left_col, fg_color="transparent")
+        row_user_select.pack(fill="x", padx=16, pady=2)
+
+        lbl_sel = ctk.CTkLabel(row_user_select, text="Pilih Akun:", font=(FONT_FAMILY, 11), text_color=TEXT_MUTED)
+        lbl_sel.pack(side="left", padx=(0, 6))
+
+        self.combo_users = ctk.CTkComboBox(
+            row_user_select,
+            values=users_list,
+            height=32,
+            command=self._on_user_selected,
+        )
+        self.combo_users.set(initial_user)
+        self.combo_users.pack(side="left", fill="x", expand=True)
 
         self.entry_user = ctk.CTkEntry(left_col, placeholder_text="Username", height=38, font=(FONT_FAMILY, 12))
         self.entry_user.pack(fill="x", padx=16, pady=4)
-        self.entry_user.insert(0, "alice")  # convenient default
+        self.entry_user.insert(0, initial_user)
 
         self.entry_pass = ctk.CTkEntry(left_col, placeholder_text="Password", show="•", height=38, font=(FONT_FAMILY, 12))
         self.entry_pass.pack(fill="x", padx=16, pady=4)
-        self.entry_pass.insert(0, "P@ssw0rd!")
+        if initial_user == "alice":
+            self.entry_pass.insert(0, "P@ssw0rd!")
 
         # Step 2: Physical USB Dongle
         lbl_s2 = ctk.CTkLabel(left_col, text="STEP 2: PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
@@ -515,6 +550,21 @@ class AuthView(ctk.CTkFrame):
 
         threading.Thread(target=_capture_thread, daemon=True).start()
 
+    def _on_user_selected(self, selected_username: str):
+        self.entry_user.delete(0, "end")
+        self.entry_user.insert(0, selected_username)
+        self.entry_pass.delete(0, "end")
+        if selected_username == "alice":
+            self.entry_pass.insert(0, "P@ssw0rd!")
+
+        # Reset factor states for the newly chosen account
+        self.dongle_verified = False
+        self.face_verified = False
+        self.badge_dongle.configure(text="[ DONGLE WAITING ]", text_color=COLOR_WARNING)
+        self.badge_face.configure(text="[ BIOMETRIK WAJAH MENUNGGU ]", text_color=COLOR_WARNING)
+        self.txt_dongle_info.configure(text=f"Akun aktif: {selected_username}. Tancapkan dongle & klik scan.", text_color=TEXT_MUTED)
+        self._check_all_factors()
+
     def _on_verify_face(self):
         username = self.entry_user.get().strip()
         if not username:
@@ -523,19 +573,40 @@ class AuthView(ctk.CTkFrame):
 
         if not self.camera_running:
             self._start_camera()
-            time.sleep(0.2)
+            time.sleep(0.3)
 
         if self.current_frame_bgr is None:
-            self.badge_face.configure(text="[ TIDAK ADA FRAME KAMERA ]", text_color=COLOR_DANGER)
+            self.badge_face.configure(text="[ KAMERA TIDAK AKTIF ]", text_color=COLOR_DANGER)
             return
 
-        ok, score, bbox, msg = self.face_engine.verify_face(username, self.current_frame_bgr)
-        if ok:
+        # Check across 3 successive frames to account for minor movement/blinking
+        best_ok = False
+        best_score = 0.0
+        best_msg = ""
+
+        for _ in range(3):
+            if self.current_frame_bgr is not None:
+                ok, score, bbox, msg = self.face_engine.verify_face(
+                    username,
+                    self.current_frame_bgr,
+                    confidence_threshold=85.0
+                )
+                if ok:
+                    best_ok = True
+                    best_score = score
+                    best_msg = msg
+                    break
+                elif score > best_score:
+                    best_score = score
+                    best_msg = msg
+            time.sleep(0.1)
+
+        if best_ok:
             self.face_verified = True
-            self.badge_face.configure(text=f"[ WAJAH TERVERIFIKASI ✓ ({score:.1f}%) ]", text_color=COLOR_SUCCESS)
+            self.badge_face.configure(text=f"[ WAJAH TERVERIFIKASI ✓ ({best_score:.1f}%) ]", text_color=COLOR_SUCCESS)
         else:
             self.face_verified = False
-            self.badge_face.configure(text=f"[ WAJAH DITOLAK ✗ ({score:.1f}%) ]", text_color=COLOR_DANGER)
+            self.badge_face.configure(text=f"[ WAJAH BELUM COCOK ✗ ({best_score:.1f}%) ]", text_color=COLOR_DANGER)
 
         self._check_all_factors()
 
@@ -591,12 +662,20 @@ class AuthView(ctk.CTkFrame):
                 text=f"✓ Pengguna '{u}' berhasil didaftarkan ke SQLite (AES-GCM encrypted)! Silakan login.",
                 text_color=COLOR_SUCCESS,
             )
-            # Switch back to login tab
+            # Switch back to login tab & update dropdown
             self.tabview.set("🔐 Dual-Factor Login Gate")
+            users_list = self._get_registered_usernames()
+            self.combo_users.configure(values=users_list)
+            self.combo_users.set(u)
             self.entry_user.delete(0, "end")
             self.entry_user.insert(0, u)
             self.entry_pass.delete(0, "end")
             self.entry_pass.insert(0, p)
+            self.dongle_verified = False
+            self.face_verified = False
+            self.badge_dongle.configure(text="[ DONGLE WAITING ]", text_color=COLOR_WARNING)
+            self.badge_face.configure(text="[ BIOMETRIK WAJAH MENUNGGU ]", text_color=COLOR_WARNING)
+            self._check_all_factors()
 
         except Exception as exc:
             self.lbl_face_enroll_status.configure(text=f"Pendaftaran gagal: {exc}", text_color=COLOR_DANGER)

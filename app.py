@@ -73,6 +73,7 @@ class SecureGovApp(ctk.CTk):
         # Session state
         self.current_user = None
         self.is_unlocked = False
+        self.last_username = "Affan"
 
         self._build_layout()
         self._show_auth_view()
@@ -208,7 +209,11 @@ class SecureGovApp(ctk.CTk):
     def _show_auth_view(self):
         self._clear_workspace()
         self._set_active_nav("gate")
-        view = AuthView(self.workspace, on_login_success=self._on_login_cleared)
+        view = AuthView(
+            self.workspace,
+            on_login_success=self._on_login_cleared,
+            default_username=self.last_username,
+        )
         view.pack(fill="both", expand=True)
 
     def _show_super_crypto_view(self):
@@ -248,6 +253,7 @@ class SecureGovApp(ctk.CTk):
     def _on_login_cleared(self, user_dict: dict):
         """Called when Dual-Factor authentication succeeds."""
         self.current_user = user_dict
+        self.last_username = user_dict.get("username", self.last_username)
         self._apply_locked_state(locked=False)
 
         # Automatically record to Blockchain

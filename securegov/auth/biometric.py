@@ -58,12 +58,34 @@ class RealFaceBiometric:
         return self._cascade is not None and not self._cascade.empty()
 
     def get_model_path(self, username: str) -> str:
-        safe_user = hashlib.sha256(username.encode("utf-8")).hexdigest()[:16]
-        return os.path.join(_TEMPLATE_DIR, f"{safe_user}_lbph.xml")
+        # 1. Normalized lower-case lookup
+        norm_user = username.strip().lower()
+        norm_hash = hashlib.sha256(norm_user.encode("utf-8")).hexdigest()[:16]
+        norm_path = os.path.join(_TEMPLATE_DIR, f"{norm_hash}_lbph.xml")
+        if os.path.isfile(norm_path):
+            return norm_path
+
+        # 2. Raw case fallback (for models saved prior to normalization)
+        raw_hash = hashlib.sha256(username.strip().encode("utf-8")).hexdigest()[:16]
+        raw_path = os.path.join(_TEMPLATE_DIR, f"{raw_hash}_lbph.xml")
+        if os.path.isfile(raw_path):
+            return raw_path
+
+        return norm_path
 
     def get_reference_img_path(self, username: str) -> str:
-        safe_user = hashlib.sha256(username.encode("utf-8")).hexdigest()[:16]
-        return os.path.join(_TEMPLATE_DIR, f"{safe_user}_reference.jpg")
+        norm_user = username.strip().lower()
+        norm_hash = hashlib.sha256(norm_user.encode("utf-8")).hexdigest()[:16]
+        norm_path = os.path.join(_TEMPLATE_DIR, f"{norm_hash}_reference.jpg")
+        if os.path.isfile(norm_path):
+            return norm_path
+
+        raw_hash = hashlib.sha256(username.strip().encode("utf-8")).hexdigest()[:16]
+        raw_path = os.path.join(_TEMPLATE_DIR, f"{raw_hash}_reference.jpg")
+        if os.path.isfile(raw_path):
+            return raw_path
+
+        return norm_path
 
     def is_user_enrolled(self, username: str) -> bool:
         return os.path.isfile(self.get_model_path(username))
@@ -124,8 +146,14 @@ class RealFaceBiometric:
                 grid_x=8,
                 grid_y=8
             )
-            labels = np.zeros(len(face_samples), dtype=np.int32)
-            recognizer.train(face_samples, labels)
+            # Data augmentation: include original and horizontally flipped samples
+            all_samples = []
+            for s in face_samples:
+                all_samples.append(s)
+                all_samples.append(cv2.flip(s, 1))
+
+            labels = np.zeros(len(all_samples), dtype=np.int32)
+            recognizer.train(all_samples, labels)
 
             model_path = self.get_model_path(username)
             recognizer.write(model_path)
@@ -148,7 +176,7 @@ class RealFaceBiometric:
         self,
         username: str,
         probe_frame: np.ndarray,
-        confidence_threshold: float = 75.0
+        confidence_threshold: float = 85.0
     ) -> Tuple[bool, float, Optional[Tuple[int, int, int, int]], str]:
         """
         Detect face in probe_frame, run LBPH prediction against enrolled template.
@@ -162,7 +190,7 @@ class RealFaceBiometric:
 
         faces = self.detect_faces(probe_frame)
         if not faces:
-            return False, 0.0, None, "Tidak ada wajah terdeteksi di kamera."
+            return False, 0.0, None, "Tidak ada wajah terdeteksi di kamera. Posisikan wajah di tengah."
 
         # Pick the largest face in frame
         faces_sorted = sorted(faces, key=lambda f: f[2] * f[3], reverse=True)
@@ -174,17 +202,16 @@ class RealFaceBiometric:
             recognizer.read(model_path)
             pred_label, distance = recognizer.predict(face_crop)
 
-            # In LBPH: lower distance = better match. 0 = exact.
-            # Normalize distance into a 0-100% human-readable match score
-            match_score = max(0.0, min(100.0, 100.0 - (distance * 0.9)))
+            # In LBPH: lower distance = better match (0-50 = near exact, 50-85 = same person, >85 = different person)
+            match_score = max(0.0, min(100.0, 100.0 - (distance * 0.85)))
 
             if distance <= confidence_threshold:
-                msg = f"✓ Wajah Terverifikasi (Kecocokan: {match_score:.1f}%, Jarak: {distance:.1f})"
+                msg = f"✓ Wajah Terverifikasi (Kecocokan: {match_score:.1f}%, Jarak: {distance:.1f} / Batas: {confidence_threshold:.0f})"
                 logger.info("Real Face Auth MATCH for '%s' (dist=%.2f, score=%.1f%%)",
                             username, distance, match_score)
                 return True, match_score, best_bbox, msg
             else:
-                msg = f"✗ Wajah Tidak Cocok (Kecocokan: {match_score:.1f}%, Jarak: {distance:.1f} > {confidence_threshold})"
+                msg = f"✗ Wajah Belum Cocok (Jarak: {distance:.1f} > Batas: {confidence_threshold:.0f})"
                 logger.warning("Real Face Auth MISMATCH for '%s' (dist=%.2f)", username, distance)
                 return False, match_score, best_bbox, msg
 
