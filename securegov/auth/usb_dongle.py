@@ -162,7 +162,12 @@ def load_allowed_vsns() -> set[str]:
     if not os.path.isfile(_ALLOWED_VSN_FILE):
         return set()
     with open(_ALLOWED_VSN_FILE, "r", encoding="utf-8") as f:
-        return {line.strip().upper() for line in f if line.strip()}
+        vsns = set()
+        for line in f:
+            clean = line.split("#")[0].strip().upper()
+            if clean:
+                vsns.add(clean)
+        return vsns
 
 
 def check_secret_file(drive_root: str) -> bool:

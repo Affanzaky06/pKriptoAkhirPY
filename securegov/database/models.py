@@ -264,6 +264,19 @@ class DocumentRepository:
         d["notes"] = self._cc.decrypt_or_null(d.pop("notes_enc"))
         return d
 
+    def get_by_encrypted_path(self, encrypted_path: str) -> Optional[dict]:
+        """Fetch document metadata by the path of its encrypted vault file."""
+        with db_session() as conn:
+            row = conn.execute(
+                "SELECT * FROM documents WHERE encrypted_path = ? ORDER BY uploaded_at DESC LIMIT 1",
+                (encrypted_path,),
+            ).fetchone()
+        if row is None:
+            return None
+        d = dict(row)
+        d["notes"] = self._cc.decrypt_or_null(d.pop("notes_enc"))
+        return d
+
     def list_by_owner(self, owner_id: int) -> list[dict]:
         with db_session() as conn:
             rows = conn.execute(

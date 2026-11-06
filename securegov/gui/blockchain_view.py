@@ -3,8 +3,8 @@
 Blockchain Audit Trail & Integrity Ledger View
 ===============================================
 Displays the immutable audit ledger tracking document encryptions, logins,
-and cryptographic operations, with full cryptographic integrity verification,
-multi-block dynamic tampering simulation, and instantaneous rollback/repair.
+user/admin provisioning, and cryptographic operations, with full cryptographic
+integrity verification, multi-block dynamic tampering simulation, and instantaneous rollback/repair.
 """
 
 import json
@@ -87,7 +87,7 @@ class BlockchainView(ctk.CTkFrame):
             fg_color=COLOR_SUCCESS,
             height=34,
             font=(FONT_FAMILY, 11, "bold"),
-            command=self._verify_chain,
+            command=self._on_user_click_verify,
         )
         btn_verify.pack(side="left", padx=(0, 8))
 
@@ -100,6 +100,14 @@ class BlockchainView(ctk.CTkFrame):
             command=self._refresh_table,
         )
         btn_refresh.pack(side="left", padx=(0, 8))
+
+        self.lbl_block_count = ctk.CTkLabel(
+            row1,
+            text=f"Total Blok: {len(self.blockchain.chain)}",
+            font=(FONT_FAMILY, 11, "bold"),
+            text_color=COLOR_CYAN,
+        )
+        self.lbl_block_count.pack(side="left", padx=(8, 0))
 
         btn_restore = ctk.CTkButton(
             row1,
@@ -136,7 +144,7 @@ class BlockchainView(ctk.CTkFrame):
         self.combo_target_block = ctk.CTkComboBox(
             row2,
             values=["Blok #1"],
-            width=260,
+            width=280,
             height=32,
             font=(FONT_FAMILY, 11),
             dropdown_font=(FONT_FAMILY, 11),
@@ -198,17 +206,17 @@ class BlockchainView(ctk.CTkFrame):
 
         if options:
             self.combo_target_block.configure(values=options)
-            # Default to block 1 or newest block
             default_label = options[1] if len(options) > 1 else options[0]
             self.combo_target_block.set(default_label)
 
     def _refresh_table(self):
         """Render all blocks with cryptographic integrity indicators."""
-        # Clear existing cards
         for widget in self.blocks_container.winfo_children():
             widget.destroy()
 
         blocks = self.blockchain.chain
+        self.lbl_block_count.configure(text=f"Total Blok: {len(blocks)}")
+
         if not blocks:
             lbl_empty = ctk.CTkLabel(
                 self.blocks_container,
@@ -221,7 +229,7 @@ class BlockchainView(ctk.CTkFrame):
 
         self._update_combobox_options()
 
-        # Detailed verification of each block
+        # Detailed mathematical verification across every block in the ledger
         _, error_map = self.blockchain.validate_chain_detailed()
 
         # Render each block card (newest first)
@@ -353,7 +361,7 @@ class BlockchainView(ctk.CTkFrame):
                 )
                 comp_lbl.pack(fill="x", padx=8, pady=(1, 4))
 
-    def _verify_chain(self):
+    def _verify_chain(self) -> tuple[bool, dict[int, str]]:
         """Run cryptographic verification and update status banner."""
         is_intact, errors = self.blockchain.validate_chain_detailed()
         if is_intact:
@@ -368,6 +376,51 @@ class BlockchainView(ctk.CTkFrame):
                 text=f"❌ INTEGRITY VIOLATION DETECTED: BLOK {indices_str} CORRUPTED!",
                 text_color=COLOR_DANGER,
             )
+        return is_intact, errors
+
+    def _on_user_click_verify(self):
+        """Perform manual mathematical validation and trigger explicit visual notification."""
+        self._refresh_table()
+        is_intact, errors = self._verify_chain()
+
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("Hasil Validasi Integritas Blockchain")
+        dialog.geometry("460x220")
+        dialog.resizable(False, False)
+        dialog.attributes("-topmost", True)
+        dialog.configure(fg_color=BG_CARD)
+
+        dialog.update_idletasks()
+        x = self.winfo_x() + (self.winfo_width() - 460) // 2
+        y = self.winfo_y() + (self.winfo_height() - 220) // 2
+        dialog.geometry(f"+{x}+{y}")
+
+        if is_intact:
+            title_text = "🛡️ SEMUA BLOK TERVERIFIKASI SAH!"
+            title_color = COLOR_SUCCESS
+            body_text = (
+                f"Seluruh {len(self.blockchain.chain)} blok audit telah dihitung ulang secara matematis.\n\n"
+                "Semua nilai SHA-256 Digest dan Pointer Hash Rantai (Previous Hash) "
+                "cocok 100% dan tidak ada manipulasi data yang terdeteksi."
+            )
+        else:
+            title_text = "🚨 PERINGATAN INTEGRITAS BLOCKCHAIN!"
+            title_color = COLOR_DANGER
+            indices_str = ", ".join(f"#{i}" for i in sorted(errors.keys()))
+            body_text = (
+                f"Terdeteksi manipulasi data ilegal pada Blok {indices_str}!\n\n"
+                "Stored SHA-256 Hash tidak lagi cocok dengan hasil komputasi data kanonikal.\n"
+                "Audit trail telah dirusak atau dimutasi."
+            )
+
+        lbl_t = ctk.CTkLabel(dialog, text=title_text, font=(FONT_FAMILY, 14, "bold"), text_color=title_color)
+        lbl_t.pack(pady=(20, 8))
+
+        lbl_b = ctk.CTkLabel(dialog, text=body_text, font=(FONT_FAMILY, 11), text_color=TEXT_BODY, justify="center", wraplength=400)
+        lbl_b.pack(pady=6, padx=16)
+
+        btn_ok = ctk.CTkButton(dialog, text="Tutup", width=120, height=32, font=(FONT_FAMILY, 11, "bold"), fg_color=COLOR_PRIMARY, command=dialog.destroy)
+        btn_ok.pack(pady=(12, 16))
 
     def _simulate_tamper(self, block_index: int):
         """Mutate block data dynamically in memory without saving to disk."""
@@ -381,7 +434,6 @@ class BlockchainView(ctk.CTkFrame):
         selected_text = self.combo_target_block.get()
         target_idx = self._block_options.get(selected_text)
         if target_idx is None:
-            # Fallback to block 1 or 0
             target_idx = 1 if len(self.blockchain.chain) > 1 else 0
         self._simulate_tamper(target_idx)
 

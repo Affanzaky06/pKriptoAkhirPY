@@ -1,10 +1,15 @@
 # securegov/gui/auth_view.py
 """
-Authentication & Hardware Enrollment Gate View
-===============================================
+Authentication & Hardware Access Control Gate View
+===================================================
 Implements strict dual-factor hardware security:
   Factor 1: Real physical USB Dongle scanning (psutil + ctypes VSN check).
   Factor 2: Real live webcam face recognition (OpenCV Haar + LBPH).
+
+Note on Role-Based Access Control (RBAC):
+  Unauthenticated / non-logged-in users cannot access user enrollment.
+  User provisioning and role assignment are strictly restricted to
+  authenticated Admin sessions inside the User Management Console.
 """
 
 import os
@@ -20,11 +25,11 @@ import customtkinter as ctk
 from securegov.auth.credential_manager import hash_password, verify_password
 from securegov.auth.usb_dongle import (
     scan_physical_usb_drives,
-    register_usb_dongle,
     verify_dongle_for_user,
 )
 from securegov.auth.biometric import RealFaceBiometric
 from securegov.database.models import UserRepository, log_audit
+from securegov.gui.camera_manager import list_available_cameras, open_camera, safe_release_camera
 from securegov.gui.styles import (
     BG_CARD,
     BG_INPUT,
@@ -48,7 +53,7 @@ logger = get_logger(__name__)
 class AuthView(ctk.CTkFrame):
     """
     Main Security Gate view providing login with strict dual-factor
-    hardware verification, and registration for new users, USB dongles, and faces.
+    hardware verification. Enrollment is strictly restricted to logged-in Admins.
     """
 
     def __init__(self, master, on_login_success: Callable[[dict], None], default_username: str = "", **kwargs):
@@ -62,9 +67,13 @@ class AuthView(ctk.CTkFrame):
         self.cap: Optional[cv2.VideoCapture] = None
         self.camera_running = False
         self.current_frame_bgr: Optional[np.ndarray] = None
-        self.captured_samples: list[np.ndarray] = []
+        self._cam_after_ids: list = []   # track ALL pending after() IDs
+        self._cam_after_id: Optional[str] = None
+        self._current_ctk_img: Optional[ctk.CTkImage] = None
+        self._is_destroyed: bool = False
 
         self.dongle_verified = False
+        self.verified_vsn: Optional[str] = None
         self.face_verified = False
         self.authenticated_user: Optional[dict] = None
 
@@ -75,7 +84,7 @@ class AuthView(ctk.CTkFrame):
             import sqlite3
             from securegov.utils.config import DB_PATH
             conn = sqlite3.connect(DB_PATH)
-            rows = conn.execute("SELECT username FROM users WHERE is_active = 1 ORDER BY id DESC").fetchall()
+            rows = conn.execute("SELECT username FROM users WHERE is_active = 1 ORDER BY id ASC").fetchall()
             conn.close()
             names = [r[0] for r in rows] if rows else ["alice"]
             return names
@@ -103,32 +112,26 @@ class AuthView(ctk.CTkFrame):
         )
         subtitle.pack(side="right", padx=20, pady=12)
 
-        # Tabview switching between Login Gate and Registration
-        self.tabview = ctk.CTkTabview(
-            self,
-            fg_color=BG_CARD,
-            segmented_button_fg_color=BG_INPUT,
-            segmented_button_selected_color=COLOR_PRIMARY,
-            segmented_button_selected_hover_color=COLOR_CYAN,
+        # RBAC Info Notice
+        info_bar = ctk.CTkFrame(self, fg_color="#0F172A", corner_radius=8, border_width=1, border_color="#1E293B")
+        info_bar.pack(fill="x", padx=16, pady=(0, 10))
+
+        lbl_rbac_hint = ctk.CTkLabel(
+            info_bar,
+            text="ℹ️ KEBIJAKAN AKSES KETAT (RBAC): Portal ini hanya untuk pengguna terdaftar. Pendaftaran akun baru dikelola secara terpusat oleh Administrator.",
+            font=(FONT_FAMILY, 10, "bold"),
+            text_color=COLOR_CYAN,
         )
-        self.tabview.pack(fill="both", expand=True, padx=16, pady=(0, 16))
+        lbl_rbac_hint.pack(padx=16, pady=6, anchor="w")
 
-        self.tab_login = self.tabview.add("🔐 Dual-Factor Login Gate")
-        self.tab_register = self.tabview.add("📝 User & Hardware Enrollment")
+        # Main Dual-Factor Container
+        container = ctk.CTkFrame(self, fg_color="transparent")
+        container.pack(fill="both", expand=True, padx=16, pady=(0, 16))
 
-        self._build_login_tab()
-        self._build_register_tab()
-
-    # =======================================================================
-    # 1. DUAL-FACTOR LOGIN GATE
-    # =======================================================================
-
-    def _build_login_tab(self):
-        container = ctk.CTkFrame(self.tab_login, fg_color="transparent")
-        container.pack(fill="both", expand=True, padx=12, pady=12)
-
-        # Left Column: Credentials + USB Dongle
-        left_col = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
+        # ===================================================================
+        # LEFT COLUMN: Credentials + USB Dongle
+        # ===================================================================
+        left_col = ctk.CTkFrame(container, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=BORDER_CARD)
         left_col.pack(side="left", fill="both", expand=True, padx=(0, 8), pady=0)
 
         # Step 1: Credentials with Account Selector
@@ -162,12 +165,12 @@ class AuthView(ctk.CTkFrame):
 
         self.entry_pass = ctk.CTkEntry(left_col, placeholder_text="Password", show="•", height=38, font=(FONT_FAMILY, 12))
         self.entry_pass.pack(fill="x", padx=16, pady=4)
-        if initial_user == "alice":
+        if initial_user in ("alice", "Affan"):
             self.entry_pass.insert(0, "P@ssw0rd!")
 
         # Step 2: Physical USB Dongle
         lbl_s2 = ctk.CTkLabel(left_col, text="STEP 2: PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
-        lbl_s2.pack(anchor="w", padx=16, pady=(18, 6))
+        lbl_s2.pack(anchor="w", padx=16, pady=(16, 6))
 
         dongle_row = ctk.CTkFrame(left_col, fg_color="transparent")
         dongle_row.pack(fill="x", padx=16, pady=4)
@@ -211,19 +214,47 @@ class AuthView(ctk.CTkFrame):
             state="disabled",
             command=self._on_unlock_clicked,
         )
-        self.btn_unlock.pack(fill="x", padx=16, pady=(20, 16))
+        self.btn_unlock.pack(fill="x", padx=16, pady=(16, 16))
 
-        # Right Column: Real Live Camera & Face Recognition
-        right_col = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
+        # ===================================================================
+        # RIGHT COLUMN: Real Live Camera & Face Recognition
+        # ===================================================================
+        right_col = ctk.CTkFrame(container, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=BORDER_CARD)
         right_col.pack(side="right", fill="both", expand=True, padx=(8, 0), pady=0)
 
-        lbl_s3 = ctk.CTkLabel(right_col, text="STEP 3: LIVE WEBCAM FACE BIOMETRIC", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
-        lbl_s3.pack(anchor="w", padx=16, pady=(16, 6))
+        row_cam_header = ctk.CTkFrame(right_col, fg_color="transparent")
+        row_cam_header.pack(fill="x", padx=16, pady=(16, 6))
+
+        lbl_s3 = ctk.CTkLabel(row_cam_header, text="STEP 3: LIVE WEBCAM FACE BIOMETRIC", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s3.pack(side="left")
+
+        # Camera Device Selector
+        self.combo_cam_idx = ctk.CTkComboBox(
+            row_cam_header,
+            values=["Camera 0"],
+            width=110,
+            height=28,
+            font=(FONT_FAMILY, 10),
+            dropdown_font=(FONT_FAMILY, 10),
+            command=self._on_camera_device_changed,
+        )
+        self.combo_cam_idx.pack(side="right", padx=(4, 0))
+
+        btn_refresh_cam = ctk.CTkButton(
+            row_cam_header,
+            text="🔄",
+            width=30,
+            height=28,
+            font=(FONT_FAMILY, 11),
+            fg_color=BG_HOVER,
+            command=self._refresh_camera_devices,
+        )
+        btn_refresh_cam.pack(side="right")
 
         # Camera preview frame
         self.cam_preview = ctk.CTkLabel(
             right_col,
-            text="[ Kamera Siap ]\nKlik 'Nyalakan Kamera Webcam' di bawah.",
+            text="[ Kamera Siap ]\nKlik 'Nyalakan Kamera' di bawah untuk verifikasi wajah.",
             font=(FONT_FAMILY, 12),
             text_color=TEXT_MUTED,
             fg_color="#000000",
@@ -240,7 +271,7 @@ class AuthView(ctk.CTkFrame):
             cam_btn_row,
             text="📷 Nyalakan Kamera",
             command=self._toggle_camera,
-            height=34,
+            height=36,
             fg_color=COLOR_PRIMARY,
         )
         self.btn_cam_toggle.pack(side="left", fill="x", expand=True, padx=(0, 6))
@@ -249,7 +280,7 @@ class AuthView(ctk.CTkFrame):
             cam_btn_row,
             text="👤 Verifikasi Wajah",
             command=self._on_verify_face,
-            height=34,
+            height=36,
             fg_color=COLOR_CYAN,
             hover_color=COLOR_PRIMARY,
         )
@@ -261,114 +292,38 @@ class AuthView(ctk.CTkFrame):
             font=(FONT_FAMILY, 11, "bold"),
             text_color=COLOR_WARNING,
         )
-        self.badge_face.pack(anchor="w", padx=16, pady=(4, 12))
+        self.badge_face.pack(anchor="w", padx=16, pady=(4, 14))
+
+        # Initialize camera devices list
+        self._refresh_camera_devices()
 
     # =======================================================================
-    # 2. USER & HARDWARE ENROLLMENT
+    # Camera Device Management & Frame Loop
     # =======================================================================
 
-    def _build_register_tab(self):
-        container = ctk.CTkScrollableFrame(self.tab_register, fg_color="transparent")
-        container.pack(fill="both", expand=True, padx=12, pady=12)
+    def _refresh_camera_devices(self):
+        try:
+            cams = list_available_cameras(max_tested=3)
+        except Exception:
+            cams = []
+        # Always guarantee at least Camera 0 is listed as a fallback
+        if not cams:
+            cams = [0]
+        cam_labels = [f"Camera {idx}" for idx in cams]
+        self.combo_cam_idx.configure(values=cam_labels)
+        self.combo_cam_idx.set(cam_labels[0])
 
-        # 1. New Account Info
-        sec1 = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
-        sec1.pack(fill="x", pady=(0, 12))
+    def _get_selected_camera_idx(self) -> int:
+        val = self.combo_cam_idx.get()
+        try:
+            return int(val.replace("Camera", "").strip())
+        except Exception:
+            return 0
 
-        lbl1 = ctk.CTkLabel(sec1, text="1. DAFTAR PENGGUNA BARU", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_CYAN)
-        lbl1.pack(anchor="w", padx=16, pady=(12, 6))
-
-        row1 = ctk.CTkFrame(sec1, fg_color="transparent")
-        row1.pack(fill="x", padx=16, pady=4)
-        self.reg_user = ctk.CTkEntry(row1, placeholder_text="Username unik", height=36)
-        self.reg_user.pack(side="left", fill="x", expand=True, padx=(0, 6))
-        self.reg_pass = ctk.CTkEntry(row1, placeholder_text="Password aman", show="•", height=36)
-        self.reg_pass.pack(side="right", fill="x", expand=True, padx=(6, 0))
-
-        row2 = ctk.CTkFrame(sec1, fg_color="transparent")
-        row2.pack(fill="x", padx=16, pady=(4, 12))
-        self.reg_name = ctk.CTkEntry(row2, placeholder_text="Nama Lengkap (akan dienkripsi AES-GCM)", height=36)
-        self.reg_name.pack(side="left", fill="x", expand=True, padx=(0, 6))
-        self.reg_email = ctk.CTkEntry(row2, placeholder_text="Email Dinas (akan dienkripsi AES-GCM)", height=36)
-        self.reg_email.pack(side="right", fill="x", expand=True, padx=(6, 0))
-
-        # 2. Register Physical USB Dongle
-        sec2 = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
-        sec2.pack(fill="x", pady=(0, 12))
-
-        lbl2 = ctk.CTkLabel(sec2, text="2. DAFTARKAN PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_CYAN)
-        lbl2.pack(anchor="w", padx=16, pady=(12, 6))
-
-        d_row = ctk.CTkFrame(sec2, fg_color="transparent")
-        d_row.pack(fill="x", padx=16, pady=4)
-
-        self.combo_drives = ctk.CTkComboBox(d_row, values=["(Klik Refresh Drive)"], height=36, width=320)
-        self.combo_drives.pack(side="left", padx=(0, 8))
-
-        btn_refresh = ctk.CTkButton(d_row, text="🔄 Refresh", width=90, height=36, command=self._refresh_drive_list)
-        btn_refresh.pack(side="left", padx=4)
-
-        self.btn_deploy_dongle = ctk.CTkButton(
-            d_row,
-            text="🏷️ Format & Jadikan Dongle Resmi",
-            height=36,
-            fg_color=COLOR_PRIMARY,
-            command=self._on_register_dongle_device,
-        )
-        self.btn_deploy_dongle.pack(side="right", padx=(8, 0))
-
-        self.lbl_reg_dongle_status = ctk.CTkLabel(
-            sec2,
-            text="Pilih drive flashdisk Anda lalu klik 'Format & Jadikan Dongle Resmi'.",
-            font=(FONT_FAMILY, 11),
-            text_color=TEXT_MUTED,
-        )
-        self.lbl_reg_dongle_status.pack(anchor="w", padx=16, pady=(4, 12))
-
-        # 3. Enroll Face Biometrics
-        sec3 = ctk.CTkFrame(container, fg_color=BG_INPUT, corner_radius=10, border_width=1, border_color=BORDER_CARD)
-        sec3.pack(fill="x", pady=(0, 12))
-
-        lbl3 = ctk.CTkLabel(sec3, text="3. REKAM BIOMETRIK WAJAH (KAMERA LIVE)", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_CYAN)
-        lbl3.pack(anchor="w", padx=16, pady=(12, 6))
-
-        face_btn_row = ctk.CTkFrame(sec3, fg_color="transparent")
-        face_btn_row.pack(fill="x", padx=16, pady=4)
-
-        self.btn_capture_faces = ctk.CTkButton(
-            face_btn_row,
-            text="📸 Rekam 5 Sampel Wajah Live & Latih Model",
-            height=38,
-            fg_color=COLOR_PRIMARY,
-            command=self._on_capture_enroll_faces,
-        )
-        self.btn_capture_faces.pack(side="left", fill="x", expand=True, padx=(0, 8))
-
-        self.lbl_face_enroll_status = ctk.CTkLabel(
-            sec3,
-            text="Pastikan kamera menyala dan wajah terlihat jelas di layar.",
-            font=(FONT_FAMILY, 11),
-            text_color=TEXT_MUTED,
-        )
-        self.lbl_face_enroll_status.pack(anchor="w", padx=16, pady=(4, 12))
-
-        # Final Submit Button
-        self.btn_save_user = ctk.CTkButton(
-            container,
-            text="💾 SIMPAN PENDAFTARAN LENGKAP PENGGUNA",
-            font=(FONT_FAMILY, 14, "bold"),
-            height=46,
-            fg_color=COLOR_SUCCESS,
-            command=self._on_complete_registration,
-        )
-        self.btn_save_user.pack(fill="x", pady=(8, 16))
-
-        # Auto-populate drives dropdown on startup
-        self._refresh_drive_list()
-
-    # =======================================================================
-    # Real-Time Camera Loop
-    # =======================================================================
+    def _on_camera_device_changed(self, choice: str):
+        if self.camera_running:
+            self._stop_camera()
+            self._start_camera()
 
     def _toggle_camera(self):
         if self.camera_running:
@@ -380,86 +335,102 @@ class AuthView(ctk.CTkFrame):
         if self.camera_running:
             return
 
+        cam_idx = self._get_selected_camera_idx()
         try:
-            # Try DirectShow on Windows first
-            self.cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+            self.cap = open_camera(index=cam_idx, retry_count=2)
             if not self.cap or not self.cap.isOpened():
-                self.cap = cv2.VideoCapture(0)
-
-            if not self.cap.isOpened():
-                self.cam_preview.configure(
-                    text="[ Kamera Fisik Tidak Ditemukan ]\nPastikan webcam Anda terpasang.",
-                    image=None,
-                )
+                if self.winfo_exists():
+                    self.cam_preview.configure(
+                        text=f"[ Kamera {cam_idx} Tidak Merespon ]\nPastikan webcam tidak sedang digunakan oleh aplikasi lain.",
+                        image=None,
+                    )
                 return
 
             self.camera_running = True
-            self.btn_cam_toggle.configure(text="⏹ Matikan Kamera", fg_color=COLOR_DANGER)
+            if self.winfo_exists():
+                self.btn_cam_toggle.configure(text="⏹ Matikan Kamera", fg_color=COLOR_DANGER)
             self._update_camera_frame()
 
         except Exception as exc:
             logger.error("Camera open error: %s", exc)
-            self.cam_preview.configure(text=f"Error Kamera: {exc}", image=None)
+            if self.winfo_exists():
+                self.cam_preview.configure(text=f"Error Kamera: {exc}", image=None)
 
     def _stop_camera(self):
         self.camera_running = False
-        if self.cap:
+        # Cancel ALL pending after() callbacks registered by this view
+        for aid in list(self._cam_after_ids):
             try:
-                self.cap.release()
+                self.after_cancel(aid)
             except Exception:
                 pass
-            self.cap = None
-        self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY)
-        self.cam_preview.configure(text="[ Kamera Mati ]\nKlik 'Nyalakan Kamera' untuk mengaktifkan.", image=None)
+        self._cam_after_ids.clear()
+        self._cam_after_id = None
+
+        safe_release_camera(self.cap)
+        self.cap = None
+        self._current_ctk_img = None
+
+        try:
+            if not self._is_destroyed and self.winfo_exists():
+                self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY)
+                self.cam_preview.configure(text="[ Kamera Mati ]\nKlik 'Nyalakan Kamera' untuk mengaktifkan.", image=None)
+        except Exception:
+            pass
 
     def _update_camera_frame(self):
-        if not self.camera_running or not self.cap:
+        # Stop immediately if this view has been destroyed
+        if self._is_destroyed or not self.camera_running or not self.cap:
+            return
+        try:
+            if not self.winfo_exists():
+                return
+        except Exception:
             return
 
-        ret, frame = self.cap.read()
-        if ret and frame is not None:
-            self.current_frame_bgr = frame.copy()
+        try:
+            ret, frame = self.cap.read()
+            if ret and frame is not None:
+                self.current_frame_bgr = frame.copy()
 
-            # Detect faces and draw a clean cyberpunk bounding box
-            display_frame = frame.copy()
-            faces = self.face_engine.detect_faces(display_frame)
-            for (x, y, w, h) in faces:
-                cv2.rectangle(display_frame, (x, y), (x + w, y + h), (0, 255, 128), 2)
-                cv2.putText(
-                    display_frame,
-                    "TARGET FACE DETECTED",
-                    (x, max(15, y - 8)),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    (0, 255, 128),
-                    1,
-                    cv2.LINE_AA,
-                )
+                # Detect faces and draw clean cyberpunk HUD bounding box
+                display_frame = frame.copy()
+                faces = self.face_engine.detect_faces(display_frame)
+                for (x, y, w, h) in faces:
+                    cv2.rectangle(display_frame, (x, y), (x + w, y + h), (0, 255, 128), 2)
+                    cv2.putText(
+                        display_frame,
+                        "TARGET FACE DETECTED",
+                        (x, max(15, y - 8)),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (0, 255, 128),
+                        1,
+                        cv2.LINE_AA,
+                    )
 
-            # Convert to PIL Image for CustomTkinter
-            rgb = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
-            pil_img = Image.fromarray(rgb)
-            ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(360, 240))
-            self.cam_preview.configure(image=ctk_img, text="")
+                # Convert to PIL Image for CustomTkinter
+                rgb = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
+                pil_img = Image.fromarray(rgb)
+                self._current_ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(360, 240))
+                self.cam_preview.configure(image=self._current_ctk_img, text="")
 
-        # Schedule next frame in 30ms (~33 FPS)
-        if self.camera_running:
-            self.after(30, self._update_camera_frame)
+        except Exception as exc:
+            logger.debug("Frame capture warning: %s", exc)
+
+        # Schedule next frame in 30ms (~33 FPS) safely
+        if not self._is_destroyed and self.camera_running:
+            try:
+                if self.winfo_exists():
+                    aid = self.after(30, self._update_camera_frame)
+                    self._cam_after_ids.append(aid)
+                    self._cam_after_id = aid
+            except Exception:
+                pass
 
     # =======================================================================
     # Dongle Scanning & Verification
     # =======================================================================
-
-    def _refresh_drive_list(self):
-        drives = scan_physical_usb_drives()
-        items = []
-        for d in drives:
-            tag = " [REMOVABLE]" if d["is_removable"] else ""
-            items.append(f"{d['mount']} - {d['vol_name']} (VSN: {d['vsn']}){tag}")
-        if not items:
-            items = ["(Tidak ada drive terdeteksi)"]
-        self.combo_drives.configure(values=items)
-        self.combo_drives.set(items[0])
 
     def _on_scan_and_verify_dongle(self):
         username = self.entry_user.get().strip()
@@ -469,100 +440,41 @@ class AuthView(ctk.CTkFrame):
         ok, msg, d_info = verify_dongle_for_user(expected_vsn)
         if ok:
             self.dongle_verified = True
+            if d_info and d_info.get("vsn") and d_info.get("vsn") != "N/A":
+                self.verified_vsn = d_info.get("vsn")
             self.badge_dongle.configure(text="[ USB DONGLE TERVERIFIKASI ✓ ]", text_color=COLOR_SUCCESS)
             self.txt_dongle_info.configure(text=msg, text_color=COLOR_SUCCESS)
         else:
             self.dongle_verified = False
+            self.verified_vsn = None
             self.badge_dongle.configure(text="[ DONGLE TIDAK VALID ✗ ]", text_color=COLOR_DANGER)
             self.txt_dongle_info.configure(text=msg, text_color=COLOR_DANGER)
 
         self._check_all_factors()
 
-    def _on_register_dongle_device(self):
-        selected = self.combo_drives.get()
-        if not selected or selected.startswith("("):
-            self.lbl_reg_dongle_status.configure(text="Pilih drive yang valid terlebih dahulu.", text_color=COLOR_DANGER)
-            return
-
-        drive_letter = selected.split()[0]
-        username = self.reg_user.get().strip() or "default"
-
-        try:
-            res = register_usb_dongle(drive_letter, username)
-            self.lbl_reg_dongle_status.configure(
-                text=f"✓ Drive {res['mount']} sukses didaftarkan sebagai Dongle! (VSN: {res['vsn']})",
-                text_color=COLOR_SUCCESS,
-            )
-            self.reg_vsn_cache = res["vsn"]
-        except Exception as exc:
-            self.lbl_reg_dongle_status.configure(text=f"Gagal mendaftarkan dongle: {exc}", text_color=COLOR_DANGER)
-
     # =======================================================================
-    # Face Biometric Capture & Verification
+    # Face Verification & User Selection
     # =======================================================================
-
-    def _on_capture_enroll_faces(self):
-        username = self.reg_user.get().strip()
-        if not username:
-            self.lbl_face_enroll_status.configure(text="Isi username terlebih dahulu sebelum merekam wajah.", text_color=COLOR_DANGER)
-            return
-
-        if not self.camera_running:
-            self._start_camera()
-
-        self.lbl_face_enroll_status.configure(text="Sedang merekam 5 frame wajah... Harap menghadap kamera.", text_color=COLOR_WARNING)
-
-        # Threaded capture to avoid freezing UI
-        def _capture_thread():
-            samples = []
-            for i in range(5):
-                time.sleep(0.4)
-                if self.current_frame_bgr is not None:
-                    faces = self.face_engine.detect_faces(self.current_frame_bgr)
-                    if faces:
-                        crop = self.face_engine.extract_face_crop(self.current_frame_bgr, faces[0])
-                        samples.append(crop)
-
-            if len(samples) >= 3:
-                success = self.face_engine.enroll_user(username, samples, preview_frame=self.current_frame_bgr)
-                if success:
-                    self.after(
-                        0,
-                        lambda: self.lbl_face_enroll_status.configure(
-                            text=f"✓ Sukses merekam {len(samples)} sampel wajah & melatih model biometrik!",
-                            text_color=COLOR_SUCCESS,
-                        ),
-                    )
-                else:
-                    self.after(
-                        0,
-                        lambda: self.lbl_face_enroll_status.configure(
-                            text="Gagal melatih model pengenalan wajah.", text_color=COLOR_DANGER
-                        ),
-                    )
-            else:
-                self.after(
-                    0,
-                    lambda: self.lbl_face_enroll_status.configure(
-                        text="Wajah tidak terdeteksi secara stabil (dapat < 3 frame). Coba lagi.", text_color=COLOR_DANGER
-                    ),
-                )
-
-        threading.Thread(target=_capture_thread, daemon=True).start()
 
     def _on_user_selected(self, selected_username: str):
         self.entry_user.delete(0, "end")
         self.entry_user.insert(0, selected_username)
         self.entry_pass.delete(0, "end")
-        if selected_username == "alice":
+        # Auto-fill known demo credentials for convenience
+        if selected_username in ("alice", "Affan"):
             self.entry_pass.insert(0, "P@ssw0rd!")
 
-        # Reset factor states for the newly chosen account
+        # Reset ALL factor states when switching account
         self.dongle_verified = False
+        self.verified_vsn = None
         self.face_verified = False
+        self.authenticated_user = None
         self.badge_dongle.configure(text="[ DONGLE WAITING ]", text_color=COLOR_WARNING)
         self.badge_face.configure(text="[ BIOMETRIK WAJAH MENUNGGU ]", text_color=COLOR_WARNING)
-        self.txt_dongle_info.configure(text=f"Akun aktif: {selected_username}. Tancapkan dongle & klik scan.", text_color=TEXT_MUTED)
+        self.txt_dongle_info.configure(
+            text=f"Akun aktif: {selected_username}. Tancapkan dongle & klik scan.",
+            text_color=TEXT_MUTED,
+        )
         self._check_all_factors()
 
     def _on_verify_face(self):
@@ -624,6 +536,14 @@ class AuthView(ctk.CTkFrame):
         if user and verify_password(password, user["password_hash"]):
             creds_ok = True
             self.authenticated_user = user
+            # Auto-bind the verified dongle VSN to the session & database if unassigned
+            if hasattr(self, "verified_vsn") and self.verified_vsn:
+                if not self.authenticated_user.get("registered_vsn"):
+                    self.authenticated_user["registered_vsn"] = self.verified_vsn
+                    try:
+                        self.user_repo.update_dongle_vsn(self.authenticated_user["id"], self.verified_vsn)
+                    except Exception as exc:
+                        logger.debug("Auto-bind VSN error: %s", exc)
 
         all_ok = creds_ok and self.dongle_verified and self.face_verified
         if all_ok:
@@ -637,46 +557,15 @@ class AuthView(ctk.CTkFrame):
             log_audit(self.authenticated_user["id"], "LOGIN_SUCCESS", "Dual-factor USB Dongle + Face Authenticated")
             self.on_login_success(self.authenticated_user)
 
-    def _on_complete_registration(self):
-        u = self.reg_user.get().strip()
-        p = self.reg_pass.get()
-        name = self.reg_name.get().strip()
-        email = self.reg_email.get().strip()
+    def cleanup(self):
+        """Release camera and timers cleanly."""
+        self._is_destroyed = True
+        self._stop_camera()
 
-        if not u or not p:
-            self.lbl_face_enroll_status.configure(text="Username dan Password wajib diisi!", text_color=COLOR_DANGER)
-            return
-
+    def destroy(self):
+        self._is_destroyed = True
+        self.cleanup()
         try:
-            pw_hash = hash_password(p)
-            uid = self.user_repo.create(username=u, password_hash=pw_hash, full_name=name, email=email)
-
-            if hasattr(self, "reg_vsn_cache"):
-                self.user_repo.update_dongle_vsn(uid, self.reg_vsn_cache)
-
-            if self.face_engine.is_user_enrolled(u):
-                self.user_repo.update_face_status(uid, 1)
-
-            log_audit(uid, "USER_REGISTERED", f"Username={u}")
-            self.lbl_face_enroll_status.configure(
-                text=f"✓ Pengguna '{u}' berhasil didaftarkan ke SQLite (AES-GCM encrypted)! Silakan login.",
-                text_color=COLOR_SUCCESS,
-            )
-            # Switch back to login tab & update dropdown
-            self.tabview.set("🔐 Dual-Factor Login Gate")
-            users_list = self._get_registered_usernames()
-            self.combo_users.configure(values=users_list)
-            self.combo_users.set(u)
-            self.entry_user.delete(0, "end")
-            self.entry_user.insert(0, u)
-            self.entry_pass.delete(0, "end")
-            self.entry_pass.insert(0, p)
-            self.dongle_verified = False
-            self.face_verified = False
-            self.badge_dongle.configure(text="[ DONGLE WAITING ]", text_color=COLOR_WARNING)
-            self.badge_face.configure(text="[ BIOMETRIK WAJAH MENUNGGU ]", text_color=COLOR_WARNING)
-            self._check_all_factors()
-
-        except Exception as exc:
-            self.lbl_face_enroll_status.configure(text=f"Pendaftaran gagal: {exc}", text_color=COLOR_DANGER)
-
+            super().destroy()
+        except Exception:
+            pass

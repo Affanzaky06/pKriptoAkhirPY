@@ -33,10 +33,11 @@ logger = get_logger(__name__)
 class SuperCryptoView(ctk.CTkFrame):
     """View tab for two-layer Super Encryption of text messages."""
 
-    def __init__(self, master, current_user: dict, blockchain: Blockchain, **kwargs):
+    def __init__(self, master, current_user: dict, blockchain: Blockchain, on_action_check=None, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
         self.current_user = current_user
         self.blockchain = blockchain
+        self.on_action_check = on_action_check
         self._build_ui()
 
     def _build_ui(self):
@@ -160,6 +161,8 @@ class SuperCryptoView(ctk.CTkFrame):
         return SuperEncryptor(aes_key=aes_key_raw, classic_key=classic_key, classic_algo=algo)
 
     def _do_encrypt(self):
+        if self.on_action_check and not self.on_action_check():
+            return
         pt = self.txt_plaintext.get("1.0", "end").strip()
         if not pt:
             return
@@ -194,6 +197,8 @@ class SuperCryptoView(ctk.CTkFrame):
             self.txt_final_token.insert("1.0", f"Error Enkripsi: {exc}")
 
     def _do_decrypt(self):
+        if self.on_action_check and not self.on_action_check():
+            return
         token = self.txt_in_token.get("1.0", "end").strip()
         if not token:
             return

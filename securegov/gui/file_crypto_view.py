@@ -9,6 +9,7 @@ Implements dedicated file cryptography using:
 
 import os
 import hashlib
+import datetime
 from tkinter import filedialog
 import customtkinter as ctk
 
@@ -38,10 +39,11 @@ logger = get_logger(__name__)
 class FileCryptoView(ctk.CTkFrame):
     """View for secure document file encryption (PDF/DOCX) with distinct algorithms."""
 
-    def __init__(self, master, current_user: dict, blockchain: Blockchain, **kwargs):
+    def __init__(self, master, current_user: dict, blockchain: Blockchain, on_action_check=None, **kwargs):
         super().__init__(master, fg_color="transparent", **kwargs)
         self.current_user = current_user
         self.blockchain = blockchain
+        self.on_action_check = on_action_check
         self.doc_repo = DocumentRepository()
 
         # Key Manager
@@ -190,6 +192,8 @@ class FileCryptoView(ctk.CTkFrame):
             self._log(f"Berkas dimuat: {os.path.basename(f)} ({sz:.2f} KB) - SHA-256: {sha[:16]}…")
 
     def _do_encrypt_file(self):
+        if self.on_action_check and not self.on_action_check():
+            return
         src = self.entry_file_path.get().strip()
         if not src or not os.path.isfile(src):
             self._log("✗ Harap pilih berkas dokumen yang valid terlebih dahulu.")
@@ -218,12 +222,13 @@ class FileCryptoView(ctk.CTkFrame):
                 algo_used = "Fernet-AES128CBC"
 
             self.encrypted_file_path = out_path
-            # Save metadata into SQLite DB (with AES-GCM encrypted notes)
+            # Simpan path dengan normalisasi agar konsisten di semua OS
+            norm_out_path = os.path.normpath(out_path)
             doc_id = self.doc_repo.add_document(
                 owner_id=self.current_user["id"],
                 filename=filename,
                 original_path=src,
-                encrypted_path=out_path,
+                encrypted_path=norm_out_path,
                 notes=notes,
             )
 
@@ -246,6 +251,8 @@ class FileCryptoView(ctk.CTkFrame):
             self._log(f"✗ GAGAL ENKRIPSI BERKAS: {exc}")
 
     def _do_decrypt_file(self):
+        if self.on_action_check and not self.on_action_check():
+            return
         target = self.encrypted_file_path
         if not target or not os.path.isfile(target):
             f = filedialog.askopenfilename(
@@ -275,6 +282,20 @@ class FileCryptoView(ctk.CTkFrame):
 
             restored_sha = self._compute_sha256(out_decrypted)
 
+            # ── Ambil catatan dari database ──────────────────────────────
+            # Coba beberapa varian path agar cocok terlepas dari separator OS
+            _paths_to_try = {
+                target,
+                os.path.normpath(target),
+                target.replace("\\", "/"),
+                target.replace("/", "\\"),
+            }
+            doc_meta = None
+            for _p in _paths_to_try:
+                doc_meta = self.doc_repo.get_by_encrypted_path(_p)
+                if doc_meta:
+                    break
+
             self.blockchain.add_block({
                 "event": "DOCUMENT_DECRYPTED",
                 "filename": orig_name,
@@ -284,9 +305,27 @@ class FileCryptoView(ctk.CTkFrame):
             })
             log_audit(self.current_user["id"], "FILE_DECRYPT", f"file={orig_name}")
 
+            self._log("─" * 60)
             self._log(f"✓ DEKRIPSI SUKSES: Dokumen dipulihkan ke '{out_decrypted}'")
-            self._log(f"✓ Checksum Terverifikasi SHA-256: {restored_sha}")
+            self._log(f"✓ Algoritma     : {algo_used}")
+            self._log(f"✓ SHA-256       : {restored_sha}")
+
+            # Tampilkan catatan dokumen rahasia
+            if doc_meta:
+                notes = doc_meta.get("notes") or "(kosong)"
+                uploaded_at = doc_meta.get("uploaded_at")
+                ts = datetime.datetime.fromtimestamp(uploaded_at).strftime("%Y-%m-%d %H:%M:%S") if uploaded_at else "-"
+                self._log(f"📋 Catatan      : {notes}")
+                self._log(f"📅 Dienkripsi   : {ts}")
+                self._log(f"🔖 Doc ID       : #{doc_meta.get('id', '-')}")
+                # Isi field catatan UI dengan nilai dari database
+                self.entry_doc_notes.delete(0, "end")
+                self.entry_doc_notes.insert(0, notes if notes != "(kosong)" else "")
+            else:
+                self._log("📋 Catatan      : (tidak ditemukan di database)")
+
             self._log(f"✓ Event dekripsi berhasil dicatat ke Blockchain Audit Ledger.")
+            self._log("─" * 60)
 
         except Exception as exc:
             self._log(f"✗ GAGAL DEKRIPSI BERKAS: {exc}")

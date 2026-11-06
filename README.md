@@ -99,6 +99,15 @@ Sistem tidak mengandalkan nama drive (`E:`, `F:`) karena nama drive dapat bergan
    - Memindai semua removable drive yang terhubung saat tombol ditekan.
    - Membaca VSN perangkat dan membandingkannya dengan VSN yang terdaftar untuk akun user.
    - Memverifikasi keberadaan dan integritas file `.securegov_dongle.key`.
+3. **Continuous Hardware Presence Enforcement (Dead-Man's Switch Auto-Lock)**:
+   - Selain verifikasi di awal login (*Access Gate*), aplikasi dilengkapi background watcher aktif (`_check_dongle_presence`).
+   - Setiap 2 detik, sistem memvalidasi keberadaan fisik flashdisk dengan VSN pengguna yang sedang aktif.
+   - Jika flashdisk dicabut secara tiba-tiba (*hotplug removal*):
+     - Sistem seketika mendeteksi pencabutan perangkat keras.
+     - Sesi aktif langsung dicabut (*revoked*) dan seluruh tab dikunci kembali (`_lock_vault()`).
+     - Insiden pelanggaran fisik dicatat ke Blockchain Audit Ledger (`DONGLE_PHYSICALLY_REMOVED_AUTO_LOCK`).
+     - Muncul jendela peringatan darurat keamanan (*Security Alert Dialog*).
+   - Pengguna juga dapat mengatur sakelar (*switch*) di sidebar untuk mengaktifkan/menonaktifkan fitur Auto-Lock ini jika ingin demonstrasi mode biasa.
 
 #### B. Pengenalan Wajah OpenCV (Haar Cascade + LBPH)
 1. **Langkah Deteksi Wajah**:

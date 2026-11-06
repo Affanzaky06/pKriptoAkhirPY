@@ -31,7 +31,7 @@ from securegov.auth.usb_dongle import (
     list_connected_drives,
     setup_dongle,
     verify_dongle,
-    _load_allowed_vsns
+    load_allowed_vsns,
 )
 
 
@@ -40,18 +40,19 @@ def cmd_scan():
     print("  MEMINDAI PENYIMPANAN & USB DRIVE")
     print("=" * 65)
     drives = list_connected_drives()
-    allowed_vsns = _load_allowed_vsns()
+    allowed_vsns = load_allowed_vsns()
 
     if not drives:
         print("  Tidak ada drive yang terdeteksi.")
         return
 
     for d in drives:
-        print(f"\n  [Drive {d['drive']}]")
-        print(f"    - Serial Volume (VSN)  : {d['vsn'] or 'N/A'}")
-        print(f"    - Terdaftar di VSN DB  : {'✓ YA' if d['vsn_authorized'] else '✗ Tidak'}")
-        print(f"    - File Kunci Rahasia   : {'✓ DITEMUKAN (.key)' if d['has_key_file'] else '✗ Tidak ada'}")
-        print(f"    - Status Dongle Valid  : {'✓ RESMI TERVERIFIKASI' if d['is_valid_dongle'] else 'Bukan Dongle'}")
+        drive_name = d.get('mount') or d.get('drive', 'Unknown')
+        print(f"\n  [Drive {drive_name}]")
+        print(f"    - Serial Volume (VSN)  : {d.get('vsn') or 'N/A'}")
+        print(f"    - Terdaftar di VSN DB  : {'✓ YA' if d.get('is_authorized_vsn') else '✗ Tidak'}")
+        print(f"    - File Kunci Rahasia   : {'✓ DITEMUKAN (.key)' if d.get('has_key_file') else '✗ Tidak ada'}")
+        print(f"    - Status Dongle Valid  : {'✓ RESMI TERVERIFIKASI' if d.get('is_valid_dongle') else 'Bukan Dongle'}")
 
     print("\n" + "=" * 65)
     valid = verify_dongle()
@@ -70,7 +71,8 @@ def cmd_setup(drive_letter: str):
 
     try:
         res = setup_dongle(drive, register_volume_serial=True)
-        print(f"  ✓ File kunci berhasil dibuat : {res['key_file']}")
+        key_loc = res.get('key_path') or res.get('key_file', 'OK')
+        print(f"  ✓ File kunci berhasil dibuat : {key_loc}")
         print(f"  ✓ Volume Serial Number (VSN) : {res['vsn'] or 'Berhasil didaftarkan'}")
         print(f"  ✓ Serial VSN disimpan ke     : data/allowed_vsns.txt")
         print(f"  ✓ STATUS: DRIVE {drive} KINI MENJADI DONGLE RESMI SECUREGOV!")
