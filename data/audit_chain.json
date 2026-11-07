@@ -912,5 +912,42 @@
     "previous_hash": "9791f220d977bfc0cffc42a999999cc3464eb10e50c95dffa7849dce04f57570",
     "nonce": 0,
     "hash": "ddf46b2bda735253ab1c0888b0accb94aba6b7854dbc9f615b958524f9b2e841"
+  },
+  {
+    "index": 71,
+    "timestamp": 1793982948.6113505,
+    "data": {
+      "event": "USER_SESSION_UNLOCKED",
+      "user": "Affan",
+      "role": "admin",
+      "auth_method": "DUAL_FACTOR_PHYSICAL_USB_AND_FACE_BIOMETRIC"
+    },
+    "previous_hash": "ddf46b2bda735253ab1c0888b0accb94aba6b7854dbc9f615b958524f9b2e841",
+    "nonce": 0,
+    "hash": "7ceb41337491a1a00b6818955e4fdb0d8aaa546ae3ffb83e5138913d9863671b"
+  },
+  {
+    "index": 72,
+    "timestamp": 1793982965.1258914,
+    "data": {
+      "event": "DONGLE_PHYSICALLY_REMOVED_AUTO_LOCK",
+      "user": "Affan",
+      "vsn": "98E68F98",
+      "action": "SESSION_REVOKED_AND_VAULT_LOCKED"
+    },
+    "previous_hash": "7ceb41337491a1a00b6818955e4fdb0d8aaa546ae3ffb83e5138913d9863671b",
+    "nonce": 0,
+    "hash": "ff64b1801bc8b0381c78d7819f5e1b035666213a9e1b8985bd2c2c04e4ed0aa9"
+  },
+  {
+    "index": 73,
+    "timestamp": 1793982965.1278896,
+    "data": {
+      "event": "USER_SESSION_LOCKED",
+      "user": "Affan"
+    },
+    "previous_hash": "ff64b1801bc8b0381c78d7819f5e1b035666213a9e1b8985bd2c2c04e4ed0aa9",
+    "nonce": 0,
+    "hash": "d197c62d379ea464ed416d885fb26c77a872b1a170175c88925e9ef963b8c519"
   }
 ]

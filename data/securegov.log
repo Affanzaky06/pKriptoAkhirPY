@@ -4021,3 +4021,26 @@
 [2026-11-06 23:33:23] INFO     securegov.blockchain.chain — Block 69 added → hash=9791f220d977bfc0…
 [2026-11-06 23:33:23] INFO     securegov.blockchain.chain — Block 70 added → hash=ddf46b2bda735253…
 [2026-11-06 23:33:32] INFO     app — Application exit requested: releasing hardware devices and views...
+[2026-11-06 23:35:32] INFO     securegov.database.models — Database initialised at 'data/securegov.db'.
+[2026-11-06 23:35:32] INFO     securegov.blockchain.chain — Blockchain loaded from 'data\audit_chain.json' (71 blocks, valid).
+[2026-11-06 23:35:41] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:46] INFO     securegov.gui.camera_manager — Camera 0 opened via CAP_DSHOW (attempt 1)
+[2026-11-06 23:35:47] INFO     securegov.auth.biometric — Real Face Auth MATCH for 'Affan' (dist=83.18, score=29.3%)
+[2026-11-06 23:35:48] INFO     securegov.blockchain.chain — Block 71 added → hash=7ceb41337491a1a0…
+[2026-11-06 23:35:49] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:50] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:52] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:53] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:54] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:55] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:56] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:57] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:58] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:35:59] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:36:00] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:36:01] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:36:02] INFO     securegov.auth.usb_dongle — ✓ Physical USB Dongle verified on E:\ (VSN: 98E68F98, 'PLESDIS')
+[2026-11-06 23:36:05] WARNING  app — PHYSICAL BREACH: Dongle VSN '98E68F98' for 'Affan' unplugged! Locking vault.
+[2026-11-06 23:36:05] INFO     securegov.blockchain.chain — Block 72 added → hash=ff64b1801bc8b038…
+[2026-11-06 23:36:05] INFO     securegov.blockchain.chain — Block 73 added → hash=d197c62d379ea464…
+[2026-11-06 23:36:08] INFO     app — Application exit requested: releasing hardware devices and views...
