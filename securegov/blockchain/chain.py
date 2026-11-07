@@ -256,6 +256,14 @@ class Blockchain:
         -------
         bool  ``True`` if the chain is intact, ``False`` if tampered.
         """
+        if not self.chain:
+            return True
+
+        # Also verify genesis block's own hash
+        if self.chain[0].hash != self.chain[0].compute_hash():
+            logger.error("Chain broken at genesis block 0: stored hash ≠ computed hash.")
+            return False
+
         for i in range(1, len(self.chain)):
             current  = self.chain[i]
             previous = self.chain[i - 1]
@@ -396,11 +404,18 @@ class Blockchain:
     def restore_pristine(self) -> bool:
         """
         Revert in-memory chain back to untampered clean state from backup or disk.
+        Always falls back to the saved JSON file as the ground-truth source.
         """
-        if self._pristine_backup:
-            self.chain = [Block.from_dict(d) for d in self._pristine_backup]
-        elif os.path.isfile(self._storage):
+        # Always reload from the saved file on disk — it is never written during
+        # a tamper simulation (tamper_block does NOT call _save), so the file
+        # always holds the last known-good state.
+        if os.path.isfile(self._storage):
             self._load()
+        elif self._pristine_backup:
+            self.chain = [Block.from_dict(d) for d in self._pristine_backup]
+
+        # Refresh backup to match the just-restored clean state
+        self._pristine_backup = [copy.deepcopy(b.to_dict()) for b in self.chain]
         self.is_tampered = not self.is_valid()
         logger.info("Chain restored to pristine state (%d blocks).", len(self.chain))
         return True
