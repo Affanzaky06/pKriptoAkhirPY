@@ -144,7 +144,15 @@ class SecureGovApp(ctk.CTk):
             font=(FONT_FAMILY, 9, "bold"),
             text_color=TEXT_MUTED,
         )
-        self.lbl_dongle_watcher.pack(padx=12, pady=(0, 8))
+        self.lbl_dongle_watcher.pack(padx=12, pady=(0, 2))
+
+        self.lbl_chain_integrity = ctk.CTkLabel(
+            self.status_card,
+            text="⛓️ Chain Integrity: UNVERIFIED",
+            font=(FONT_FAMILY, 9, "bold"),
+            text_color=TEXT_MUTED,
+        )
+        self.lbl_chain_integrity.pack(padx=12, pady=(0, 8))
 
         # Nav Buttons
         self.nav_buttons = {}
@@ -351,6 +359,34 @@ class SecureGovApp(ctk.CTk):
 
     # ----------------- SESSION CONTROLS -----------------
 
+    def _update_chain_integrity_badge(self):
+        """Refresh the sidebar chain integrity indicator. Called on login and periodically."""
+        try:
+            if not self.winfo_exists():
+                return
+        except Exception:
+            return
+
+        chain_valid, errors = self.blockchain.validate_chain_detailed()
+        if chain_valid:
+            self.lbl_chain_integrity.configure(
+                text="⛓️ Chain Integrity: ✓ VALID",
+                text_color=COLOR_SUCCESS,
+            )
+        else:
+            broken = ", ".join(f"#{i}" for i in sorted(errors.keys()))
+            self.lbl_chain_integrity.configure(
+                text=f"⛓️ Chain: ❌ TAMPERED (blok {broken})",
+                text_color=COLOR_DANGER,
+            )
+
+        # Re-schedule check every 5 seconds while session is active
+        if self.is_unlocked:
+            try:
+                self.after(5000, self._update_chain_integrity_badge)
+            except Exception:
+                pass
+
     def _on_login_cleared(self, user_dict: dict):
         """Called when Dual-Factor authentication succeeds."""
         self.current_user = user_dict
@@ -368,6 +404,9 @@ class SecureGovApp(ctk.CTk):
 
         # Start continuous hardware dongle watcher (Dead-Man's Switch)
         self.after(1000, self._check_dongle_presence)
+
+        # Start periodic blockchain integrity checker (every 5 seconds)
+        self.after(2000, self._update_chain_integrity_badge)
 
         # Switch to main view — _clear_workspace handles safe destruction via update_idletasks
         self._show_super_crypto_view()
@@ -396,9 +435,20 @@ class SecureGovApp(ctk.CTk):
         Instant hardware check triggered before sensitive cryptographic operations
         (e.g. encrypting/decrypting files or messages).
         Includes rapid retry tolerance to prevent false positive lockouts from transient Windows USB bus delays.
+        Also enforces blockchain integrity — if the audit chain has been tampered, all crypto ops are blocked.
         """
         if not self.is_unlocked or not self.current_user:
             self._show_login_required_dialog()
+            return False
+
+        # ── Blockchain Integrity Gate ────────────────────────────────────────
+        # Re-validate the audit chain before every sensitive operation.
+        # If someone tampered with the chain (via the tamper demo or manually
+        # editing audit_chain.json), all cryptographic operations are blocked
+        # until the chain is restored to a valid state.
+        chain_valid, chain_errors = self.blockchain.validate_chain_detailed()
+        if not chain_valid:
+            self._show_blockchain_tampered_dialog(chain_errors)
             return False
 
         if self.auto_lock_var.get():
@@ -425,6 +475,87 @@ class SecureGovApp(ctk.CTk):
                 self._on_dongle_unplugged_emergency(uname, vsn_display)
                 return False
         return True
+
+    def _show_blockchain_tampered_dialog(self, errors: dict):
+        """
+        Show a high-visibility warning when the blockchain audit chain is corrupt.
+        All cryptographic operations are blocked until the chain is restored.
+        """
+        try:
+            if not self.winfo_exists():
+                return
+        except Exception:
+            return
+
+        broken = ", ".join(f"#{i}" for i in sorted(errors.keys()))
+        reason = {"HASH_MISMATCH": "DATA DIUBAH", "PREV_HASH_MISMATCH": "RANTAI PUTUS"}
+        detail_lines = [
+            f"  Blok #{i}: {reason.get(e, e)}"
+            for i, e in sorted(errors.items())
+        ]
+
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("🚨 BLOCKCHAIN INTEGRITY VIOLATION")
+        dialog.geometry("520x320")
+        dialog.resizable(False, False)
+        dialog.attributes("-topmost", True)
+        dialog.configure(fg_color=BG_CARD)
+        dialog.grab_set()
+
+        dialog.update_idletasks()
+        x = self.winfo_x() + (self.winfo_width() - 520) // 2
+        y = self.winfo_y() + (self.winfo_height() - 320) // 2
+        dialog.geometry(f"+{x}+{y}")
+
+        ctk.CTkLabel(
+            dialog,
+            text="⛓️💥 AUDIT CHAIN TELAH DIMANIPULASI!",
+            font=(FONT_FAMILY, 15, "bold"),
+            text_color=COLOR_DANGER,
+        ).pack(pady=(22, 6))
+
+        ctk.CTkLabel(
+            dialog,
+            text=(
+                f"Blok yang rusak: {broken}\n\n"
+                + "\n".join(detail_lines) + "\n\n"
+                "Karena integritas audit trail tidak dapat dijamin,\n"
+                "SEMUA OPERASI KRIPTOGRAFI DIBLOKIR secara otomatis.\n\n"
+                "Pulihkan chain terlebih dahulu via menu Blockchain → ♻️ Kembalikan Data Asli."
+            ),
+            font=(FONT_FAMILY, 11),
+            text_color=TEXT_BODY,
+            justify="center",
+            wraplength=460,
+        ).pack(pady=6, padx=20)
+
+        row_btn = ctk.CTkFrame(dialog, fg_color="transparent")
+        row_btn.pack(pady=(12, 16))
+
+        ctk.CTkButton(
+            row_btn,
+            text="🔗 Buka Menu Blockchain",
+            height=36,
+            width=200,
+            font=(FONT_FAMILY, 11, "bold"),
+            fg_color=COLOR_PRIMARY,
+            command=lambda: (dialog.destroy(), self._show_blockchain_view()),
+        ).pack(side="left", padx=6)
+
+        ctk.CTkButton(
+            row_btn,
+            text="Tutup",
+            height=36,
+            width=100,
+            fg_color=BG_HOVER,
+            text_color=TEXT_MUTED,
+            command=dialog.destroy,
+        ).pack(side="left", padx=6)
+
+        logger.warning(
+            "BLOCKCHAIN INTEGRITY GATE: Crypto op blocked! Tampered blocks: %s",
+            broken,
+        )
 
     def _show_login_required_dialog(self):
         """Show informative dialog when user attempts cryptographic actions without logging in."""
