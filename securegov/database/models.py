@@ -213,6 +213,20 @@ class UserRepository:
             )
         logger.info("User id=%d deactivated.", user_id)
 
+    def delete(self, user_id: int) -> None:
+        """Permanently delete a user record from the database."""
+        with db_session() as conn:
+            conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        logger.info("User id=%d permanently deleted.", user_id)
+
+    def list_all_active(self) -> list[dict]:
+        """Return all active users (for admin delete picker)."""
+        with db_session() as conn:
+            rows = conn.execute(
+                "SELECT id, username, role, is_active FROM users WHERE is_active = 1 ORDER BY id ASC"
+            ).fetchall()
+        return [dict(r) for r in rows]
+
 
 # ---------------------------------------------------------------------------
 # Document Repository

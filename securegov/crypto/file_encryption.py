@@ -45,10 +45,12 @@ import secrets
 from typing import Optional
 
 from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey, RSAPrivateKey
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.fernet import Fernet
 
+from securegov.utils.config import FERNET_KEY_PATH
 from securegov.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -75,7 +77,11 @@ class RSAHybridFileEncryptor:
     _VERSION = 1
     _AAD     = b"SecureGov-FileVault-v1"
 
-    def __init__(self, public_key=None, private_key=None) -> None:
+    def __init__(
+        self,
+        public_key: Optional[RSAPublicKey] = None,
+        private_key: Optional[RSAPrivateKey] = None,
+    ) -> None:
         """
         Parameters
         ----------
@@ -84,12 +90,13 @@ class RSAHybridFileEncryptor:
         private_key : RSA private key object.
                       Required for decryption.
         """
-        self._pub  = public_key
-        self._priv = private_key
+        self._pub: Optional[RSAPublicKey]  = public_key
+        self._priv: Optional[RSAPrivateKey] = private_key
 
     # --- internal ----------------------------------------------------------
 
     def _rsa_encrypt_key(self, aes_key: bytes) -> bytes:
+        assert self._pub is not None, "Public key required for encryption."
         return self._pub.encrypt(
             aes_key,
             asym_padding.OAEP(
@@ -100,6 +107,7 @@ class RSAHybridFileEncryptor:
         )
 
     def _rsa_decrypt_key(self, encrypted_key: bytes) -> bytes:
+        assert self._priv is not None, "Private key required for decryption."
         return self._priv.decrypt(
             encrypted_key,
             asym_padding.OAEP(
@@ -184,18 +192,40 @@ class FernetFileEncryptor:
     """
     Simple symmetric file encryptor using Fernet (AES-128-CBC + HMAC-SHA256).
 
-    Good for single-party at-rest encryption where key distribution is not
-    a concern.  Store the ``key`` attribute securely (e.g. in a HSM or KMS).
+    Key persistence
+    ---------------
+    The Fernet key is automatically loaded from ``FERNET_KEY_PATH``
+    (``data/fernet.key``) on every instantiation.  If the file does not
+    exist yet, a new key is generated and saved there so that subsequent
+    decrypt calls use the exact same key.
 
     Parameters
     ----------
     key : bytes, optional
-        A URL-safe base64-encoded 32-byte Fernet key.  If ``None``, a new
-        key is generated and stored in ``self.key``.
+        Override with an explicit URL-safe base64 Fernet key.
+        When omitted, the key is loaded from / created at ``FERNET_KEY_PATH``.
+    key_path : str, optional
+        Override the default key file path.
     """
 
-    def __init__(self, key: Optional[bytes] = None) -> None:
-        self.key = key or Fernet.generate_key()
+    def __init__(self, key: Optional[bytes] = None, key_path: str = FERNET_KEY_PATH) -> None:
+        self._key_path = key_path
+        if key is not None:
+            # Caller provided an explicit key — use it directly
+            self.key = key
+        elif os.path.isfile(key_path):
+            # Load the persisted key so decrypt always matches encrypt
+            with open(key_path, "rb") as _f:
+                self.key = _f.read().strip()
+            logger.debug("FernetFileEncryptor: loaded key from '%s'.", key_path)
+        else:
+            # First run — generate a new key and persist it
+            self.key = Fernet.generate_key()
+            os.makedirs(os.path.dirname(key_path) or ".", exist_ok=True)
+            with open(key_path, "wb") as _f:
+                _f.write(self.key)
+            logger.info("FernetFileEncryptor: generated & saved new key to '%s'.", key_path)
+
         self._fernet = Fernet(self.key)
         logger.debug("FernetFileEncryptor ready (key=%s…).", self.key[:8].decode())
 

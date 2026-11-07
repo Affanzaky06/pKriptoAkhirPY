@@ -41,6 +41,7 @@ DB_AES_KEY: bytes = os.environ.get(
 # ---------------------------------------------------------------------------
 RSA_PRIVATE_KEY_PATH: str = os.environ.get("RSA_PRIVATE_KEY", "data/rsa_private.pem")
 RSA_PUBLIC_KEY_PATH:  str = os.environ.get("RSA_PUBLIC_KEY",  "data/rsa_public.pem")
+FERNET_KEY_PATH:      str = os.environ.get("FERNET_KEY",      "data/fernet.key")
 
 # ---------------------------------------------------------------------------
 # Logging

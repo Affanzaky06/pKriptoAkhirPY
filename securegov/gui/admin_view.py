@@ -312,10 +312,84 @@ class AdminUserManagementView(ctk.CTkFrame):
         )
         self.btn_save_account.pack(fill="x", padx=16, pady=(8, 16))
 
+        # -------------------------------------------------------------------
+        # SECTION 3: Hapus Akun Pengguna
+        # -------------------------------------------------------------------
+        sec_del = ctk.CTkFrame(container, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=COLOR_DANGER)
+        sec_del.pack(fill="x", pady=(0, 14))
+
+        lbl_del_head = ctk.CTkLabel(
+            sec_del,
+            text="3. HAPUS / NONAKTIFKAN AKUN PENGGUNA",
+            font=(FONT_FAMILY, 13, "bold"),
+            text_color=COLOR_DANGER,
+        )
+        lbl_del_head.pack(anchor="w", padx=16, pady=(14, 4))
+
+        lbl_del_warn = ctk.CTkLabel(
+            sec_del,
+            text="⚠️  Admin tidak dapat menghapus akunnya sendiri. Hapus Permanen tidak dapat dibatalkan.",
+            font=(FONT_FAMILY, 10),
+            text_color=COLOR_WARNING,
+        )
+        lbl_del_warn.pack(anchor="w", padx=16, pady=(0, 8))
+
+        row_del = ctk.CTkFrame(sec_del, fg_color="transparent")
+        row_del.pack(fill="x", padx=16, pady=(0, 6))
+
+        lbl_target = ctk.CTkLabel(row_del, text="Pilih Akun Target:", font=(FONT_FAMILY, 11), text_color=TEXT_MUTED)
+        lbl_target.pack(side="left", padx=(0, 8))
+
+        self.combo_del_user = ctk.CTkComboBox(row_del, values=["(Refresh dulu)"], width=220, height=34)
+        self.combo_del_user.pack(side="left", padx=(0, 8))
+
+        btn_refresh_del = ctk.CTkButton(
+            row_del,
+            text="🔄",
+            width=34,
+            height=34,
+            fg_color=BG_HOVER,
+            command=self._refresh_delete_user_list,
+        )
+        btn_refresh_del.pack(side="left", padx=(0, 16))
+
+        btn_deactivate = ctk.CTkButton(
+            row_del,
+            text="🚫 Nonaktifkan",
+            width=140,
+            height=34,
+            fg_color=COLOR_WARNING,
+            hover_color="#B45309",
+            font=(FONT_FAMILY, 11, "bold"),
+            command=self._on_deactivate_user,
+        )
+        btn_deactivate.pack(side="left", padx=(0, 6))
+
+        btn_delete = ctk.CTkButton(
+            row_del,
+            text="🗑️ Hapus Permanen",
+            width=150,
+            height=34,
+            fg_color=COLOR_DANGER,
+            hover_color="#7F1D1D",
+            font=(FONT_FAMILY, 11, "bold"),
+            command=self._on_delete_user_permanent,
+        )
+        btn_delete.pack(side="left")
+
+        self.lbl_del_status = ctk.CTkLabel(
+            sec_del,
+            text="",
+            font=(FONT_FAMILY, 11),
+            text_color=TEXT_MUTED,
+        )
+        self.lbl_del_status.pack(anchor="w", padx=16, pady=(4, 14))
+
         # Initial data loading
         self._refresh_users_table()
         self._refresh_drive_list()
         self._refresh_camera_devices()
+        self._refresh_delete_user_list()
 
     def _render_access_denied(self):
         banner = ctk.CTkFrame(self, fg_color=BG_CARD, corner_radius=12, border_width=2, border_color=COLOR_DANGER)
@@ -685,6 +759,159 @@ class AdminUserManagementView(ctk.CTkFrame):
         except Exception as exc:
             logger.error("Failed to provision account: %s", exc)
             self.lbl_face_status.configure(text=f"Pendaftaran gagal: {exc}", text_color=COLOR_DANGER)
+
+    # =======================================================================
+    # Delete / Deactivate Account
+    # =======================================================================
+
+    def _refresh_delete_user_list(self):
+        """Populate the delete-target combo with all active users except self."""
+        try:
+            users = self.user_repo.list_all_active()
+            own = self.current_user.get("username", "")
+            choices = [
+                f"{u['username']} [{u['role'].upper()}]"
+                for u in users
+                if u["username"] != own
+            ]
+            self.combo_del_user.configure(values=choices if choices else ["(tidak ada user lain)"])
+            if choices:
+                self.combo_del_user.set(choices[0])
+            else:
+                self.combo_del_user.set("(tidak ada user lain)")
+        except Exception as exc:
+            logger.error("Error refreshing delete list: %s", exc)
+
+    def _get_selected_delete_target(self) -> Optional[dict]:
+        """Parse combo selection and return the user dict, or None if invalid."""
+        raw = self.combo_del_user.get().strip()
+        if not raw or raw.startswith("("):
+            return None
+        # Format: "username [ROLE]" — ambil username sebelum spasi+bracket
+        username = raw.split(" [")[0].strip()
+        return self.user_repo.get_by_username(username)
+
+    def _on_deactivate_user(self):
+        """Soft-delete: set is_active=0 (dapat diaktifkan kembali)."""
+        if self.on_action_check and not self.on_action_check():
+            return
+
+        target = self._get_selected_delete_target()
+        if not target:
+            self.lbl_del_status.configure(text="Pilih akun target yang valid.", text_color=COLOR_DANGER)
+            return
+
+        uname = target["username"]
+        own = self.current_user.get("username", "")
+        if uname == own:
+            self.lbl_del_status.configure(text="❌ Tidak dapat menonaktifkan akun sendiri!", text_color=COLOR_DANGER)
+            return
+
+        # Konfirmasi dialog
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("Konfirmasi Nonaktifkan")
+        dialog.geometry("420x180")
+        dialog.grab_set()
+        dialog.resizable(False, False)
+
+        ctk.CTkLabel(
+            dialog,
+            text=f"Nonaktifkan akun '{uname}' [{target['role'].upper()}]?\n\nAkun akan diblokir login, data tidak dihapus.",
+            font=(FONT_FAMILY, 12),
+            wraplength=380,
+            justify="center",
+        ).pack(pady=(24, 16))
+
+        def _confirm():
+            try:
+                self.user_repo.deactivate(target["id"])
+                self.blockchain.add_block({
+                    "event": "ADMIN_USER_DEACTIVATED",
+                    "admin_actor": own,
+                    "target_user": uname,
+                    "target_role": target["role"],
+                })
+                log_audit(self.current_user["id"], "ADMIN_DEACTIVATE_USER", f"target={uname}")
+                self.lbl_del_status.configure(
+                    text=f"✓ Akun '{uname}' berhasil dinonaktifkan & dicatat ke Blockchain.",
+                    text_color=COLOR_SUCCESS,
+                )
+                self._refresh_users_table()
+                self._refresh_delete_user_list()
+            except Exception as exc:
+                self.lbl_del_status.configure(text=f"Gagal: {exc}", text_color=COLOR_DANGER)
+            finally:
+                dialog.destroy()
+
+        row_btn = ctk.CTkFrame(dialog, fg_color="transparent")
+        row_btn.pack()
+        ctk.CTkButton(row_btn, text="Ya, Nonaktifkan", fg_color=COLOR_WARNING, width=160, command=_confirm).pack(side="left", padx=8)
+        ctk.CTkButton(row_btn, text="Batal", fg_color=BG_HOVER, width=100, command=dialog.destroy).pack(side="left", padx=8)
+
+    def _on_delete_user_permanent(self):
+        """Hard-delete: hapus permanen dari database."""
+        if self.on_action_check and not self.on_action_check():
+            return
+
+        target = self._get_selected_delete_target()
+        if not target:
+            self.lbl_del_status.configure(text="Pilih akun target yang valid.", text_color=COLOR_DANGER)
+            return
+
+        uname = target["username"]
+        own = self.current_user.get("username", "")
+        if uname == own:
+            self.lbl_del_status.configure(text="❌ Tidak dapat menghapus akun sendiri!", text_color=COLOR_DANGER)
+            return
+
+        # Konfirmasi dialog dengan peringatan keras
+        dialog = ctk.CTkToplevel(self)
+        dialog.title("⚠️ Konfirmasi Hapus Permanen")
+        dialog.geometry("460x220")
+        dialog.grab_set()
+        dialog.resizable(False, False)
+
+        ctk.CTkLabel(
+            dialog,
+            text=f"⚠️  HAPUS PERMANEN akun '{uname}' [{target['role'].upper()}]?",
+            font=(FONT_FAMILY, 13, "bold"),
+            text_color=COLOR_DANGER,
+        ).pack(pady=(20, 6))
+
+        ctk.CTkLabel(
+            dialog,
+            text="Semua data akun akan dihapus dari database dan TIDAK DAPAT dipulihkan.",
+            font=(FONT_FAMILY, 11),
+            text_color=TEXT_MUTED,
+            wraplength=400,
+            justify="center",
+        ).pack(pady=(0, 16))
+
+        def _confirm():
+            try:
+                self.user_repo.delete(target["id"])
+                self.blockchain.add_block({
+                    "event": "ADMIN_USER_DELETED_PERMANENT",
+                    "admin_actor": own,
+                    "target_user": uname,
+                    "target_role": target["role"],
+                })
+                log_audit(self.current_user["id"], "ADMIN_DELETE_USER_PERMANENT", f"target={uname} id={target['id']}")
+                self.lbl_del_status.configure(
+                    text=f"🗑️  Akun '{uname}' dihapus permanen & dicatat ke Blockchain.",
+                    text_color=COLOR_SUCCESS,
+                )
+                self._refresh_users_table()
+                self._refresh_delete_user_list()
+            except Exception as exc:
+                self.lbl_del_status.configure(text=f"Gagal: {exc}", text_color=COLOR_DANGER)
+            finally:
+                dialog.destroy()
+
+        row_btn = ctk.CTkFrame(dialog, fg_color="transparent")
+        row_btn.pack()
+        ctk.CTkButton(row_btn, text="Ya, Hapus Permanen", fg_color=COLOR_DANGER, width=180, command=_confirm).pack(side="left", padx=8)
+        ctk.CTkButton(row_btn, text="Batal", fg_color=BG_HOVER, width=100, command=dialog.destroy).pack(side="left", padx=8)
 
     def cleanup(self):
         """Release camera and timers cleanly."""
