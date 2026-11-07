@@ -19,8 +19,11 @@ from typing import Optional
 # Ensure UTF-8 output on Windows
 if sys.platform == "win32":
     try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+        import io
+        if isinstance(sys.stdout, io.TextIOWrapper):
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        if isinstance(sys.stderr, io.TextIOWrapper):
+            sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
 
@@ -289,7 +292,7 @@ class SecureGovApp(ctk.CTk):
         view.pack(fill="both", expand=True)
 
     def _show_super_crypto_view(self):
-        if not self.is_unlocked:
+        if not self.is_unlocked or self.current_user is None:
             self._show_login_required_dialog()
             return
         self._clear_workspace()
@@ -303,7 +306,7 @@ class SecureGovApp(ctk.CTk):
         view.pack(fill="both", expand=True)
 
     def _show_file_crypto_view(self):
-        if not self.is_unlocked:
+        if not self.is_unlocked or self.current_user is None:
             self._show_login_required_dialog()
             return
         self._clear_workspace()
@@ -317,7 +320,7 @@ class SecureGovApp(ctk.CTk):
         view.pack(fill="both", expand=True)
 
     def _show_stego_view(self):
-        if not self.is_unlocked:
+        if not self.is_unlocked or self.current_user is None:
             self._show_login_required_dialog()
             return
         self._clear_workspace()
@@ -331,7 +334,7 @@ class SecureGovApp(ctk.CTk):
         view.pack(fill="both", expand=True)
 
     def _show_blockchain_view(self):
-        if not self.is_unlocked:
+        if not self.is_unlocked or self.current_user is None:
             self._show_login_required_dialog()
             return
         self._clear_workspace()
@@ -344,7 +347,7 @@ class SecureGovApp(ctk.CTk):
         view.pack(fill="both", expand=True)
 
     def _show_admin_view(self):
-        if not self.is_unlocked:
+        if not self.is_unlocked or self.current_user is None:
             self._show_login_required_dialog()
             return
         self._clear_workspace()
