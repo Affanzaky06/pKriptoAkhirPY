@@ -70,6 +70,9 @@ class AdminUserManagementView(ctk.CTkFrame):
         # Camera state
         self.cap: Optional[cv2.VideoCapture] = None
         self.camera_running = False
+        self._camera_busy: bool = False
+        self._camera_session_id: int = 0
+        self._consecutive_read_failures: int = 0
         self.current_frame_bgr: Optional[np.ndarray] = None
         self._cam_after_ids: list = []
         self._cam_after_id: Optional[str] = None
@@ -486,44 +489,92 @@ class AdminUserManagementView(ctk.CTkFrame):
         except Exception:
             return 0
 
+    def _clear_cam_preview(self, text: str = ""):
+        """Safely clear preview and detach underlying Tk image to prevent TclError 'image doesn't exist'."""
+        try:
+            if hasattr(self.cam_preview, "_label") and self.cam_preview._label:
+                self.cam_preview._label.configure(image="")
+            self.cam_preview.configure(text=text, image=None)
+        except Exception:
+            pass
+
     def _on_camera_device_changed(self, choice: str):
         if self.camera_running:
             self._stop_camera()
             self._start_camera()
 
     def _toggle_camera(self):
+        if getattr(self, "_camera_busy", False):
+            return
         if self.camera_running:
             self._stop_camera()
         else:
             self._start_camera()
 
     def _start_camera(self):
-        if self.camera_running:
+        """Start the camera asynchronously with re-entrancy locks and session validation."""
+        if self.camera_running or getattr(self, "_camera_busy", False):
             return
 
-        cam_idx = self._get_selected_camera_idx()
+        self._camera_busy = True
+        self._camera_session_id += 1
+        curr_session = self._camera_session_id
+
         try:
-            self.cap = open_camera(index=cam_idx, retry_count=2)
-            if not self.cap or not self.cap.isOpened():
-                if self.winfo_exists():
-                    self.cam_preview.configure(
-                        text=f"[ Kamera {cam_idx} Gagal Dibuka ]\nPastikan webcam tidak sedang digunakan oleh aplikasi lain.",
-                        image=None,
-                    )
+            self.btn_cam_toggle.configure(text="⏳ Membuka...", state="disabled")
+            self._clear_cam_preview("[ Membuka Kamera... ]\nHarap tunggu sebentar.")
+        except Exception:
+            pass
+
+        cam_idx = self._get_selected_camera_idx()
+
+        def _open_in_thread(session_id: int):
+            time.sleep(0.1)
+            cap = open_camera(index=cam_idx, retry_count=3)
+            try:
+                if not self._is_destroyed:
+                    self.after(0, lambda: self._on_camera_opened(cap, cam_idx, session_id))
+                else:
+                    safe_release_camera(cap)
+            except Exception:
+                safe_release_camera(cap)
+
+        threading.Thread(target=_open_in_thread, args=(curr_session,), daemon=True).start()
+
+    def _on_camera_opened(self, cap: Optional[cv2.VideoCapture], cam_idx: int, session_id: int):
+        self._camera_busy = False
+
+        if self._is_destroyed or session_id != self._camera_session_id:
+            safe_release_camera(cap)
+            return
+
+        try:
+            if not self.winfo_exists():
+                safe_release_camera(cap)
                 return
+        except Exception:
+            safe_release_camera(cap)
+            return
 
-            self.camera_running = True
-            if self.winfo_exists():
-                self.btn_cam_toggle.configure(text="⏹ Matikan Kamera", fg_color=COLOR_DANGER)
-            self._update_camera_frame()
+        if not cap or not cap.isOpened():
+            self.camera_running = False
+            self._clear_cam_preview(
+                f"[ Kamera {cam_idx} Gagal Dibuka ]\nPastikan webcam tidak sedang digunakan oleh aplikasi lain."
+            )
+            self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY, state="normal")
+            return
 
-        except Exception as exc:
-            logger.error("Admin camera open error: %s", exc)
-            if self.winfo_exists():
-                self.cam_preview.configure(text=f"Error Kamera: {exc}", image=None)
+        self.cap = cap
+        self.camera_running = True
+        self._consecutive_read_failures = 0
+        self.btn_cam_toggle.configure(text="⏹ Matikan Kamera", fg_color=COLOR_DANGER, state="normal")
+        self._update_camera_frame()
 
     def _stop_camera(self):
+        self._camera_session_id += 1
         self.camera_running = False
+        self._camera_busy = True
+
         for aid in list(self._cam_after_ids):
             try:
                 self.after_cancel(aid)
@@ -532,14 +583,21 @@ class AdminUserManagementView(ctk.CTkFrame):
         self._cam_after_ids.clear()
         self._cam_after_id = None
 
-        safe_release_camera(self.cap)
+        old_cap = self.cap
         self.cap = None
+
+        self._clear_cam_preview("[ Kamera Mati ]\nNyalakan kamera untuk merekam wajah.")
         self._current_ctk_img = None
+        self.current_frame_bgr = None
+
+        if old_cap:
+            safe_release_camera(old_cap)
+
+        self._camera_busy = False
 
         try:
             if not self._is_destroyed and self.winfo_exists():
-                self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY)
-                self.cam_preview.configure(text="[ Kamera Mati ]\nNyalakan kamera untuk merekam wajah.", image=None)
+                self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY, state="normal")
         except Exception:
             pass
 
@@ -555,6 +613,7 @@ class AdminUserManagementView(ctk.CTkFrame):
         try:
             ret, frame = self.cap.read()
             if ret and frame is not None:
+                self._consecutive_read_failures = 0
                 self.current_frame_bgr = frame.copy()
 
                 display_frame = frame.copy()
@@ -575,7 +634,23 @@ class AdminUserManagementView(ctk.CTkFrame):
                 rgb = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
                 pil_img = Image.fromarray(rgb)
                 self._current_ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(280, 180))
-                self.cam_preview.configure(image=self._current_ctk_img, text="")
+                try:
+                    self.cam_preview.configure(image=self._current_ctk_img, text="")
+                except Exception as tcl_err:
+                    if hasattr(self.cam_preview, "_label") and self.cam_preview._label:
+                        try:
+                            self.cam_preview._label.configure(image="")
+                        except Exception:
+                            pass
+                    self.cam_preview.configure(image=self._current_ctk_img, text="")
+
+            else:
+                self._consecutive_read_failures = getattr(self, "_consecutive_read_failures", 0) + 1
+                if self._consecutive_read_failures > 30:
+                    logger.warning("Admin camera stream interrupted.")
+                    self._stop_camera()
+                    self._clear_cam_preview("[ Sinyal Kamera Terputus ]\nKlik 'Nyalakan Kamera' untuk mengaktifkan kembali.")
+                    return
 
         except Exception as exc:
             logger.debug("Admin frame loop warning: %s", exc)
@@ -645,19 +720,32 @@ class AdminUserManagementView(ctk.CTkFrame):
         if not self.camera_running:
             self._start_camera()
 
-        self.lbl_face_status.configure(text="Sedang merekam 5 frame wajah... Harap menghadap ke webcam.", text_color=COLOR_WARNING)
+        total_frames = 15
+        self.lbl_face_status.configure(
+            text=f"Mempersiapkan perekaman wajah... Harap menghadap ke webcam.",
+            text_color=COLOR_WARNING,
+        )
 
         def _capture_thread():
             samples = []
-            for _ in range(5):
-                time.sleep(0.4)
+            for idx in range(total_frames):
+                time.sleep(0.2)
                 if self.current_frame_bgr is not None:
                     faces = self.face_engine.detect_faces(self.current_frame_bgr)
                     if faces:
-                        crop = self.face_engine.extract_face_crop(self.current_frame_bgr, faces[0])
+                        faces_sorted = sorted(faces, key=lambda f: f[2] * f[3], reverse=True)
+                        crop = self.face_engine.extract_face_crop(self.current_frame_bgr, faces_sorted[0])
                         samples.append(crop)
+                        curr_count = len(samples)
+                        self.after(
+                            0,
+                            lambda c=curr_count: self.lbl_face_status.configure(
+                                text=f"Merekam sampel wajah [{c}/{total_frames}]... Posisikan wajah dan ubah sedikit sudut/ekspresi.",
+                                text_color=COLOR_WARNING,
+                            ),
+                        )
 
-            if len(samples) >= 3:
+            if len(samples) >= 8:
                 success = self.face_engine.enroll_user(target_user, samples, preview_frame=self.current_frame_bgr)
                 if success:
                     self.after(
@@ -678,7 +766,8 @@ class AdminUserManagementView(ctk.CTkFrame):
                 self.after(
                     0,
                     lambda: self.lbl_face_status.configure(
-                        text="Wajah tidak terdeteksi stabil (<3 frame). Coba lagi menghadap kamera.", text_color=COLOR_DANGER
+                        text=f"Wajah tidak terdeteksi stabil (hanya {len(samples)}/{total_frames} frame). Pastikan pencahayaan cukup dan menghadap kamera.",
+                        text_color=COLOR_DANGER,
                     ),
                 )
 

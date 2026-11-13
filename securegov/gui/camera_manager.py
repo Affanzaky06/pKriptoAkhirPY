@@ -46,9 +46,10 @@ def list_available_cameras(max_tested: int = 3) -> List[int]:
     return available_indices
 
 
-def open_camera(index: int = 0, retry_count: int = 2) -> Optional[cv2.VideoCapture]:
+def open_camera(index: int = 0, retry_count: int = 3) -> Optional[cv2.VideoCapture]:
     """
-    Open camera with fallback backends and retry attempts to avoid 'busy resource' errors.
+    Open camera with fallback backends, sensor warm-up, and retry attempts to avoid
+    'busy resource' errors during rapid hardware toggle.
 
     Parameters
     ----------
@@ -63,29 +64,52 @@ def open_camera(index: int = 0, retry_count: int = 2) -> Optional[cv2.VideoCaptu
     """
     for attempt in range(1, retry_count + 1):
         try:
-            # On Windows, try DirectShow first as it provides fast locking and native resolution
+            # On Windows, DirectShow is fastest, avoids MSMF pipeline lockups, and captures native frames
             if sys.platform == "win32":
                 cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
                 if cap.isOpened():
-                    ret, frame = cap.read()
-                    if ret and frame is not None:
-                        logger.info("Camera %d opened via CAP_DSHOW (attempt %d)", index, attempt)
-                        return cap
+                    # Warm-up loop: Give the hardware sensor up to 5 attempts (50ms interval)
+                    # to deliver the first valid frame buffer
+                    for _ in range(5):
+                        ret, frame = cap.read()
+                        if ret and frame is not None:
+                            logger.info("Camera %d opened via CAP_DSHOW (attempt %d)", index, attempt)
+                            return cap
+                        time.sleep(0.05)
                     cap.release()
 
-            # Fallback to default backend
-            cap = cv2.VideoCapture(index)
-            if cap.isOpened():
-                ret, frame = cap.read()
-                if ret and frame is not None:
-                    logger.info("Camera %d opened via DEFAULT backend (attempt %d)", index, attempt)
-                    return cap
-                cap.release()
+            else:
+                cap = cv2.VideoCapture(index)
+                if cap.isOpened():
+                    for _ in range(5):
+                        ret, frame = cap.read()
+                        if ret and frame is not None:
+                            logger.info("Camera %d opened via DEFAULT backend (attempt %d)", index, attempt)
+                            return cap
+                        time.sleep(0.05)
+                    cap.release()
 
         except Exception as exc:
             logger.warning("Attempt %d to open camera %d failed: %s", attempt, index, exc)
 
-        time.sleep(0.2)
+        # Brief back-off before next attempt to allow hardware pins to settle
+        if attempt < retry_count:
+            time.sleep(0.15)
+
+    # Secondary fallback on Windows: default backend (MSMF) only if DirectShow failed completely
+    if sys.platform == "win32":
+        try:
+            cap = cv2.VideoCapture(index)
+            if cap.isOpened():
+                for _ in range(5):
+                    ret, frame = cap.read()
+                    if ret and frame is not None:
+                        logger.info("Camera %d opened via MSMF fallback", index)
+                        return cap
+                    time.sleep(0.05)
+                cap.release()
+        except Exception as exc:
+            logger.warning("MSMF fallback for camera %d failed: %s", index, exc)
 
     logger.error("Unable to open camera at index %d after %d attempts", index, retry_count)
     return None

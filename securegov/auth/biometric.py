@@ -116,13 +116,31 @@ class RealFaceBiometric:
         target_size: Tuple[int, int] = (160, 160)
     ) -> np.ndarray:
         """
-        Crop face region, equalize histogram for lighting invariance, and resize.
+        Crop face region with dynamic margin, apply bilateral smoothing and CLAHE
+        (Contrast Limited Adaptive Histogram Equalization) for lighting invariance, and resize.
         """
         x, y, w, h = bbox
-        gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
-        face_roi = gray[y:y + h, x:x + w]
-        equalized = cv2.equalizeHist(face_roi)
-        return cv2.resize(equalized, target_size, interpolation=cv2.INTER_AREA)
+        h_frame, w_frame = frame_bgr.shape[:2]
+
+        # Add 8% padding to avoid clipping forehead/chin and reduce boundary artifacts
+        pad_w = int(w * 0.08)
+        pad_h = int(h * 0.08)
+        x1 = max(0, x - pad_w)
+        y1 = max(0, y - pad_h)
+        x2 = min(w_frame, x + w + pad_w)
+        y2 = min(h_frame, y + h + pad_h)
+
+        face_roi = frame_bgr[y1:y2, x1:x2]
+        gray = cv2.cvtColor(face_roi, cv2.COLOR_BGR2GRAY)
+
+        # 1. Bilateral filter removes camera sensor grain while preserving crisp facial edges
+        smoothed = cv2.bilateralFilter(gray, d=5, sigmaColor=25, sigmaSpace=25)
+
+        # 2. CLAHE normalizes illumination across shadows and highlights without over-amplifying noise
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enhanced = clahe.apply(smoothed)
+
+        return cv2.resize(enhanced, target_size, interpolation=cv2.INTER_AREA)
 
     # --- Real Face Enrollment ---
 
@@ -133,7 +151,8 @@ class RealFaceBiometric:
         preview_frame: Optional[np.ndarray] = None
     ) -> bool:
         """
-        Train an LBPH model on captured face crop samples and save to disk.
+        Train an LBPH model on captured face crop samples with multi-factor
+        data augmentation (flips, rotations, illumination shifts, and scaling) and save to disk.
         """
         if not face_samples:
             logger.error("Cannot enroll: face_samples list is empty.")
@@ -146,24 +165,59 @@ class RealFaceBiometric:
                 grid_x=8,
                 grid_y=8
             )
-            # Data augmentation: include original and horizontally flipped samples
+
+            # Rich intra-class data augmentation to boost model robustness
             all_samples = []
             for s in face_samples:
+                h, w = s.shape[:2]
+                center = (w // 2, h // 2)
+
+                # Base & horizontal flip
                 all_samples.append(s)
-                all_samples.append(cv2.flip(s, 1))
+                flipped = cv2.flip(s, 1)
+                all_samples.append(flipped)
+
+                # Subtle rotation variations (+-4 degrees)
+                for angle in (-4, 4):
+                    M_rot = cv2.getRotationMatrix2D(center, angle, 1.0)
+                    rot = cv2.warpAffine(s, M_rot, (w, h), borderMode=cv2.BORDER_REFLECT)
+                    all_samples.append(rot)
+                    all_samples.append(cv2.flip(rot, 1))
+
+                # Illumination scaling (darker and brighter)
+                for factor in (0.88, 1.12):
+                    scaled = np.clip(s.astype(np.float32) * factor, 0, 255).astype(np.uint8)
+                    all_samples.append(scaled)
+
+                # Subtle zoom/scale (1.05x)
+                M_zoom = cv2.getRotationMatrix2D(center, 0, 1.05)
+                zoomed = cv2.warpAffine(s, M_zoom, (w, h), borderMode=cv2.BORDER_REFLECT)
+                all_samples.append(zoomed)
 
             labels = np.zeros(len(all_samples), dtype=np.int32)
             recognizer.train(all_samples, labels)
 
-            model_path = self.get_model_path(username)
+            # Write model to normalized path
+            norm_user = username.strip().lower()
+            norm_hash = hashlib.sha256(norm_user.encode("utf-8")).hexdigest()[:16]
+            model_path = os.path.join(_TEMPLATE_DIR, f"{norm_hash}_lbph.xml")
             recognizer.write(model_path)
 
+            # Also write to raw case path if username differs in casing
+            raw_hash = hashlib.sha256(username.strip().encode("utf-8")).hexdigest()[:16]
+            if raw_hash != norm_hash:
+                raw_path = os.path.join(_TEMPLATE_DIR, f"{raw_hash}_lbph.xml")
+                recognizer.write(raw_path)
+
             if preview_frame is not None:
-                ref_path = self.get_reference_img_path(username)
+                ref_path = os.path.join(_TEMPLATE_DIR, f"{norm_hash}_reference.jpg")
                 cv2.imwrite(ref_path, preview_frame)
+                if raw_hash != norm_hash:
+                    raw_ref_path = os.path.join(_TEMPLATE_DIR, f"{raw_hash}_reference.jpg")
+                    cv2.imwrite(raw_ref_path, preview_frame)
 
             logger.info("Real Face Enrollment SUCCESS for user '%s' (%d samples saved to %s)",
-                        username, len(face_samples), model_path)
+                        username, len(all_samples), model_path)
             return True
 
         except Exception as exc:
@@ -176,10 +230,16 @@ class RealFaceBiometric:
         self,
         username: str,
         probe_frame: np.ndarray,
-        confidence_threshold: float = 85.0
+        confidence_threshold: float = 55.0
     ) -> Tuple[bool, float, Optional[Tuple[int, int, int, int]], str]:
         """
         Detect face in probe_frame, run LBPH prediction against enrolled template.
+
+        Uses calibrated Chi-square distance mapping to match percentage:
+          - distance <= 30.0    -> 85% - 100% (High match)
+          - 30.0 < dist <= 55.0 -> 65% - 85%  (Valid verification zone)
+          - 55.0 < dist <= 80.0 -> 30% - 65%  (Rejection zone / different person)
+          - dist > 80.0         -> < 30%      (Completely different face)
 
         Returns:
           (is_verified: bool, match_percentage: float, bbox: (x,y,w,h)|None, message: str)
@@ -202,17 +262,29 @@ class RealFaceBiometric:
             recognizer.read(model_path)
             pred_label, distance = recognizer.predict(face_crop)
 
-            # In LBPH: lower distance = better match (0-50 = near exact, 50-85 = same person, >85 = different person)
-            match_score = max(0.0, min(100.0, 100.0 - (distance * 0.85)))
+            # Calibrated piecewise nonlinear mapping from LBPH Chi-Square distance to confidence score
+            if distance <= 30.0:
+                match_score = 100.0 - (distance / 30.0) * 15.0
+            elif distance <= 55.0:
+                match_score = 85.0 - ((distance - 30.0) / 25.0) * 20.0
+            elif distance <= 80.0:
+                match_score = 65.0 - ((distance - 55.0) / 25.0) * 35.0
+            else:
+                match_score = max(5.0, 30.0 - ((distance - 80.0) / 20.0) * 25.0)
 
-            if distance <= confidence_threshold:
+            match_score = round(max(0.0, min(100.0, match_score)), 1)
+
+            # Strict verification criteria: both distance within threshold and confidence >= 65%
+            is_verified = bool(distance <= confidence_threshold and match_score >= 65.0)
+
+            if is_verified:
                 msg = f"✓ Wajah Terverifikasi (Kecocokan: {match_score:.1f}%, Jarak: {distance:.1f} / Batas: {confidence_threshold:.0f})"
                 logger.info("Real Face Auth MATCH for '%s' (dist=%.2f, score=%.1f%%)",
                             username, distance, match_score)
                 return True, match_score, best_bbox, msg
             else:
-                msg = f"✗ Wajah Belum Cocok (Jarak: {distance:.1f} > Batas: {confidence_threshold:.0f})"
-                logger.warning("Real Face Auth MISMATCH for '%s' (dist=%.2f)", username, distance)
+                msg = f"✗ Wajah Belum Cocok (Jarak: {distance:.1f} > Batas: {confidence_threshold:.0f}, Skor: {match_score:.1f}%)"
+                logger.warning("Real Face Auth MISMATCH for '%s' (dist=%.2f, score=%.1f%%)", username, distance, match_score)
                 return False, match_score, best_bbox, msg
 
         except Exception as exc:
@@ -220,81 +292,81 @@ class RealFaceBiometric:
             return False, 0.0, best_bbox, f"Error pengenalan wajah: {exc}"
 
 
-# ===========================================================================
-# Legacy Biometric Interfaces (Preserved for compatibility)
-# ===========================================================================
+# # ===========================================================================
+# # Legacy Biometric Interfaces (Preserved for compatibility)
+# # ===========================================================================
 
-class BiometricAuthenticator:
-    def enroll(self, user_id: str) -> bool:
-        raise NotImplementedError
-    def verify(self, user_id: str) -> bool:
-        raise NotImplementedError
-    def delete_template(self, user_id: str) -> bool:
-        raise NotImplementedError
-
-
-class FingerprintSimulator(BiometricAuthenticator):
-    def __init__(self, simulate_match_probability: float = 1.0) -> None:
-        self.match_probability = simulate_match_probability
-
-    def _template_path(self, user_id: str) -> str:
-        safe = hashlib.sha256(user_id.encode()).hexdigest()
-        return os.path.join(_TEMPLATE_DIR, f"fp_{safe}.bin")
-
-    def enroll(self, user_id: str) -> bool:
-        with open(self._template_path(user_id), "wb") as f:
-            f.write(secrets.token_bytes(32))
-        return True
-
-    def verify(self, user_id: str) -> bool:
-        if not os.path.isfile(self._template_path(user_id)):
-            return False
-        import random
-        return random.random() < self.match_probability
-
-    def delete_template(self, user_id: str) -> bool:
-        path = self._template_path(user_id)
-        if os.path.isfile(path):
-            os.remove(path)
-            return True
-        return False
+# class BiometricAuthenticator:
+#     def enroll(self, user_id: str) -> bool:
+#         raise NotImplementedError
+#     def verify(self, user_id: str) -> bool:
+#         raise NotImplementedError
+#     def delete_template(self, user_id: str) -> bool:
+#         raise NotImplementedError
 
 
-class FaceRecognitionSimulator(BiometricAuthenticator):
-    def __init__(
-        self,
-        camera_index: int = 0,
-        simulate_match_probability: float = 1.0,
-        enable_real_camera: bool = True
-    ) -> None:
-        self.camera_index = camera_index
-        self.match_probability = simulate_match_probability
-        self.enable_real_camera = enable_real_camera
-        self.real_engine = RealFaceBiometric()
+# class FingerprintSimulator(BiometricAuthenticator):
+#     def __init__(self, simulate_match_probability: float = 1.0) -> None:
+#         self.match_probability = simulate_match_probability
 
-    def enroll(self, user_id: str) -> bool:
-        safe = hashlib.sha256(user_id.encode()).hexdigest()
-        path = os.path.join(_TEMPLATE_DIR, f"face_{safe}.bin")
-        with open(path, "wb") as f:
-            f.write(secrets.token_bytes(32))
-        return True
+#     def _template_path(self, user_id: str) -> str:
+#         safe = hashlib.sha256(user_id.encode()).hexdigest()
+#         return os.path.join(_TEMPLATE_DIR, f"fp_{safe}.bin")
 
-    def verify(self, user_id: str) -> bool:
-        safe = hashlib.sha256(user_id.encode()).hexdigest()
-        path = os.path.join(_TEMPLATE_DIR, f"face_{safe}.bin")
-        if not os.path.isfile(path):
-            return False
-        import random
-        return random.random() < self.match_probability
+#     def enroll(self, user_id: str) -> bool:
+#         with open(self._template_path(user_id), "wb") as f:
+#             f.write(secrets.token_bytes(32))
+#         return True
+
+#     def verify(self, user_id: str) -> bool:
+#         if not os.path.isfile(self._template_path(user_id)):
+#             return False
+#         import random
+#         return random.random() < self.match_probability
+
+#     def delete_template(self, user_id: str) -> bool:
+#         path = self._template_path(user_id)
+#         if os.path.isfile(path):
+#             os.remove(path)
+#             return True
+#         return False
 
 
-def dual_factor_auth(
-    user_id: str,
-    biometric: Optional[BiometricAuthenticator] = None,
-    require_dongle: bool = True,
-) -> bool:
-    from securegov.auth.usb_dongle import verify_dongle
-    d_ok = verify_dongle() if require_dongle else True
-    bio = biometric or FingerprintSimulator()
-    b_ok = bio.verify(user_id)
-    return d_ok and b_ok
+# class FaceRecognitionSimulator(BiometricAuthenticator):
+#     def __init__(
+#         self,
+#         camera_index: int = 0,
+#         simulate_match_probability: float = 1.0,
+#         enable_real_camera: bool = True
+#     ) -> None:
+#         self.camera_index = camera_index
+#         self.match_probability = simulate_match_probability
+#         self.enable_real_camera = enable_real_camera
+#         self.real_engine = RealFaceBiometric()
+
+#     def enroll(self, user_id: str) -> bool:
+#         safe = hashlib.sha256(user_id.encode()).hexdigest()
+#         path = os.path.join(_TEMPLATE_DIR, f"face_{safe}.bin")
+#         with open(path, "wb") as f:
+#             f.write(secrets.token_bytes(32))
+#         return True
+
+#     def verify(self, user_id: str) -> bool:
+#         safe = hashlib.sha256(user_id.encode()).hexdigest()
+#         path = os.path.join(_TEMPLATE_DIR, f"face_{safe}.bin")
+#         if not os.path.isfile(path):
+#             return False
+#         import random
+#         return random.random() < self.match_probability
+
+
+# def dual_factor_auth(
+#     user_id: str,
+#     biometric: Optional[BiometricAuthenticator] = None,
+#     require_dongle: bool = True,
+# ) -> bool:
+#     from securegov.auth.usb_dongle import verify_dongle
+#     d_ok = verify_dongle() if require_dongle else True
+#     bio = biometric or FingerprintSimulator()
+#     b_ok = bio.verify(user_id)
+#     return d_ok and b_ok

@@ -13,7 +13,7 @@ import os
 # The secret file that must exist on the plugged-in USB drive to be recognised
 # as a valid dongle.  The file should contain exactly the bytes in DONGLE_SECRET.
 DONGLE_SECRET_FILENAME: str = ".securegov_dongle.key"
-DONGLE_SECRET_VALUE: bytes  = b"SECUREGOV_DONGLE_v1_2024"
+DONGLE_SECRET_VALUE: bytes  = b"SECUREGOV_DONGLE_v1_2026"
 
 # ---------------------------------------------------------------------------
 # Session / AES settings

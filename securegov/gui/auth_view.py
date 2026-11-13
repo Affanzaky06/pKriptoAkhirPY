@@ -66,6 +66,9 @@ class AuthView(ctk.CTkFrame):
         # State tracking
         self.cap: Optional[cv2.VideoCapture] = None
         self.camera_running = False
+        self._camera_busy: bool = False
+        self._camera_session_id: int = 0
+        self._consecutive_read_failures: int = 0
         self.current_frame_bgr: Optional[np.ndarray] = None
         self._cam_after_ids: list = []   # track ALL pending after() IDs
         self._cam_after_id: Optional[str] = None
@@ -326,60 +329,132 @@ class AuthView(ctk.CTkFrame):
             self._start_camera()
 
     def _toggle_camera(self):
+        # Ignore clicks while camera is transitioning to prevent race conditions and device lockups
+        if getattr(self, "_camera_busy", False):
+            return
         if self.camera_running:
             self._stop_camera()
         else:
             self._start_camera()
 
+    def _clear_cam_preview(self, text: str = ""):
+        """Safely clear preview and detach underlying Tk image to prevent TclError 'image doesn't exist'."""
+        try:
+            if hasattr(self.cam_preview, "_label") and self.cam_preview._label:
+                self.cam_preview._label.configure(image="")
+            self.cam_preview.configure(text=text, image=None)
+        except Exception:
+            pass
+
     def _start_camera(self):
-        if self.camera_running:
+        """Start the camera asynchronously with re-entrancy locks and session validation."""
+        if self.camera_running or getattr(self, "_camera_busy", False):
             return
 
-        cam_idx = self._get_selected_camera_idx()
+        self._camera_busy = True
+        self._camera_session_id += 1
+        curr_session = self._camera_session_id
+
+        # Update UI feedback immediately
         try:
-            self.cap = open_camera(index=cam_idx, retry_count=2)
-            if not self.cap or not self.cap.isOpened():
-                if self.winfo_exists():
-                    self.cam_preview.configure(
-                        text=f"[ Kamera {cam_idx} Tidak Merespon ]\nPastikan webcam tidak sedang digunakan oleh aplikasi lain.",
-                        image=None,
-                    )
+            self.btn_cam_toggle.configure(text="⏳ Membuka Kamera...", state="disabled")
+            self._clear_cam_preview("[ Membuka Kamera... ]\nHarap tunggu sebentar.")
+        except Exception:
+            pass
+
+        cam_idx = self._get_selected_camera_idx()
+
+        def _open_in_thread(session_id: int):
+            """Runs in background thread — safe from GUI thread freezes."""
+            time.sleep(0.1)  # brief pause to let previous device hardware pins settle
+            cap = open_camera(index=cam_idx, retry_count=3)
+            try:
+                if not self._is_destroyed:
+                    self.after(0, lambda: self._on_camera_opened(cap, cam_idx, session_id))
+                else:
+                    safe_release_camera(cap)
+            except Exception:
+                safe_release_camera(cap)
+
+        t = threading.Thread(target=_open_in_thread, args=(curr_session,), daemon=True)
+        t.start()
+
+    def _on_camera_opened(self, cap: Optional[cv2.VideoCapture], cam_idx: int, session_id: int):
+        """Called on main Tkinter thread once the background camera worker completes."""
+        self._camera_busy = False
+
+        # If user destroyed view or toggled off while opening, immediately release handle
+        if self._is_destroyed or session_id != self._camera_session_id:
+            safe_release_camera(cap)
+            return
+
+        try:
+            if not self.winfo_exists():
+                safe_release_camera(cap)
                 return
+        except Exception:
+            safe_release_camera(cap)
+            return
 
-            self.camera_running = True
-            if self.winfo_exists():
-                self.btn_cam_toggle.configure(text="⏹ Matikan Kamera", fg_color=COLOR_DANGER)
-            self._update_camera_frame()
+        if not cap or not cap.isOpened():
+            self.camera_running = False
+            self._clear_cam_preview(
+                f"[ Kamera {cam_idx} Tidak Merespon ]\n"
+                "Pastikan webcam terpasang dan klik 'Nyalakan Kamera' lagi."
+            )
+            self.btn_cam_toggle.configure(
+                text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY, state="normal"
+            )
+            return
 
-        except Exception as exc:
-            logger.error("Camera open error: %s", exc)
-            if self.winfo_exists():
-                self.cam_preview.configure(text=f"Error Kamera: {exc}", image=None)
+        self.cap = cap
+        self.camera_running = True
+        self._consecutive_read_failures = 0
+        self.btn_cam_toggle.configure(
+            text="⏹ Matikan Kamera", fg_color=COLOR_DANGER, state="normal"
+        )
+        self._update_camera_frame()
 
     def _stop_camera(self):
+        """Immediately stop frame updates and cleanly release the hardware camera handle."""
+        # Invalidate any in-flight camera open sessions
+        self._camera_session_id += 1
         self.camera_running = False
-        # Cancel ALL pending after() callbacks registered by this view
-        for aid in list(self._cam_after_ids):
+        self._camera_busy = True
+
+        # Cancel active frame scheduling timers
+        if self._cam_after_id:
             try:
-                self.after_cancel(aid)
+                self.after_cancel(self._cam_after_id)
             except Exception:
                 pass
+            self._cam_after_id = None
         self._cam_after_ids.clear()
-        self._cam_after_id = None
 
-        safe_release_camera(self.cap)
+        # Detach image from underlying tk.Label first, then clear image and set placeholder
+        self._clear_cam_preview("[ Kamera Mati ]\nKlik 'Nyalakan Kamera' untuk mengaktifkan.")
+
+        # Release capture resource safely
+        old_cap = self.cap
         self.cap = None
         self._current_ctk_img = None
+        self.current_frame_bgr = None
+
+        if old_cap:
+            safe_release_camera(old_cap)
+
+        self._camera_busy = False
 
         try:
             if not self._is_destroyed and self.winfo_exists():
-                self.btn_cam_toggle.configure(text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY)
-                self.cam_preview.configure(text="[ Kamera Mati ]\nKlik 'Nyalakan Kamera' untuk mengaktifkan.", image=None)
+                self.btn_cam_toggle.configure(
+                    text="📷 Nyalakan Kamera", fg_color=COLOR_PRIMARY, state="normal"
+                )
         except Exception:
             pass
 
     def _update_camera_frame(self):
-        # Stop immediately if this view has been destroyed
+        """Render live camera frames with face detection box onto the UI."""
         if self._is_destroyed or not self.camera_running or not self.cap:
             return
         try:
@@ -391,6 +466,7 @@ class AuthView(ctk.CTkFrame):
         try:
             ret, frame = self.cap.read()
             if ret and frame is not None:
+                self._consecutive_read_failures = 0
                 self.current_frame_bgr = frame.copy()
 
                 # Detect faces and draw clean cyberpunk HUD bounding box
@@ -412,19 +488,38 @@ class AuthView(ctk.CTkFrame):
                 # Convert to PIL Image for CustomTkinter
                 rgb = cv2.cvtColor(display_frame, cv2.COLOR_BGR2RGB)
                 pil_img = Image.fromarray(rgb)
-                self._current_ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(360, 240))
-                self.cam_preview.configure(image=self._current_ctk_img, text="")
+                self._current_ctk_img = ctk.CTkImage(
+                    light_image=pil_img, dark_image=pil_img, size=(360, 240)
+                )
+                try:
+                    self.cam_preview.configure(image=self._current_ctk_img, text="")
+                except Exception as tcl_err:
+                    # Self-healing: if an orphaned image ID is cached in tk.Label, clear it and retry
+                    if hasattr(self.cam_preview, "_label") and self.cam_preview._label:
+                        try:
+                            self.cam_preview._label.configure(image="")
+                        except Exception:
+                            pass
+                    self.cam_preview.configure(image=self._current_ctk_img, text="")
+
+            else:
+                self._consecutive_read_failures = getattr(self, "_consecutive_read_failures", 0) + 1
+                if self._consecutive_read_failures > 30:
+                    logger.warning("Camera stream interrupted after 30 blank frames.")
+                    self._stop_camera()
+                    self._clear_cam_preview(
+                        "[ Sinyal Kamera Terputus ]\nKlik 'Nyalakan Kamera' untuk menyambung ulang."
+                    )
+                    return
 
         except Exception as exc:
             logger.debug("Frame capture warning: %s", exc)
 
-        # Schedule next frame in 30ms (~33 FPS) safely
+        # Schedule frame berikutnya — hanya simpan ID terbaru, buang yang lama
         if not self._is_destroyed and self.camera_running:
             try:
                 if self.winfo_exists():
-                    aid = self.after(30, self._update_camera_frame)
-                    self._cam_after_ids.append(aid)
-                    self._cam_after_id = aid
+                    self._cam_after_id = self.after(30, self._update_camera_frame)
             except Exception:
                 pass
 
@@ -483,12 +578,8 @@ class AuthView(ctk.CTkFrame):
             self.badge_face.configure(text="[ MASUKKAN USERNAME DULU ]", text_color=COLOR_DANGER)
             return
 
-        if not self.camera_running:
-            self._start_camera()
-            time.sleep(0.3)
-
-        if self.current_frame_bgr is None:
-            self.badge_face.configure(text="[ KAMERA TIDAK AKTIF ]", text_color=COLOR_DANGER)
+        if not self.camera_running or self.current_frame_bgr is None:
+            self.badge_face.configure(text="[ NYALAKAN KAMERA TERLEBIH DAHULU ]", text_color=COLOR_DANGER)
             return
 
         # Check across 3 successive frames to account for minor movement/blinking
@@ -501,7 +592,7 @@ class AuthView(ctk.CTkFrame):
                 ok, score, bbox, msg = self.face_engine.verify_face(
                     username,
                     self.current_frame_bgr,
-                    confidence_threshold=85.0
+                    confidence_threshold=55.0
                 )
                 if ok:
                     best_ok = True
