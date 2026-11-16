@@ -39,8 +39,13 @@ from securegov.gui.styles import (
     COLOR_SUCCESS,
     COLOR_DANGER,
     COLOR_WARNING,
+    TEXT_PUTIH,
     TEXT_TITLE,
     TEXT_BODY,
+    COLOR_WARNING_HOVER,
+    COLOR_HOVER_GREEN,
+    COLOR_DARK_BLUE,
+    COLOR_HOVER_BLUE,
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
@@ -98,29 +103,29 @@ class AuthView(ctk.CTkFrame):
 
         title = ctk.CTkLabel(
             header,
-            text="🔒 SECUREGOV ACCESS CONTROL & DUAL-FACTOR GATE",
+            text="SECUREGOV ACCESS CONTROL & DUAL-FACTOR GATE",
             font=(FONT_FAMILY, 18, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         title.pack(side="left", padx=20, pady=12)
 
         subtitle = ctk.CTkLabel(
             header,
-            text="Physical USB Dongle & Live Facial Biometrics Required",
+            text="Diperlukan Dongle USB Fisik dan Biometrik Wajah Langsung",
             font=(FONT_FAMILY, 12),
-            text_color=TEXT_MUTED,
+            text_color=TEXT_PUTIH,
         )
         subtitle.pack(side="right", padx=20, pady=12)
 
         # RBAC Info Notice
-        info_bar = ctk.CTkFrame(self, fg_color="#0F172A", corner_radius=8, border_width=1, border_color="#1E293B")
+        info_bar = ctk.CTkFrame(self, fg_color="#D88406", corner_radius=8, border_width=1, border_color="#D88406")
         info_bar.pack(fill="x", padx=16, pady=(0, 10))
 
         lbl_rbac_hint = ctk.CTkLabel(
             info_bar,
             text="ℹ️ KEBIJAKAN AKSES KETAT (RBAC): Portal ini hanya untuk pengguna terdaftar. Pendaftaran akun baru dikelola secara terpusat oleh Administrator.",
-            font=(FONT_FAMILY, 10, "bold"),
-            text_color=COLOR_CYAN,
+            font=(FONT_FAMILY, 13, "bold"),
+            text_color=TEXT_PUTIH,
         )
         lbl_rbac_hint.pack(padx=16, pady=6, anchor="w")
 
@@ -132,7 +137,7 @@ class AuthView(ctk.CTkFrame):
         # LEFT COLUMN: Credentials + USB Dongle
         # ===================================================================
         left_col = ctk.CTkFrame(container, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=BORDER_CARD)
-        left_col.pack(side="left", fill="both", expand=True, padx=(0, 8), pady=0)
+        left_col.pack(side="left", fill="both", expand=False, padx=(0, 8), pady=0)
 
         # Step 1: Credentials with Account Selector
         users_list = self._get_registered_usernames()
@@ -141,7 +146,7 @@ class AuthView(ctk.CTkFrame):
             else (users_list[0] if users_list else "alice")
         )
 
-        lbl_s1 = ctk.CTkLabel(left_col, text="STEP 1: PILIH AKUN & KREDENSIAL", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s1 = ctk.CTkLabel(left_col, text="LANGKAH 1: PILIH AKUN & KREDENSIAL", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
         lbl_s1.pack(anchor="w", padx=16, pady=(16, 4))
 
         row_user_select = ctk.CTkFrame(left_col, fg_color="transparent")
@@ -169,7 +174,7 @@ class AuthView(ctk.CTkFrame):
             self.entry_pass.insert(0, "P@ssw0rd!")
 
         # Step 2: Physical USB Dongle
-        lbl_s2 = ctk.CTkLabel(left_col, text="STEP 2: PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s2 = ctk.CTkLabel(left_col, text="LANGKAH 2: PENGECEKAN PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
         lbl_s2.pack(anchor="w", padx=16, pady=(16, 6))
 
         dongle_row = ctk.CTkFrame(left_col, fg_color="transparent")
@@ -180,14 +185,14 @@ class AuthView(ctk.CTkFrame):
             text="🔍 Scan Connected USB Drives",
             command=self._on_scan_and_verify_dongle,
             height=36,
-            fg_color=COLOR_PRIMARY,
-            hover_color=COLOR_CYAN,
+            fg_color=COLOR_DARK_BLUE,
+            hover_color=COLOR_HOVER_BLUE,
         )
         self.btn_scan_dongle.pack(side="left", fill="x", expand=True, padx=(0, 6))
 
         self.badge_dongle = ctk.CTkLabel(
             left_col,
-            text="[ DONGLE WAITING ]",
+            text="[ PENGECEKAN DONGLE MENUNGGU ]",
             font=(FONT_FAMILY, 11, "bold"),
             text_color=COLOR_WARNING,
         )
@@ -197,9 +202,9 @@ class AuthView(ctk.CTkFrame):
             left_col,
             text="Tancapkan flashdisk USB resmi lalu klik 'Scan Connected USB Drives'.",
             font=(FONT_FAMILY, 11),
-            text_color=TEXT_MUTED,
+            text_color=TEXT_PUTIH,
             justify="left",
-            wraplength=340,
+            wraplength=350,
         )
         self.txt_dongle_info.pack(anchor="w", padx=16, pady=(2, 10))
 
@@ -225,7 +230,7 @@ class AuthView(ctk.CTkFrame):
         row_cam_header = ctk.CTkFrame(right_col, fg_color="transparent")
         row_cam_header.pack(fill="x", padx=16, pady=(16, 6))
 
-        lbl_s3 = ctk.CTkLabel(row_cam_header, text="STEP 3: LIVE WEBCAM FACE BIOMETRIC", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s3 = ctk.CTkLabel(row_cam_header, text="STEP 3: BIOMETRIK LIVE WEBCAM", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
         lbl_s3.pack(side="left")
 
         # Camera Device Selector
@@ -272,7 +277,8 @@ class AuthView(ctk.CTkFrame):
             text="📷 Nyalakan Kamera",
             command=self._toggle_camera,
             height=36,
-            fg_color=COLOR_PRIMARY,
+            fg_color=COLOR_WARNING,
+            hover_color=COLOR_WARNING_HOVER,
         )
         self.btn_cam_toggle.pack(side="left", fill="x", expand=True, padx=(0, 6))
 
@@ -281,8 +287,8 @@ class AuthView(ctk.CTkFrame):
             text="👤 Verifikasi Wajah",
             command=self._on_verify_face,
             height=36,
-            fg_color=COLOR_CYAN,
-            hover_color=COLOR_PRIMARY,
+            fg_color=COLOR_DARK_BLUE,
+            hover_color=COLOR_HOVER_BLUE,
         )
         self.btn_verify_face.pack(side="right", fill="x", expand=True, padx=(6, 0))
 
@@ -442,12 +448,12 @@ class AuthView(ctk.CTkFrame):
             self.dongle_verified = True
             if d_info and d_info.get("vsn") and d_info.get("vsn") != "N/A":
                 self.verified_vsn = d_info.get("vsn")
-            self.badge_dongle.configure(text="[ USB DONGLE TERVERIFIKASI ✓ ]", text_color=COLOR_SUCCESS)
+            self.badge_dongle.configure(text="[ USB DONGLE TERVERIFIKASI ]", text_color=COLOR_SUCCESS)
             self.txt_dongle_info.configure(text=msg, text_color=COLOR_SUCCESS)
         else:
             self.dongle_verified = False
             self.verified_vsn = None
-            self.badge_dongle.configure(text="[ DONGLE TIDAK VALID ✗ ]", text_color=COLOR_DANGER)
+            self.badge_dongle.configure(text="[ DONGLE TIDAK VALID ]", text_color=COLOR_DANGER)
             self.txt_dongle_info.configure(text=msg, text_color=COLOR_DANGER)
 
         self._check_all_factors()

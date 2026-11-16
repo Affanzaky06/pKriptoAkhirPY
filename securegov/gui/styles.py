@@ -2,33 +2,42 @@
 """
 UI Styling, Colors, and Typography Design System
 =================================================
-Enterprise Cyber / Gov Defense dark theme palette.
+Red/Black Dark Theme Palette (Based on provided palette).
 """
 
-# Backgrounds
-BG_MAIN       = "#0B1120"   # Deep Void Navy
-BG_SIDEBAR    = "#0F172A"   # Slate 900
-BG_CARD       = "#1E293B"   # Slate 800
-BG_INPUT      = "#0F172A"   # Slate 900
-BG_HOVER      = "#334155"   # Slate 700
+# Backgrounds (Menggunakan Hitam dan Merah Tua)
+BG_MAIN       = "#000000"   # Hitam Pekat (rgb 0,0,0)
+BG_SIDEBAR    = "#000000"   # Hitam Pekat
+BG_CARD       = "#000000"   # Merah Tua (rgb 131,0,0)
+BG_INPUT      = "#000000"   # Hitam Pekat
+BG_HOVER      = "#BC0202"   # Merah Terang (rgb 188,2,2) untuk efek hover
 
-# Accents
-COLOR_PRIMARY = "#3B82F6"   # Electric Blue
-COLOR_CYAN    = "#06B6D4"   # Cyber Cyan
-COLOR_SUCCESS = "#10B981"   # Emerald Green
-COLOR_WARNING = "#F59E0B"   # Amber Orange
-COLOR_DANGER  = "#EF4444"   # Crimson Red
+# Accents (Menggunakan Merah Cerah)
+COLOR_PRIMARY = "#FF0000"   # Merah Murni (rgb 255,0,0)
+COLOR_CYAN    = "#949493"   # Alternatif (karena tidak ada cyan di palet)
+COLOR_SUCCESS = "#005C05"   # 
+COLOR_WARNING = "#FFB005"   # 
+COLOR_DANGER  = "#FF0000"   # Merah Peringatan (rgb 255,0,0)
+COLOR_HOVER_GREEN   = "#005C05" 
+COLOR_HOVER_BLUE   = "#0553AD" 
+COLOR_DARK_BLUE = "#05356B"
+COLOR_WARNING_HOVER = "#BB8207" 
+
+# Gradasi (Memetakan warna dari palet untuk efek visual)
+COLOR_ACCENT_LIGHT = "#FF0000" # 
+COLOR_ACCENT_DARK  = "#2C0101" # 
+COLOR_CYAN_DARK    = "#BC0202" # 
 
 # Text
-TEXT_TITLE    = "#F8FAFC"   # Crisp White
-TEXT_BODY     = "#E2E8F0"   # Light Slate
-TEXT_MUTED    = "#94A3B8"   # Slate 400
-TEXT_DIM      = "#64748B"   # Slate 500
+TEXT_TITLE    = "#FFFFFF"   # Putih Bersih (kontras dengan hitam)
+TEXT_BODY     = "#FFFFFF"   # Putih
+TEXT_MUTED    = "#463B3B"   # Merah redup
+TEXT_DIM      = "#352323"   # Merah sangat redup
+TEXT_PUTIH    = "#FFFFFF"
 
 # Borders
-BORDER_CARD   = "#334155"   # Slate 700
-BORDER_ACTIVE = "#38BDF8"   # Sky Blue
+BORDER_CARD   = "#A59696"   # Merah Tua
+BORDER_ACTIVE = "#2E0C0C"   # Merah Murni (sebagai pengganti Sky Blue)
 
 # Font Families
 FONT_FAMILY = "Segoe UI"
-

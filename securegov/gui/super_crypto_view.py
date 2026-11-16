@@ -47,7 +47,7 @@ class SuperCryptoView(ctk.CTkFrame):
         # Header Title
         lbl_head = ctk.CTkLabel(
             container,
-            text="🔐 SUPER-ENCRYPTION SUITE (CLASSIC + MODERN AES-256)",
+            text=" SUPER-ENCRYPTION SUITE (CLASSIC + MODERN AES-256)",
             font=(FONT_FAMILY, 18, "bold"),
             text_color=COLOR_CYAN,
         )
