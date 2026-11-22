@@ -44,6 +44,10 @@ from securegov.gui.styles import (
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
+    COLOR_DARK_BLUE,
+    COLOR_HOVER_BLUE,
+    COLOR_WARNING_HOVER,
+    TEXT_PUTIH
 )
 from securegov.utils.logger import get_logger
 
@@ -103,7 +107,7 @@ class AuthView(ctk.CTkFrame):
             header,
             text="🔒 SECUREGOV ACCESS CONTROL & DUAL-FACTOR GATE",
             font=(FONT_FAMILY, 18, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         title.pack(side="left", padx=20, pady=12)
 
@@ -123,7 +127,7 @@ class AuthView(ctk.CTkFrame):
             info_bar,
             text="ℹ️ KEBIJAKAN AKSES KETAT (RBAC): Portal ini hanya untuk pengguna terdaftar. Pendaftaran akun baru dikelola secara terpusat oleh Administrator.",
             font=(FONT_FAMILY, 10, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         lbl_rbac_hint.pack(padx=16, pady=6, anchor="w")
 
@@ -144,13 +148,13 @@ class AuthView(ctk.CTkFrame):
             else (users_list[0] if users_list else "alice")
         )
 
-        lbl_s1 = ctk.CTkLabel(left_col, text="STEP 1: PILIH AKUN & KREDENSIAL", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s1 = ctk.CTkLabel(left_col, text="STEP 1: PILIH AKUN & KREDENSIAL", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_s1.pack(anchor="w", padx=16, pady=(16, 4))
 
         row_user_select = ctk.CTkFrame(left_col, fg_color="transparent")
         row_user_select.pack(fill="x", padx=16, pady=2)
 
-        lbl_sel = ctk.CTkLabel(row_user_select, text="Pilih Akun:", font=(FONT_FAMILY, 11), text_color=TEXT_MUTED)
+        lbl_sel = ctk.CTkLabel(row_user_select, text="Pilih Akun:", font=(FONT_FAMILY, 11), text_color=TEXT_PUTIH)
         lbl_sel.pack(side="left", padx=(0, 6))
 
         self.combo_users = ctk.CTkComboBox(
@@ -172,7 +176,7 @@ class AuthView(ctk.CTkFrame):
             self.entry_pass.insert(0, "P@ssw0rd!")
 
         # Step 2: Physical USB Dongle
-        lbl_s2 = ctk.CTkLabel(left_col, text="STEP 2: PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s2 = ctk.CTkLabel(left_col, text="STEP 2: PHYSICAL USB DONGLE", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_s2.pack(anchor="w", padx=16, pady=(16, 6))
 
         dongle_row = ctk.CTkFrame(left_col, fg_color="transparent")
@@ -183,8 +187,8 @@ class AuthView(ctk.CTkFrame):
             text="🔍 Scan Connected USB Drives",
             command=self._on_scan_and_verify_dongle,
             height=36,
-            fg_color=COLOR_PRIMARY,
-            hover_color=COLOR_CYAN,
+            fg_color=COLOR_DARK_BLUE,
+            hover_color=COLOR_HOVER_BLUE,
         )
         self.btn_scan_dongle.pack(side="left", fill="x", expand=True, padx=(0, 6))
 
@@ -200,7 +204,7 @@ class AuthView(ctk.CTkFrame):
             left_col,
             text="Tancapkan flashdisk USB resmi lalu klik 'Scan Connected USB Drives'.",
             font=(FONT_FAMILY, 11),
-            text_color=TEXT_MUTED,
+            text_color=TEXT_PUTIH,
             justify="left",
             wraplength=340,
         )
@@ -228,7 +232,7 @@ class AuthView(ctk.CTkFrame):
         row_cam_header = ctk.CTkFrame(right_col, fg_color="transparent")
         row_cam_header.pack(fill="x", padx=16, pady=(16, 6))
 
-        lbl_s3 = ctk.CTkLabel(row_cam_header, text="STEP 3: LIVE WEBCAM FACE BIOMETRIC", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_s3 = ctk.CTkLabel(row_cam_header, text="STEP 3: LIVE WEBCAM FACE BIOMETRIC", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_s3.pack(side="left")
 
         # Camera Device Selector
@@ -275,7 +279,8 @@ class AuthView(ctk.CTkFrame):
             text="📷 Nyalakan Kamera",
             command=self._toggle_camera,
             height=36,
-            fg_color=COLOR_PRIMARY,
+            fg_color=COLOR_WARNING,
+            hover_color=COLOR_WARNING_HOVER,
         )
         self.btn_cam_toggle.pack(side="left", fill="x", expand=True, padx=(0, 6))
 
@@ -284,8 +289,8 @@ class AuthView(ctk.CTkFrame):
             text="👤 Verifikasi Wajah",
             command=self._on_verify_face,
             height=36,
-            fg_color=COLOR_CYAN,
-            hover_color=COLOR_PRIMARY,
+            fg_color=COLOR_DARK_BLUE,
+            hover_color=COLOR_HOVER_BLUE,
         )
         self.btn_verify_face.pack(side="right", fill="x", expand=True, padx=(6, 0))
 

@@ -24,6 +24,7 @@ from securegov.gui.styles import (
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
+    TEXT_PUTIH
 )
 from securegov.utils.logger import get_logger
 
@@ -49,7 +50,7 @@ class SuperCryptoView(ctk.CTkFrame):
             container,
             text="🔐 SUPER-ENCRYPTION SUITE (CLASSIC + MODERN AES-256)",
             font=(FONT_FAMILY, 18, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         lbl_head.pack(anchor="w", pady=(0, 12))
 
@@ -92,7 +93,7 @@ class SuperCryptoView(ctk.CTkFrame):
         left_box = ctk.CTkFrame(cols_frame, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=BORDER_CARD)
         left_box.pack(side="left", fill="both", expand=True, padx=(0, 8))
 
-        lbl_enc_title = ctk.CTkLabel(left_box, text="1. ENKRIPSI PESAN (SUPER-ENCRYPT)", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_SUCCESS)
+        lbl_enc_title = ctk.CTkLabel(left_box, text="1. ENKRIPSI PESAN (SUPER-ENCRYPT)", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_enc_title.pack(anchor="w", padx=16, pady=(14, 6))
 
         lbl_pt = ctk.CTkLabel(left_box, text="Pesan Teks Asli (Plaintext):", font=(FONT_FAMILY, 11), text_color=TEXT_MUTED)
@@ -125,7 +126,7 @@ class SuperCryptoView(ctk.CTkFrame):
         right_box = ctk.CTkFrame(cols_frame, fg_color=BG_CARD, corner_radius=10, border_width=1, border_color=BORDER_CARD)
         right_box.pack(side="right", fill="both", expand=True, padx=(8, 0))
 
-        lbl_dec_title = ctk.CTkLabel(right_box, text="2. DEKRIPSI PESAN (SUPER-DECRYPT)", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_CYAN)
+        lbl_dec_title = ctk.CTkLabel(right_box, text="2. DEKRIPSI PESAN (SUPER-DECRYPT)", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_dec_title.pack(anchor="w", padx=16, pady=(14, 6))
 
         lbl_in_token = ctk.CTkLabel(right_box, text="Masukkan Token Terenkripsi (Base64 JSON):", font=(FONT_FAMILY, 11), text_color=TEXT_MUTED)

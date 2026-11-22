@@ -30,6 +30,7 @@ from securegov.gui.styles import (
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
+    TEXT_PUTIH
 )
 from securegov.utils.logger import get_logger
 
@@ -65,7 +66,7 @@ class FileCryptoView(ctk.CTkFrame):
             container,
             text="📁 ENTERPRISE DOCUMENT ENCRYPTION (RSA-HYBRID & FERNET)",
             font=(FONT_FAMILY, 18, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         lbl_head.pack(anchor="w", pady=(0, 14))
 
@@ -74,7 +75,7 @@ class FileCryptoView(ctk.CTkFrame):
         card.pack(fill="x", pady=(0, 14))
 
         # 1. File Picker Row
-        lbl_step1 = ctk.CTkLabel(card, text="1. PILIH DOKUMEN (PDF / DOCX / TXT)", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_step1 = ctk.CTkLabel(card, text="1. PILIH DOKUMEN (PDF / DOCX / TXT)", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_step1.pack(anchor="w", padx=16, pady=(14, 6))
 
         row_picker = ctk.CTkFrame(card, fg_color="transparent")
@@ -104,7 +105,7 @@ class FileCryptoView(ctk.CTkFrame):
         self.lbl_file_meta.pack(anchor="w", padx=16, pady=(2, 10))
 
         # 2. Algorithm & Sensitive Notes
-        lbl_step2 = ctk.CTkLabel(card, text="2. ALGORITMA ENKRIPSI & CATATAN RAHASIA", font=(FONT_FAMILY, 13, "bold"), text_color=COLOR_PRIMARY)
+        lbl_step2 = ctk.CTkLabel(card, text="2. ALGORITMA ENKRIPSI & CATATAN RAHASIA", font=(FONT_FAMILY, 13, "bold"), text_color=TEXT_PUTIH)
         lbl_step2.pack(anchor="w", padx=16, pady=(10, 6))
 
         row_algo = ctk.CTkFrame(card, fg_color="transparent")

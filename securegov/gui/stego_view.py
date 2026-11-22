@@ -26,6 +26,7 @@ from securegov.gui.styles import (
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
+    TEXT_PUTIH
 )
 from securegov.utils.logger import get_logger
 
@@ -56,7 +57,7 @@ class StegoView(ctk.CTkFrame):
             container,
             text="🖼️ MULTIMEDIA STEGANOGRAPHY SUITE (IMAGE, AUDIO & VIDEO)",
             font=(FONT_FAMILY, 18, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         lbl_head.pack(anchor="w", pady=(0, 10))
 

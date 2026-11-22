@@ -47,6 +47,7 @@ from securegov.gui.styles import (
     TEXT_MUTED,
     BORDER_CARD,
     FONT_FAMILY,
+    TEXT_PUTIH
 )
 from securegov.gui.auth_view import AuthView
 from securegov.gui.super_crypto_view import SuperCryptoView
@@ -108,7 +109,7 @@ class SecureGovApp(ctk.CTk):
             self.sidebar,
             text="🛡️ SECUREGOV",
             font=(FONT_FAMILY, 20, "bold"),
-            text_color=COLOR_CYAN,
+            text_color=TEXT_PUTIH,
         )
         lbl_brand.pack(anchor="w", padx=20, pady=(24, 2))
 
@@ -116,7 +117,7 @@ class SecureGovApp(ctk.CTk):
             self.sidebar,
             text="Enterprise DocVault v1.0",
             font=(FONT_FAMILY, 11),
-            text_color=TEXT_MUTED,
+            text_color=TEXT_PUTIH,
         )
         lbl_sub.pack(anchor="w", padx=20, pady=(0, 20))
 
@@ -136,7 +137,7 @@ class SecureGovApp(ctk.CTk):
             self.status_card,
             text="Dual-Factor (USB + Wajah) Diperlukan",
             font=(FONT_FAMILY, 10),
-            text_color=TEXT_MUTED,
+            text_color=TEXT_PUTIH,
             wraplength=190,
         )
         self.lbl_status_desc.pack(padx=12, pady=(0, 4))
@@ -178,7 +179,7 @@ class SecureGovApp(ctk.CTk):
                 height=40,
                 fg_color="transparent",
                 hover_color=BG_HOVER,
-                text_color=TEXT_BODY,
+                text_color=TEXT_PUTIH,
                 command=cmd,
             )
             btn.pack(fill="x", padx=12, pady=3)
