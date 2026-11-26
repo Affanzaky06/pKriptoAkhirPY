@@ -1,201 +1,380 @@
-# securegov/steganography/video_steg.py
-"""
-Video Steganography — Frame-based LSB using OpenCV
-====================================================
-Hides and extracts arbitrary UTF-8 text by modifying the least-significant
-bits (LSBs) of pixel channel values across consecutive video frames.
-
-Lossless Video Encoding
------------------------
-Standard video codecs like H.264/XVID are lossy and alter pixel values during
-quantization, corrupting LSB data. This implementation uses the lossless FFV1
-(or HFYU) codec to ensure bit-exact fidelity of embedded secrets.
-
-Capacity
---------
-  max_bytes ≈ (n_frames × width × height) // 8  −  4
-
-Usage
------
-    from securegov.steganography.video_steg import VideoSteganography
-
-    steg = VideoSteganography()
-    steg.embed("cover.avi", "Classified briefing notes.", "stego.avi")
-    msg  = steg.extract("stego.avi")
-    assert msg == "Classified briefing notes."
-"""
-
-import struct
-from securegov.utils.logger import get_logger
-
-logger = get_logger(__name__)
-
-try:
-    import cv2
-    import numpy as np
-    _CV2_AVAILABLE = True
-except ImportError:
-    _CV2_AVAILABLE = False
-    logger.warning(
-        "opencv-python not installed — VideoSteganography will not work. "
-        "Run: pip install opencv-python"
-    )
+import cv2
+import numpy as np
+import os
+import subprocess
+import shutil
 
 
 class VideoSteganography:
-    """Frame-based LSB video steganography using OpenCV."""
+    """
+    Video Steganography menggunakan metode LSB.
 
-    # --- helpers -----------------------------------------------------------
-
-    @staticmethod
-    def _text_to_bits(message: str) -> list[int]:
-        payload = message.encode("utf-8")
-        header  = struct.pack("<I", len(payload))
-        full    = header + payload
-        bits: list[int] = []
-        for byte in full:
-            for shift in range(7, -1, -1):
-                bits.append((byte >> shift) & 1)
-        return bits
+    Fitur:
+    - Menyisipkan pesan pada channel Blue.
+    - Menggunakan codec FFV1 (lossless).
+    - Memproses video per frame.
+    - Mempertahankan audio asli menggunakan FFmpeg.
+    """
 
     @staticmethod
-    def _bits_to_text(bits: list[int]) -> str:
-        raw = bytes(
-            sum(bits[i + j] << (7 - j) for j in range(8))
-            for i in range(0, len(bits), 8)
+    def _text_to_bits(message: str) -> np.ndarray:
+        message_bytes = message.encode("utf-8")
+
+        # Header 4 byte untuk menyimpan panjang pesan
+        header = len(message_bytes).to_bytes(
+            4, byteorder="little"
         )
-        if len(raw) < 4:
-            raise ValueError("Bit stream too short.")
-        msg_len = struct.unpack("<I", raw[:4])[0]
-        return raw[4: 4 + msg_len].decode("utf-8", errors="replace")
 
-    # --- public API --------------------------------------------------------
+        data = header + message_bytes
+
+        return np.unpackbits(
+            np.frombuffer(data, dtype=np.uint8)
+        )
+
+    @staticmethod
+    def _bits_to_text(bits: np.ndarray) -> str:
+        data = np.packbits(bits).tobytes()
+
+        message_length = int.from_bytes(
+            data[:4], byteorder="little"
+        )
+
+        message_bytes = data[4:4 + message_length]
+
+        return message_bytes.decode("utf-8")
 
     def embed(
         self,
         cover_path: str,
         message: str,
         output_path: str,
-        lossless_codec: str = "FFV1",
-    ) -> None:
-        """
-        Embed *message* into the video at *cover_path* and save to *output_path*.
+        lossless_codec: str = "FFV1"
+    ) -> str:
 
-        Parameters
-        ----------
-        cover_path     : Path to the input video file.
-        message        : Secret UTF-8 text to embed.
-        output_path    : Destination video path (.avi container recommended).
-        lossless_codec : 4-char FourCC codec string ('FFV1' default for lossless).
-        """
-        if not _CV2_AVAILABLE:
-            raise RuntimeError("Install OpenCV: pip install opencv-python")
+        # ==========================================
+        # 1. VALIDASI INPUT
+        # ==========================================
 
-        cap = cv2.VideoCapture(cover_path)
-        if not cap.isOpened():
-            raise IOError(f"Cannot open video: {cover_path}")
-
-        fps    = cap.get(cv2.CAP_PROP_FPS) or 24.0
-        width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-        frames: list[np.ndarray] = []
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-            frames.append(frame)
-        cap.release()
-
-        if not frames:
-            raise ValueError("Video contains no readable frames.")
-
-        bits = self._text_to_bits(message)
-        total_capacity = sum(f.shape[0] * f.shape[1] for f in frames)
-        if len(bits) > total_capacity:
-            raise ValueError(
-                f"Message too large ({len(bits)} bits) for video capacity "
-                f"({total_capacity} bits). Use a longer / higher-resolution video."
+        if not os.path.isfile(cover_path):
+            raise FileNotFoundError(
+                f"Video input tidak ditemukan: {cover_path}"
             )
 
-        # Embed bits into the blue channel (index 0 in BGR)
-        bit_idx = 0
-        for frame in frames:
-            if bit_idx >= len(bits):
-                break
-            rows, cols, _ = frame.shape
-            for r in range(rows):
-                for c in range(cols):
-                    if bit_idx >= len(bits):
-                        break
-                    frame[r, c, 0] = (int(frame[r, c, 0]) & ~1) | bits[bit_idx]
-                    bit_idx += 1
+        if os.path.abspath(cover_path) == os.path.abspath(output_path):
+            raise ValueError(
+                "Output tidak boleh menimpa video asli."
+            )
 
-        # Use lossless codec (FFV1) to prevent pixel corruption
-        fourcc = cv2.VideoWriter_fourcc(*lossless_codec)
-        out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-        for frame in frames:
-            out.write(frame)
-        out.release()
+        ffmpeg_path = shutil.which("ffmpeg")
 
-        logger.info(
-            "Video steg: embedded %d chars across %d frames of '%s' → '%s' (codec=%s).",
-            len(message), len(frames), cover_path, output_path, lossless_codec
+        if ffmpeg_path is None:
+            raise RuntimeError(
+                "FFmpeg belum terpasang atau belum masuk PATH."
+            )
+
+        # Pastikan output menggunakan MKV
+        if not output_path.lower().endswith(".mkv"):
+            output_path = (
+                os.path.splitext(output_path)[0] + ".mkv"
+            )
+
+        output_dir = os.path.dirname(
+            os.path.abspath(output_path)
         )
+
+        os.makedirs(output_dir, exist_ok=True)
+
+        temp_video = (
+            os.path.splitext(output_path)[0] + "_temp.mkv"
+        )
+
+        # ==========================================
+        # 2. MEMBUKA VIDEO
+        # ==========================================
+
+        cap = cv2.VideoCapture(cover_path)
+
+        if not cap.isOpened():
+            raise ValueError("Gagal membuka video input.")
+
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        frame_count = int(
+            cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        )
+
+        if fps <= 0 or width <= 0 or height <= 0:
+            cap.release()
+            raise ValueError(
+                "Informasi video tidak valid."
+            )
+
+        if frame_count <= 0:
+            cap.release()
+            raise ValueError(
+                "Jumlah frame video tidak dapat dibaca."
+            )
+
+        # ==========================================
+        # 3. MENGHITUNG KAPASITAS
+        # ==========================================
+
+        bits = self._text_to_bits(message)
+
+        total_capacity = frame_count * width * height
+
+        if len(bits) > total_capacity:
+            cap.release()
+
+            max_bytes = max(
+                0, (total_capacity - 32) // 8
+            )
+
+            raise ValueError(
+                f"Pesan terlalu besar. "
+                f"Kapasitas maksimum sekitar {max_bytes} byte."
+            )
+
+        # ==========================================
+        # 4. MENYIAPKAN VIDEO WRITER
+        # ==========================================
+
+        fourcc = cv2.VideoWriter_fourcc(
+            *lossless_codec
+        )
+
+        writer = cv2.VideoWriter(
+            temp_video,
+            fourcc,
+            fps,
+            (width, height)
+        )
+
+        if not writer.isOpened():
+            cap.release()
+            writer.release()
+
+            raise RuntimeError(
+                "Gagal membuat video FFV1. "
+                "Periksa dukungan codec OpenCV."
+            )
+
+        # ==========================================
+        # 5. PROSES PENYISIPAN LSB
+        # ==========================================
+
+        bit_index = 0
+
+        try:
+            while True:
+                ret, frame = cap.read()
+
+                if not ret:
+                    break
+
+                blue = frame[:, :, 0].reshape(-1)
+
+                remaining = len(bits) - bit_index
+
+                if remaining > 0:
+                    count = min(
+                        len(blue), remaining
+                    )
+
+                    frame_bits = bits[
+                        bit_index:bit_index + count
+                    ].astype(np.uint8)
+
+                    # Menyisipkan bit ke LSB channel Blue
+                    blue[:count] = (
+                        (blue[:count] & 0xFE)
+                        | frame_bits
+                    )
+
+                    bit_index += count
+
+                writer.write(frame)
+
+        finally:
+            cap.release()
+            writer.release()
+
+        if bit_index < len(bits):
+            if os.path.exists(temp_video):
+                os.remove(temp_video)
+
+            raise RuntimeError(
+                "Gagal menyisipkan seluruh pesan ke video."
+            )
+
+        # ==========================================
+        # 6. MENGGABUNGKAN AUDIO ASLI
+        # ==========================================
+
+        try:
+            command = [
+                ffmpeg_path,
+                "-y",
+
+                # Input 0: video hasil steganografi
+                "-i", temp_video,
+
+                # Input 1: video asli yang memiliki audio
+                "-i", cover_path,
+
+                # Ambil video dari input pertama
+                "-map", "0:v:0",
+
+                # Ambil audio dari input kedua jika tersedia
+                "-map", "1:a?",
+
+                # Tidak melakukan encoding ulang
+                "-c:v", "copy",
+                "-c:a", "copy",
+
+                # Pertahankan metadata
+                "-map_metadata", "1",
+
+                # Batasi output mengikuti durasi terpendek
+                "-shortest",
+
+                output_path
+            ]
+
+            result = subprocess.run(
+                command,
+                check=True,
+                capture_output=True,
+                text=True
+            )
+
+            if not os.path.isfile(output_path):
+                raise RuntimeError(
+                    "File output tidak berhasil dibuat."
+                )
+
+            return output_path
+
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(
+                "FFmpeg gagal menggabungkan audio dan video.\n"
+                + e.stderr[-3000:]
+            ) from e
+
+        finally:
+            if os.path.exists(temp_video):
+                os.remove(temp_video)
 
     def extract(self, stego_path: str) -> str:
-        """
-        Extract the hidden message from *stego_path*.
 
-        Returns
-        -------
-        str  The extracted UTF-8 message.
-        """
-        if not _CV2_AVAILABLE:
-            raise RuntimeError("Install OpenCV: pip install opencv-python")
+        # ==========================================
+        # 1. VALIDASI VIDEO
+        # ==========================================
+
+        if not os.path.isfile(stego_path):
+            raise FileNotFoundError(
+                f"Video tidak ditemukan: {stego_path}"
+            )
 
         cap = cv2.VideoCapture(stego_path)
+
         if not cap.isOpened():
-            raise IOError(f"Cannot open video: {stego_path}")
+            raise ValueError(
+                "Gagal membuka video steganografi."
+            )
 
-        all_bits: list[int] = []
-        header_bits = 32
-        expected_total_bits = None
-
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            rows, cols, _ = frame.shape
-            for r in range(rows):
-                for c in range(cols):
-                    all_bits.append(int(frame[r, c, 0]) & 1)
-
-                    # Once we have 32 bits, determine message length
-                    if expected_total_bits is None and len(all_bits) >= header_bits:
-                        len_bytes = bytes(
-                            sum(all_bits[i + j] << (7 - j) for j in range(8))
-                            for i in range(0, 32, 8)
-                        )
-                        msg_byte_len = struct.unpack("<I", len_bytes)[0]
-                        expected_total_bits = header_bits + (msg_byte_len * 8)
-
-                    if expected_total_bits is not None and len(all_bits) >= expected_total_bits:
-                        break
-                if expected_total_bits is not None and len(all_bits) >= expected_total_bits:
-                    break
-            if expected_total_bits is not None and len(all_bits) >= expected_total_bits:
-                break
-
-        cap.release()
-
-        if expected_total_bits is None or len(all_bits) < expected_total_bits:
-            raise ValueError("Incomplete video or no valid hidden message found.")
-
-        message = self._bits_to_text(all_bits[:expected_total_bits])
-        logger.info(
-            "Video steg: extracted %d chars from '%s'.",
-            len(message), stego_path
+        width = int(
+            cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         )
-        return message
+
+        height = int(
+            cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        )
+
+        frame_count = int(
+            cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        )
+
+        total_capacity = (
+            frame_count * width * height
+        )
+
+        if total_capacity < 32:
+            cap.release()
+            raise ValueError(
+                "Kapasitas video terlalu kecil."
+            )
+
+        collected = []
+        collected_count = 0
+        required_bits = 32
+
+        # ==========================================
+        # 2. EKSTRAKSI HEADER DAN PESAN
+        # ==========================================
+
+        try:
+            while collected_count < required_bits:
+
+                ret, frame = cap.read()
+
+                if not ret:
+                    break
+
+                blue = frame[:, :, 0].reshape(-1)
+
+                # Mengambil bit paling rendah
+                frame_bits = blue & 1
+
+                collected.append(frame_bits)
+                collected_count += len(frame_bits)
+
+                # Setelah 32 bit tersedia, baca header
+                if (
+                    collected_count >= 32
+                    and required_bits == 32
+                ):
+
+                    all_bits = np.concatenate(
+                        collected
+                    )
+
+                    header_bytes = np.packbits(
+                        all_bits[:32]
+                    ).tobytes()
+
+                    message_length = int.from_bytes(
+                        header_bytes,
+                        byteorder="little"
+                    )
+
+                    required_bits = (
+                        32 + message_length * 8
+                    )
+
+                    if required_bits > total_capacity:
+                        raise ValueError(
+                            "Header tidak valid atau "
+                            "pesan melebihi kapasitas video."
+                        )
+
+            if collected_count < required_bits:
+                raise ValueError(
+                    "Pesan tidak lengkap atau video rusak."
+                )
+
+            # ==========================================
+            # 3. MENGEMBALIKAN PESAN
+            # ==========================================
+
+            all_bits = np.concatenate(collected)
+
+            message_bits = all_bits[:required_bits]
+
+            return self._bits_to_text(
+                message_bits
+            )
+
+        finally:
+            cap.release()

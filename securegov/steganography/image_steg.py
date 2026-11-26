@@ -1,184 +1,272 @@
-# securegov/steganography/image_steg.py
 """
-Image Steganography — LSB (Least Significant Bit) via Pillow
-=============================================================
-Hides and extracts arbitrary UTF-8 text inside the least-significant bits
-of the RGB pixel channels of a PNG or JPEG image.
+Image Steganography — Optimized LSB via Pillow + NumPy
+======================================================
+Hides and extracts UTF-8 text inside RGB pixel LSBs.
 
-Algorithm
----------
-  * Each character of the secret message is encoded as 8 bits.
-  * A 32-bit little-endian length prefix is prepended to the bit stream so
-    the extractor knows when to stop reading.
-  * Bits are spread across the LSBs of R, G, B channels sequentially
-    (3 bits per pixel; the alpha channel is not modified).
-  * The output image is always saved as PNG to avoid JPEG re-compression
-    artefacts destroying the hidden data.
-
-Capacity
---------
-  max_chars ≈ (width × height × 3) // 8  −  4   (minus length field)
-
-Usage
------
-    from securegov.steganography.image_steg import ImageSteganography
-
-    steg = ImageSteganography()
-    steg.embed("cover.png", "Top secret meeting at noon.", "stego.png")
-    msg  = steg.extract("stego.png")
-    assert msg == "Top secret meeting at noon."
+Features:
+- LSB steganography on RGB channels.
+- 32-bit little-endian message length header.
+- NumPy vectorization for faster processing.
+- PNG lossless output to preserve hidden data.
+- Maximum PNG compression.
 """
 
+import os
 import struct
-from typing import Optional
+import numpy as np
+
+from PIL import Image
 
 from securegov.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-try:
-    from PIL import Image
-    _PIL_AVAILABLE = True
-except ImportError:
-    _PIL_AVAILABLE = False
-    logger.warning("Pillow not installed — ImageSteganography will not work. "
-                   "Run: pip install Pillow")
-
 
 class ImageSteganography:
-    """LSB image steganography using Pillow."""
+    """Optimized LSB image steganography."""
 
-    _DELIMITER_BITS = 32   # 4-byte (uint32-LE) length prefix
+    _HEADER_SIZE = 32
 
-    # --- helpers -----------------------------------------------------------
-
-    @staticmethod
-    def _text_to_bits(text: str) -> list[int]:
-        """Convert UTF-8 text to a flat list of bits (MSB first per byte)."""
-        bits: list[int] = []
-        for byte in text.encode("utf-8"):
-            for shift in range(7, -1, -1):
-                bits.append((byte >> shift) & 1)
-        return bits
+    # --------------------------------------------------
+    # HELPER FUNCTIONS
+    # --------------------------------------------------
 
     @staticmethod
-    def _bits_to_text(bits: list[int]) -> str:
-        """Reconstruct UTF-8 text from a flat list of bits."""
-        chars: list[int] = []
-        for i in range(0, len(bits), 8):
-            byte = 0
-            for bit in bits[i:i + 8]:
-                byte = (byte << 1) | bit
-            chars.append(byte)
-        return bytes(chars).decode("utf-8", errors="replace")
+    def _text_to_bits(text: str) -> np.ndarray:
+        """Convert UTF-8 text into bits (MSB first)."""
 
-    @staticmethod
-    def _int_to_bits_32(n: int) -> list[int]:
-        """Encode *n* as 32 bits (little-endian byte order, MSB-first within byte)."""
-        packed = struct.pack("<I", n)
-        bits: list[int] = []
-        for byte in packed:
-            for shift in range(7, -1, -1):
-                bits.append((byte >> shift) & 1)
-        return bits
+        data = text.encode("utf-8")
 
-    @staticmethod
-    def _bits_32_to_int(bits: list[int]) -> int:
-        """Decode 32 bits (little-endian byte order) back to int."""
-        bs = bytes(
-            sum(bits[i + shift] << (7 - shift) for shift in range(8))
-            for i in range(0, 32, 8)
+        return np.unpackbits(
+            np.frombuffer(data, dtype=np.uint8)
         )
-        return struct.unpack("<I", bs)[0]
 
-    # --- public API --------------------------------------------------------
+    @staticmethod
+    def _bits_to_text(bits: np.ndarray) -> str:
+        """Convert bits back into UTF-8 text."""
 
-    def embed(self, cover_path: str, message: str, output_path: str) -> None:
-        """
-        Embed *message* into the cover image at *cover_path* and save to
-        *output_path*.
+        if len(bits) % 8 != 0:
+            raise ValueError("Jumlah bit pesan tidak valid.")
 
-        Parameters
-        ----------
-        cover_path  : Path to the cover image (PNG or JPEG).
-        message     : The secret UTF-8 text to hide.
-        output_path : Destination PNG file path.
+        data = np.packbits(bits).tobytes()
 
-        Raises
-        ------
-        RuntimeError  If Pillow is not installed.
-        ValueError    If the message is too long for the image.
-        """
-        if not _PIL_AVAILABLE:
-            raise RuntimeError("Install Pillow: pip install Pillow")
+        return data.decode("utf-8", errors="strict")
 
-        img  = Image.open(cover_path).convert("RGB")
-        width, height = img.size
-        pixels = list(img.getdata())   # list of (R,G,B) tuples
+    @staticmethod
+    def _length_to_bits(length: int) -> np.ndarray:
+        """Encode message bit length into a 32-bit header."""
 
-        msg_bits    = self._text_to_bits(message)
-        length_bits = self._int_to_bits_32(len(msg_bits))
-        full_bits   = length_bits + msg_bits
+        header = struct.pack("<I", length)
 
-        # Capacity check: 3 bits per pixel (R, G, B)
-        capacity = width * height * 3
-        if len(full_bits) > capacity:
-            raise ValueError(
-                f"Message too large ({len(full_bits)} bits) for image capacity ({capacity} bits). "
-                f"Use an image with at least {len(full_bits) // 3} pixels."
+        return np.unpackbits(
+            np.frombuffer(header, dtype=np.uint8)
+        )
+
+    @staticmethod
+    def _bits_to_length(bits: np.ndarray) -> int:
+        """Decode the 32-bit header."""
+
+        header = np.packbits(bits[:32]).tobytes()
+
+        return struct.unpack("<I", header)[0]
+
+    # --------------------------------------------------
+    # EMBED MESSAGE
+    # --------------------------------------------------
+
+    def embed(
+        self,
+        cover_path: str,
+        message: str,
+        output_path: str
+    ) -> str:
+
+        if not os.path.isfile(cover_path):
+            raise FileNotFoundError(
+                f"Gambar tidak ditemukan: {cover_path}"
             )
 
-        # Embed bits into LSBs of R, G, B channels
-        bit_idx  = 0
-        new_pixels: list[tuple] = []
-        for pixel in pixels:
-            r, g, b = pixel
-            channels = [r, g, b]
-            for i in range(3):
-                if bit_idx < len(full_bits):
-                    channels[i] = (channels[i] & ~1) | full_bits[bit_idx]
-                    bit_idx += 1
-            new_pixels.append(tuple(channels))
+        if os.path.abspath(cover_path) == os.path.abspath(output_path):
+            raise ValueError(
+                "Output tidak boleh menimpa gambar asli."
+            )
 
-        # Reconstruct and save as PNG
-        stego = Image.new("RGB", (width, height))
-        stego.putdata(new_pixels)
-        stego.save(output_path, format="PNG")
-        logger.info(
-            "Image steg: embedded %d chars into '%s' → '%s'.",
-            len(message), cover_path, output_path
+        # Output harus PNG agar LSB tidak rusak
+        if not output_path.lower().endswith(".png"):
+            output_path = (
+                os.path.splitext(output_path)[0] + ".png"
+            )
+
+        output_dir = os.path.dirname(
+            os.path.abspath(output_path)
         )
+
+        os.makedirs(output_dir, exist_ok=True)
+
+        if not message:
+            raise ValueError(
+                "Pesan rahasia tidak boleh kosong."
+            )
+
+        # ----------------------------------------------
+        # 1. BUKA GAMBAR
+        # ----------------------------------------------
+
+        with Image.open(cover_path) as img:
+            image = img.convert("RGB")
+
+        width, height = image.size
+
+        # Ubah gambar menjadi array NumPy
+        pixels = np.array(image, dtype=np.uint8)
+
+        # Flatten RGB menjadi satu dimensi
+        flat_pixels = pixels.reshape(-1)
+
+        # ----------------------------------------------
+        # 2. KONVERSI PESAN KE BIT
+        # ----------------------------------------------
+
+        message_bits = self._text_to_bits(message)
+
+        length_bits = self._length_to_bits(
+            len(message_bits)
+        )
+
+        full_bits = np.concatenate(
+            (length_bits, message_bits)
+        )
+
+        # ----------------------------------------------
+        # 3. CEK KAPASITAS GAMBAR
+        # ----------------------------------------------
+
+        capacity = width * height * 3
+
+        if len(full_bits) > capacity:
+            max_bytes = max(
+                0, (capacity - self._HEADER_SIZE) // 8
+            )
+
+            raise ValueError(
+                f"Pesan terlalu besar. "
+                f"Kapasitas maksimum sekitar {max_bytes} byte."
+            )
+
+        # ----------------------------------------------
+        # 4. PROSES LSB MENGGUNAKAN NUMPY
+        # ----------------------------------------------
+
+        count = len(full_bits)
+
+        flat_pixels[:count] = (
+            (flat_pixels[:count] & 0xFE)
+            | full_bits
+        )
+
+        # Kembalikan ke bentuk gambar
+        stego_pixels = flat_pixels.reshape(
+            height, width, 3
+        )
+
+        stego_image = Image.fromarray(
+            stego_pixels, mode="RGB"
+        )
+
+        # ----------------------------------------------
+        # 5. SIMPAN PNG LOSSLESS
+        # ----------------------------------------------
+
+        stego_image.save(
+            output_path,
+            format="PNG",
+            optimize=True,
+            compress_level=9
+        )
+
+        logger.info(
+            "Image steg: embedded %d characters into '%s' -> '%s'.",
+            len(message),
+            cover_path,
+            output_path
+        )
+
+        return output_path
+
+    # --------------------------------------------------
+    # EXTRACT MESSAGE
+    # --------------------------------------------------
 
     def extract(self, stego_path: str) -> str:
-        """
-        Extract a hidden message from the stego image at *stego_path*.
 
-        Returns
-        -------
-        str  The extracted UTF-8 message.
-        """
-        if not _PIL_AVAILABLE:
-            raise RuntimeError("Install Pillow: pip install Pillow")
+        if not os.path.isfile(stego_path):
+            raise FileNotFoundError(
+                f"Gambar tidak ditemukan: {stego_path}"
+            )
 
-        img    = Image.open(stego_path).convert("RGB")
-        pixels = list(img.getdata())
+        # ----------------------------------------------
+        # 1. BUKA GAMBAR
+        # ----------------------------------------------
 
-        # Collect all LSBs from R, G, B channels
-        all_bits: list[int] = []
-        for pixel in pixels:
-            for channel in pixel:
-                all_bits.append(channel & 1)
+        with Image.open(stego_path) as img:
+            image = img.convert("RGB")
 
-        # Read length prefix (first 32 bits)
-        msg_len_bits = self._bits_32_to_int(all_bits[:32])
-        if msg_len_bits == 0 or msg_len_bits > len(all_bits) - 32:
-            raise ValueError("No valid hidden message found (bad length prefix).")
+        pixels = np.array(image, dtype=np.uint8)
 
-        # Extract the message bits
-        msg_bits = all_bits[32: 32 + msg_len_bits]
-        message  = self._bits_to_text(msg_bits)
-        logger.info(
-            "Image steg: extracted %d chars from '%s'.",
-            len(message), stego_path
+        flat_pixels = pixels.reshape(-1)
+
+        # ----------------------------------------------
+        # 2. CEK KAPASITAS MINIMUM
+        # ----------------------------------------------
+
+        if len(flat_pixels) < self._HEADER_SIZE:
+            raise ValueError(
+                "Gambar terlalu kecil untuk menyimpan pesan."
+            )
+
+        # ----------------------------------------------
+        # 3. BACA HEADER
+        # ----------------------------------------------
+
+        header_bits = flat_pixels[:32] & 1
+
+        message_length = self._bits_to_length(
+            header_bits
         )
+
+        if (
+            message_length == 0
+            or message_length % 8 != 0
+            or message_length > len(flat_pixels) - 32
+        ):
+            raise ValueError(
+                "Tidak ditemukan pesan valid. "
+                "Header rusak atau gambar bukan gambar stego."
+            )
+
+        # ----------------------------------------------
+        # 4. EKSTRAKSI PESAN
+        # ----------------------------------------------
+
+        message_bits = (
+            flat_pixels[32:32 + message_length] & 1
+        )
+
+        try:
+            message = self._bits_to_text(
+                message_bits
+            )
+
+        except UnicodeDecodeError as e:
+            raise ValueError(
+                "Pesan gagal dibaca. "
+                "Data LSB mungkin telah berubah atau rusak."
+            ) from e
+
+        logger.info(
+            "Image steg: extracted message (%d bytes) from '%s'.",
+            message_length // 8,
+            stego_path
+        )
+
         return message
